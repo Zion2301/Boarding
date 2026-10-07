@@ -1,0 +1,17 @@
+{
+  "id": "sickbay", "name": "Sick Bay", "emoji": "🏥", "exit": "sickbay",
+  "floor": "marble", "palette": { "wall": "#c62828", "top": "#e57373" },
+  "layout": [
+    "################",
+    "#x.x.x.#+n.....#",
+    "#......d.......#",
+    "#x.x.x.#.......#",
+    "#......#..g....#",
+    "#x.x.x.d.......#",
+    "#......#.......#",
+    "#######EE#######"
+  ],
+  "npcSeats": ["sickBed"],
+  "spots": { "nurse": [10, 2] },
+  "secrets": [ { "at": [8, 1], "id": "sickChit" } ]
+}

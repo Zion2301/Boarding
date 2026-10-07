@@ -1,0 +1,82 @@
+{
+  "_doc": "Conversation trees for staff NPCs (keyed by the staff 'dialogue' id in routines.json) plus greeting lines for students. A node: { text: [lines…] (one picked), options: [{ label, goto: node | do: action handler, args, when: condition(s), cons: consequence block, text: reply line }] }. A '🚶 Walk away' option is always added, and missions add their own options automatically.",
+  "trees": {
+    "nurse": {
+      "start": { "text": ["Matron Grace look you over her glasses: \"Yes? Wetin dey do you?\"", "Matron: \"Another one. Sit down. Talk.\""], "options": [
+        { "label": "🤒 \"Matron, I no well\"", "do": "nurseTreat" },
+        { "label": "🤥 Fake malaria (skip class)", "do": "fakeSick" },
+        { "label": "💊 \"Abeg, small Panadol\"", "goto": "panadol" },
+        { "label": "😴 \"Can I rest here small?\"", "do": "say", "args": { "text": ["\"Use the bed by the window. If I catch you pretending ehn…\""] } }
+      ]},
+      "panadol": { "text": ["\"Panadol for wetin? Headache? Malaria? Heartbreak?\""], "options": [
+        { "label": "🤕 \"Headache, Ma\"", "do": "giveItem", "args": { "item": "panadol", "n": 1, "once": "nursePanadol", "text": "Matron give you one tablet: \"Drink plenty water.\" 💊" } },
+        { "label": "💔 \"Heartbreak\"", "cons": { "stats": { "morale": 3 } }, "text": "Matron laugh: \"Ehn ehn. Go and read your book, that one go heal am.\" 😂" }
+      ]}
+    },
+    "keeper": {
+      "start": { "text": ["Mama Tuck-shop: \"My customer! Wetin you wan buy?\"", "Mama Tuck-shop dey count money: \"Talk quick, queue dey.\""], "options": [
+        { "label": "🛒 Buy something", "do": "shop", "when": "staff:keeper" },
+        { "label": "💰 Sell your provisions", "do": "hustle" },
+        { "label": "🙏 \"Mama, credit abeg\"", "do": "askCredit" },
+        { "label": "🔌 \"You dey sell heater?\" (whisper)", "goto": "heater", "when": "!has:heater" }
+      ]},
+      "heater": { "text": ["Mama look left, look right: \"Who send you? …₦1,500. If dem catch you, you no know me.\""], "options": [
+        { "label": "💸 Buy the heater (₦1,500)", "do": "buyContraband", "args": { "item": "heater", "price": 1500 }, "when": "money:1500" },
+        { "label": "🙅 \"No, I was just asking\"", "text": "\"Ehen. Then comot for my front.\"" }
+      ]}
+    },
+    "librarian": {
+      "start": { "text": ["Mr. Okon (whispering): \"This is a QUIET zone. What do you want?\""], "options": [
+        { "label": "📗 Borrow a novel", "do": "borrowNovel" },
+        { "label": "📚 \"Which book go help me pass?\"", "do": "say", "args": { "text": ["\"Read at the desks. Library reading sticks better than anywhere else in this school.\" (+40% study here)"] } },
+        { "label": "📑 \"Any past questions?\"", "do": "say", "args": { "text": ["\"Past questions? Check the bottom shelf by the window… if they're still there.\" 👀"] } }
+      ]}
+    },
+    "cook": {
+      "start": { "text": ["Mama Iyabo wipe sweat with her wrapper: \"Ehen? Food never ready o.\""], "options": [
+        { "label": "🙏 Beg for small food", "do": "begFood" },
+        { "label": "🧅 \"Make I help you for kitchen\" (30 min)", "do": "kitchenHelp" },
+        { "label": "🍛 \"I hear say jollof dey back door…\"", "do": "say", "args": { "text": ["Mama Iyabo laugh: \"Who tell you that one? …Come back at night. ₦300.\" 🤫"], "unlock": "jollofBackdoor" }, "when": "money:300" }
+      ]}
+    },
+    "principal": {
+      "start": { "text": ["Dr. Bamidele adjust his tie: \"Young one. Speak.\"", "The Principal: \"Shouldn't you be somewhere?\""], "options": [
+        { "label": "🙇 Greet properly", "cons": { "groups": { "teachers": 1 }, "stats": { "morale": 2 } }, "text": "\"Good. Manners maketh man. Off you go.\"", "once": "greetPrincipal" },
+        { "label": "🗣️ Report something", "do": "snitchMenu" },
+        { "label": "📝 Ask for exeat (go home for weekend)", "do": "say", "args": { "text": ["\"Exeat? With which reason? Go and read your book.\" 😑"] } }
+      ]}
+    },
+    "gateman": {
+      "start": { "text": ["Baba Musa: \"Ina zuwa? Where you dey go?\""], "options": [
+        { "label": "📝 Show exeat form", "do": "useExeat", "when": "has:exeat" },
+        { "label": "💸 \"Baba, ₦500 make I go buy suya…\"", "do": "bribeGate", "when": "money:500" },
+        { "label": "👋 Just greet", "cons": { "stats": { "morale": 1 } }, "text": "\"Sannu. Go back inside.\"" }
+      ]}
+    },
+    "houseMaster": {
+      "start": { "text": ["The House Master: \"What is it? Make it quick.\"", "\"If this is about your Milo, I don't want to hear it.\""], "options": [
+        { "label": "📱 Beg for your seized phone", "do": "begPhone", "when": "phoneSeized" },
+        { "label": "🗣️ Report something", "do": "snitchMenu" },
+        { "label": "🤒 \"Sir, I no well\"", "do": "say", "args": { "text": ["\"Then go to the sick bay! Am I a doctor?\""] } }
+      ]}
+    },
+    "chaplain": {
+      "start": { "text": ["Rev. Ekanem smiles: \"My child. Peace be with you.\""], "options": [
+        { "label": "🙏 Ask for prayers", "cons": { "stats": { "morale": 6 } }, "text": "He lay hand for your head. You feel lighter. 🙏", "once": "chaplainPray" },
+        { "label": "💬 Confess something", "cons": { "stats": { "morale": 4 } }, "text": "\"God forgives. The house master… maybe not.\" 😅", "once": "confess" }
+      ]}
+    },
+    "imam": {
+      "start": { "text": ["Imam Abdullahi: \"Assalamu alaikum. How is your heart?\""], "options": [
+        { "label": "🤲 Ask for dua", "cons": { "stats": { "morale": 6 } }, "text": "He make dua for you. Sabr. Patience. 🤲", "once": "imamDua" }
+      ]}
+    }
+  },
+  "greet": {
+    "classmate": ["\"{me}! How far?\"", "\"Ehen, you don chop?\"", "\"Omo, this school go kill us o.\"", "\"Abeg you get extra biro?\""],
+    "senior": ["\"Junior, wetin you want?\"", "\"You no dey greet again?\"", "\"Make it quick.\""],
+    "seniorAsSenior": ["\"Guy, how far?\"", "\"Senior to senior — wetin dey?\""],
+    "teacher": ["\"Yes? Shouldn't you be somewhere?\"", "\"Good day. How are your studies?\""],
+    "junior": ["\"Good afternoon Senior!\"", "\"Senior, abeg no punish me.\"", "\"Senior! You need anything?\""]
+  }
+}

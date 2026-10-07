@@ -1,0 +1,327 @@
+{
+ "_doc": "NPC daily routines. For each routine, keys are timetable block ids (or block kinds, or 'default'). A value is a place token or a list of them (the NPC picks one per day by hash). Place tokens: hostel (their own-gender hostel), classroom (their class: jss/ss/lab), worship (chapel or mosque), home (off campus, invisible), patrol:<route> (walk a patrol route; campus.json patrols or the map's own patrol), any building/location key (dining, field, library…), stay (keep the previous place). Staff with a 'role' are created once per save from 'staff'. 'skipClass' = chance a student with that archetype skips a class period and goes somewhere else instead.",
+ "routines": {
+  "student": {
+   "arrival": "gate",
+   "settling": "hostel",
+   "rising": "hostel",
+   "duty": "hostel",
+   "bath": "hostel",
+   "breakfast": "dining",
+   "assembly": "assembly",
+   "class": "classroom",
+   "break": [
+    "tuckshop",
+    "field",
+    "assembly",
+    "tap",
+    "tuckshop"
+   ],
+   "lunch": "dining",
+   "siesta": "hostel",
+   "afternoon": [
+    "field",
+    "field",
+    "library",
+    "laundry",
+    "tuckshop",
+    "hostel",
+    "field"
+   ],
+   "dinner": "dining",
+   "prep": "classroom",
+   "lightsout": "hostel",
+   "labour": "field",
+   "freetime": [
+    "field",
+    "laundry",
+    "hostel",
+    "tuckshop",
+    "library",
+    "tap"
+   ],
+   "social": "assembly",
+   "service": "worship",
+   "sundayPm": [
+    "hostel",
+    "admin",
+    "field",
+    "laundry"
+   ]
+  },
+  "prefect": {
+   "extends": "student",
+   "rising": "patrol:hostel",
+   "duty": "patrol:siesta",
+   "breakfast": "dining",
+   "siesta": "patrol:hostel",
+   "prep": "patrol:prep",
+   "lightsout": [
+    "patrol:night",
+    "patrol:hostel"
+   ]
+  },
+  "labourPrefect": {
+   "extends": "prefect",
+   "duty": "patrol:siesta",
+   "labour": "patrol:field",
+   "afternoon": [
+    "field",
+    "patrol:siesta"
+   ]
+  },
+  "teacher": {
+   "default": "staff",
+   "class": "$teaching",
+   "assembly": "assembly",
+   "prep": [
+    "staff",
+    "home",
+    "staff"
+   ],
+   "breakfast": "staff",
+   "lunch": "staff",
+   "dinner": "home",
+   "lightsout": "home",
+   "rising": "home",
+   "duty": "home",
+   "bath": "home",
+   "service": "worship",
+   "labour": "home",
+   "social": "home",
+   "freetime": [
+    "staff",
+    "home"
+   ],
+   "sundayPm": "home",
+   "afternoon": [
+    "staff",
+    "library",
+    "home"
+   ]
+  },
+  "houseMaster": {
+   "default": "hostel",
+   "assembly": "assembly",
+   "class": "staff",
+   "lightsout": "patrol:hostel",
+   "prep": "patrol:night",
+   "rising": "patrol:hostel",
+   "siesta": "patrol:hostel",
+   "service": "worship"
+  },
+  "nurse": {
+   "default": "sickbay",
+   "lightsout": "sickbay"
+  },
+  "keeper": {
+   "default": "tuckshop",
+   "rising": "home",
+   "duty": "home",
+   "bath": "home",
+   "prep": "home",
+   "lightsout": "home",
+   "service": "home"
+  },
+  "librarian": {
+   "default": "library",
+   "rising": "home",
+   "duty": "home",
+   "bath": "home",
+   "breakfast": "home",
+   "lightsout": "home",
+   "dinner": "home",
+   "service": "home",
+   "sundayPm": "home"
+  },
+  "cook": {
+   "default": "dining",
+   "lightsout": "home",
+   "rising": "home",
+   "duty": "dining"
+  },
+  "principal": {
+   "default": "admin",
+   "assembly": "assembly",
+   "lightsout": "home",
+   "rising": "home",
+   "duty": "home",
+   "bath": "home",
+   "dinner": "home",
+   "prep": "home",
+   "social": "home",
+   "service": "worship",
+   "labour": "home",
+   "sundayPm": "home"
+  },
+  "gateman": {
+   "default": "patrol:gate",
+   "lightsout": [
+    "patrol:gate",
+    "patrol:fence"
+   ]
+  },
+  "chaplain": {
+   "default": "chapel",
+   "lightsout": "home",
+   "rising": "home"
+  },
+  "imam": {
+   "default": "mosque",
+   "lightsout": "home",
+   "rising": "home"
+  },
+  "vp": {
+   "default": "admin",
+   "assembly": "assembly",
+   "breakfast": "dining",
+   "lunch": "dining",
+   "class": [
+    "admin",
+    "patrol:prep",
+    "admin"
+   ],
+   "prep": "patrol:prep",
+   "lightsout": "home",
+   "rising": "home",
+   "duty": "home",
+   "bath": "home",
+   "dinner": "home",
+   "social": "home",
+   "service": "worship",
+   "sundayPm": "home",
+   "labour": "field",
+   "freetime": "admin"
+  }
+ },
+ "skipClass": {
+  "bully": 0.25,
+  "comedian": 0.12,
+  "hustler": 0.15,
+  "thief": 0.2,
+  "sporty": 0.1,
+  "fine": 0.08,
+  "brilliant": 0,
+  "captain": 0,
+  "default": 0.04
+ },
+ "staff": [
+  {
+   "role": "vp",
+   "title": "Mrs.",
+   "last": "Adebayo",
+   "gender": "f",
+   "emoji": "👩🏾‍💼",
+   "label": "Vice Principal",
+   "authority": true,
+   "strict": 0.8
+  },
+  {
+   "role": "houseMaster",
+   "title": "Mr.",
+   "last": "Adeyemi",
+   "gender": "m",
+   "emoji": "👨🏾‍🦳",
+   "label": "House Master",
+   "authority": true,
+   "hostel": "boysHostel",
+   "strict": 0.75
+  },
+  {
+   "role": "houseMaster",
+   "title": "Mrs.",
+   "last": "Okafor",
+   "gender": "f",
+   "emoji": "👩🏾‍🦳",
+   "label": "House Mistress",
+   "authority": true,
+   "hostel": "girlsHostel",
+   "strict": 0.7
+  },
+  {
+   "role": "nurse",
+   "title": "Matron",
+   "last": "Grace",
+   "gender": "f",
+   "emoji": "👩🏾‍⚕️",
+   "label": "School Nurse",
+   "dialogue": "nurse"
+  },
+  {
+   "role": "keeper",
+   "title": "Mama",
+   "last": "Tuck-shop",
+   "gender": "f",
+   "emoji": "🧕🏾",
+   "label": "Tuck shop owner",
+   "dialogue": "keeper"
+  },
+  {
+   "role": "librarian",
+   "title": "Mr.",
+   "last": "Okon",
+   "gender": "m",
+   "emoji": "🧑🏾‍💼",
+   "label": "Librarian",
+   "dialogue": "librarian",
+   "authority": true,
+   "strict": 0.4
+  },
+  {
+   "role": "cook",
+   "title": "Mama",
+   "last": "Iyabo",
+   "gender": "f",
+   "emoji": "👩🏾‍🍳",
+   "label": "Head Cook",
+   "dialogue": "cook"
+  },
+  {
+   "role": "principal",
+   "title": "Dr.",
+   "last": "Bamidele",
+   "gender": "m",
+   "emoji": "👨🏾‍💼",
+   "label": "Principal",
+   "dialogue": "principal",
+   "authority": true,
+   "strict": 0.9
+  },
+  {
+   "role": "gateman",
+   "title": "Baba",
+   "last": "Musa",
+   "gender": "m",
+   "emoji": "💂🏾",
+   "label": "Gateman",
+   "dialogue": "gateman",
+   "authority": true,
+   "strict": 0.6
+  },
+  {
+   "role": "chaplain",
+   "title": "Rev.",
+   "last": "Ekanem",
+   "gender": "m",
+   "emoji": "🧑🏾‍🦲",
+   "label": "Chaplain",
+   "religion": "christian"
+  },
+  {
+   "role": "imam",
+   "title": "Imam",
+   "last": "Abdullahi",
+   "gender": "m",
+   "emoji": "👳🏾",
+   "label": "School Imam",
+   "religion": "muslim"
+  }
+ ],
+ "authorityRoles": [
+  "labourPrefect",
+  "diningPrefect",
+  "headPrefect",
+  "houseCaptain"
+ ],
+ "patrolHostel": "hostel"
+}

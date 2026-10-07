@@ -1,0 +1,19 @@
+{
+  "name": "boarding-house-server",
+  "private": true,
+  "type": "module",
+  "description": "Game server for Boarding House: serves the game, runs AI NPCs/grading/moderation (Claude), shared boards. The API key stays here.",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "AI_MOCK=1 node index.js",
+    "test": "node test/smoke.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.0",
+    "@supabase/supabase-js": "^2.117.3",
+    "zod": "^4.6.5"
+  }
+}

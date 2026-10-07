@@ -1,0 +1,17 @@
+{
+  "_doc": "Questions in a slam book. Friends (NPC classmates via AI/presets, or real players via the share code) answer them.",
+  "questions": ["Your full name (nickname allowed)", "Your house", "Favourite food in the dining hall (be honest)", "Favourite subject", "Most wicked senior (no names o!)", "Your best Afrobeats song", "Your dream job", "Best memory with me", "What do you think of me?", "Advice for me", "Crush? (initials only 👀)", "Sign off with a quote"],
+  "npcAnswers": {
+    "Your house": ["{house}"],
+    "Favourite food in the dining hall (be honest)": ["Friday jollof, no contest", "Beans and dodo", "Nothing. I survive on garri", "Yam and egg sauce"],
+    "Favourite subject": ["{subject}", "Break time 😂", "Maths (I'm lying)"],
+    "Most wicked senior (no names o!)": ["My lawyer said I shouldn't answer", "The one wey collect my Milo", "All of them on Saturday labour"],
+    "Your best Afrobeats song": ["Anything Burna Boy", "Ayra Starr — Rush", "Rema — Calm Down", "Wizkid — Essence", "Asake, any of them"],
+    "Your dream job": ["Doctor (my mum said)", "Footballer", "Engineer", "Lawyer", "Tech bro", "Nollywood star"],
+    "Best memory with me": ["When we hid from the labour prefect", "Midnight garri", "When you shared your Milo", "Social night dance"],
+    "What do you think of me?": ["Correct person", "You dey try", "Gentle but dangerous", "My padi for life"],
+    "Advice for me": ["Read your book", "Hide your provisions", "No trust senior", "Stay humble"],
+    "Crush? (initials only 👀)": ["Not telling 🙈", "Pass", "You go hear am for social night"],
+    "Sign off with a quote": ["No pain, no gain", "We move!", "Soro soke!", "God dey"]
+  }
+}

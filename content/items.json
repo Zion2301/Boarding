@@ -1,0 +1,801 @@
+{
+ "_doc": "Items & recipes. use: stat effects when eaten/used directly. tool: not consumed. contraband: confiscated in raids and when you get caught. Recipe needs: ids consumed (an array inside means any one of them), bonus: used if you have them, tool: required not consumed, illegal: cooking it counts as the cooking offence while the smell lingers.",
+ "items": {
+  "garri": {
+   "name": "Garri (Ijebu)",
+   "emoji": "🥣",
+   "unit": "cup",
+   "cat": "food",
+   "price": 100,
+   "shop": true,
+   "use": null,
+   "desc": "The national boarding house currency. Soak am, drink am, survive am."
+  },
+  "sugar": {
+   "name": "Sugar",
+   "emoji": "🧂",
+   "unit": "spoon",
+   "cat": "food",
+   "price": 50,
+   "shop": true,
+   "use": {
+    "hunger": 2,
+    "morale": 2
+   },
+   "desc": "St. Louis cubes. You fit lick am raw if wahala too much."
+  },
+  "milk": {
+   "name": "Peak Milk (powder)",
+   "emoji": "🥛",
+   "unit": "sachet",
+   "cat": "food",
+   "price": 100,
+   "shop": true,
+   "use": {
+    "hunger": 5,
+    "morale": 4
+   },
+   "desc": "Lick am straight from sachet — the forbidden joy."
+  },
+  "milo": {
+   "name": "Milo",
+   "emoji": "🍫",
+   "unit": "sachet",
+   "cat": "food",
+   "price": 100,
+   "shop": true,
+   "use": {
+    "hunger": 4,
+    "morale": 6
+   },
+   "desc": "The most borrowed item in the history of boarding school."
+  },
+  "groundnut": {
+   "name": "Groundnut",
+   "emoji": "🥜",
+   "unit": "handful",
+   "cat": "food",
+   "price": 50,
+   "shop": true,
+   "use": {
+    "hunger": 6,
+    "morale": 2
+   },
+   "desc": "Garri’s best friend."
+  },
+  "kuli": {
+   "name": "Kuli-kuli",
+   "emoji": "🟤",
+   "unit": "stick",
+   "cat": "food",
+   "price": 50,
+   "shop": true,
+   "use": {
+    "hunger": 6,
+    "morale": 2
+   },
+   "desc": "Hard like stone, sweet like victory."
+  },
+  "cornflakes": {
+   "name": "Cornflakes",
+   "emoji": "🥣",
+   "unit": "bowl",
+   "cat": "food",
+   "price": 250,
+   "shop": true,
+   "use": {
+    "hunger": 10,
+    "morale": 4
+   },
+   "desc": "Dry chop or with milk. Either way, e sweet."
+  },
+  "indomie": {
+   "name": "Indomie",
+   "emoji": "🍜",
+   "unit": "pack",
+   "cat": "food",
+   "price": 200,
+   "shop": true,
+   "use": {
+    "hunger": 9,
+    "morale": 5
+   },
+   "desc": "Crunch am raw like biscuit or soak am if you get flask."
+  },
+  "biscuits": {
+   "name": "Cabin Biscuit",
+   "emoji": "🍪",
+   "unit": "pack",
+   "cat": "food",
+   "price": 100,
+   "shop": true,
+   "use": {
+    "hunger": 7,
+    "morale": 3,
+    "thirst": -3
+   },
+   "desc": "Dry. Very dry. Dey drink water follow."
+  },
+  "gala": {
+   "name": "Gala",
+   "emoji": "🌭",
+   "unit": "pack",
+   "cat": "food",
+   "price": 200,
+   "shop": true,
+   "use": {
+    "hunger": 10,
+    "morale": 5
+   },
+   "desc": "Gala and La Casera — but there is no La Casera here."
+  },
+  "chinchin": {
+   "name": "Chin chin",
+   "emoji": "🍘",
+   "unit": "handful",
+   "cat": "food",
+   "price": 150,
+   "shop": true,
+   "use": {
+    "hunger": 6,
+    "morale": 5
+   },
+   "desc": "Mummy fry am herself. Hide am from Senior."
+  },
+  "plantainChips": {
+   "name": "Plantain chips",
+   "emoji": "🍌",
+   "unit": "pack",
+   "cat": "food",
+   "price": 150,
+   "shop": true,
+   "use": {
+    "hunger": 6,
+    "morale": 5
+   },
+   "desc": "Crunchy sweet goodness."
+  },
+  "bread": {
+   "name": "Bread",
+   "emoji": "🍞",
+   "unit": "slice",
+   "cat": "food",
+   "price": 100,
+   "shop": true,
+   "use": {
+    "hunger": 8,
+    "morale": 2
+   },
+   "desc": "Agege bread. Soft today, stone tomorrow."
+  },
+  "sardine": {
+   "name": "Sardine",
+   "emoji": "🐟",
+   "unit": "tin",
+   "cat": "food",
+   "price": 400,
+   "shop": true,
+   "use": {
+    "hunger": 14,
+    "morale": 6
+   },
+   "desc": "Titus. Make bread-and-sardine and become king for one night."
+  },
+  "cornedBeef": {
+   "name": "Corned beef",
+   "emoji": "🥫",
+   "unit": "tin",
+   "cat": "food",
+   "price": 900,
+   "shop": false,
+   "use": {
+    "hunger": 18,
+    "morale": 8
+   },
+   "desc": "Big man protein. If senior see am, e don go."
+  },
+  "pringles": {
+   "name": "Pringles",
+   "emoji": "🥔",
+   "unit": "can",
+   "cat": "food",
+   "price": 2500,
+   "shop": false,
+   "use": {
+    "hunger": 10,
+    "morale": 14
+   },
+   "desc": "Half the hostel never see this thing before."
+  },
+  "pureWater": {
+   "name": "Pure water",
+   "emoji": "💧",
+   "unit": "sachet",
+   "cat": "drink",
+   "price": 20,
+   "shop": true,
+   "use": {
+    "thirst": 22
+   },
+   "desc": "Bite the corner, squeeze am finish in one breath."
+  },
+  "bottledWater": {
+   "name": "Bottled water",
+   "emoji": "🍶",
+   "unit": "bottle",
+   "cat": "drink",
+   "price": 150,
+   "shop": true,
+   "use": {
+    "thirst": 35,
+    "morale": 2
+   },
+   "desc": "Eva water. Big man status."
+  },
+  "zobo": {
+   "name": "Zobo",
+   "emoji": "🍷",
+   "unit": "bottle",
+   "cat": "drink",
+   "price": 100,
+   "shop": true,
+   "use": {
+    "thirst": 20,
+    "morale": 4
+   },
+   "desc": "Tuck shop zobo — ginger fit wake the dead."
+  },
+  "soap": {
+   "name": "Bathing soap",
+   "emoji": "🧼",
+   "unit": "use",
+   "cat": "toiletry",
+   "price": 200,
+   "pack": 5,
+   "shop": true,
+   "use": null,
+   "desc": "One bar = 5 baths. Used automatically when you baff."
+  },
+  "detergent": {
+   "name": "Detergent (Ariel)",
+   "emoji": "🫧",
+   "unit": "use",
+   "cat": "toiletry",
+   "price": 200,
+   "pack": 5,
+   "shop": true,
+   "use": null,
+   "desc": "One sachet = 5 washes. Used automatically when you wash clothes."
+  },
+  "cream": {
+   "name": "Body cream",
+   "emoji": "🧴",
+   "unit": "jar",
+   "cat": "toiletry",
+   "price": 600,
+   "shop": true,
+   "use": {
+    "hygiene": 6,
+    "morale": 3
+   },
+   "desc": "Robb, Vaseline or Ori — make your skin shine for inspection."
+  },
+  "torch": {
+   "name": "Torchlight",
+   "emoji": "🔦",
+   "unit": "piece",
+   "cat": "tool",
+   "price": 800,
+   "shop": true,
+   "use": null,
+   "tool": true,
+   "desc": "For reading after lights out, and finding your slippers at 2am."
+  },
+  "flask": {
+   "name": "Flask (hot water)",
+   "emoji": "🫖",
+   "unit": "piece",
+   "cat": "tool",
+   "price": 2500,
+   "shop": false,
+   "use": null,
+   "tool": true,
+   "desc": "Fill am at the kitchen. Hot Milo at night = luxury."
+  },
+  "padlock": {
+   "name": "Padlock",
+   "emoji": "🔒",
+   "unit": "piece",
+   "cat": "tool",
+   "price": 500,
+   "shop": true,
+   "use": null,
+   "tool": true,
+   "desc": "Protects your locker. Thieves go cry."
+  },
+  "water": {
+   "name": "Bucket of water",
+   "emoji": "🪣",
+   "unit": "bucket",
+   "cat": "drink",
+   "price": 0,
+   "shop": false,
+   "use": {
+    "thirst": 12
+   },
+   "desc": "Fetched from the borehole. Bathe with am, soak garri with am, or carry am go give senior."
+  },
+  "bucket": {
+   "name": "Bucket",
+   "emoji": "🪣",
+   "unit": "piece",
+   "cat": "tool",
+   "price": 600,
+   "shop": true,
+   "use": null,
+   "tool": true,
+   "desc": "Every boarding student's best friend. Fetch water, bathe, wash."
+  },
+  "mosquitoNet": {
+   "name": "Mosquito net",
+   "emoji": "🥅",
+   "unit": "piece",
+   "cat": "tool",
+   "price": 700,
+   "shop": true,
+   "use": null,
+   "tool": true,
+   "desc": "Sleep without mosquito concert. Better rest at night."
+  },
+  "cutlass": {
+   "name": "Cutlass",
+   "emoji": "🔪",
+   "unit": "piece",
+   "cat": "tool",
+   "price": 900,
+   "shop": true,
+   "use": null,
+   "tool": true,
+   "desc": "For general labour. Clear your plot twice as fast."
+  },
+  "heater": {
+   "name": "Immersion heater",
+   "emoji": "🔌",
+   "unit": "piece",
+   "cat": "tool",
+   "price": 1500,
+   "shop": false,
+   "use": null,
+   "tool": true,
+   "contraband": true,
+   "desc": "CONTRABAND. Boils water in 2 minutes. Cooking in the hostel = big wahala if dem catch you."
+  },
+  "novel": {
+   "name": "Pacesetters novel",
+   "emoji": "📗",
+   "unit": "book",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": {
+    "morale": 6
+   },
+   "desc": "Borrowed from the library. Read am for morale — or under your desk in class."
+  },
+  "lessonNotes": {
+   "name": "Lesson notes",
+   "emoji": "📓",
+   "unit": "copy",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "tool": true,
+   "desc": "The brilliant kid's neat notes. Studying with them gives +50% knowledge."
+  },
+  "pastQuestions": {
+   "name": "Past questions",
+   "emoji": "📑",
+   "unit": "booklet",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "tool": true,
+   "desc": "Old exam papers. +1 hint in every test and exam."
+  },
+  "examPaper": {
+   "name": "Leaked exam questions",
+   "emoji": "📄",
+   "unit": "sheet",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "tool": true,
+   "contraband": true,
+   "desc": "The real exam questions. +2 hints in exams. If they find am on you… expulsion matter."
+  },
+  "sickChit": {
+   "name": "Sick bay chit",
+   "emoji": "🧾",
+   "unit": "chit",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "desc": "A signed excuse slip. The next class you miss won't count as truancy."
+  },
+  "exeat": {
+   "name": "Exeat form",
+   "emoji": "📝",
+   "unit": "form",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "desc": "A blank signed exeat. Show the gateman to jump the fence without wahala once."
+  },
+  "panadol": {
+   "name": "Panadol",
+   "emoji": "💊",
+   "unit": "tablet",
+   "cat": "food",
+   "price": 100,
+   "shop": false,
+   "use": {
+    "health": 10,
+    "rest": 2
+   },
+   "desc": "For headache, malaria, heartbreak — Nigerian students believe it cures everything."
+  },
+  "cookedFood": {
+   "name": "Plate of jollof",
+   "emoji": "🍛",
+   "unit": "plate",
+   "cat": "food",
+   "price": 300,
+   "shop": false,
+   "use": {
+    "hunger": 35,
+    "morale": 8
+   },
+   "desc": "Proper cooked food. Not dining hall food. Real food."
+  },
+  "meat": {
+   "name": "Meat",
+   "emoji": "🍗",
+   "unit": "piece",
+   "cat": "food",
+   "price": 200,
+   "shop": false,
+   "use": {
+    "hunger": 10,
+    "morale": 8
+   },
+   "desc": "Big, shining meat. Somebody go dey look for this one."
+  },
+  "mango": {
+   "name": "Mango",
+   "emoji": "🥭",
+   "unit": "piece",
+   "cat": "food",
+   "price": 50,
+   "shop": false,
+   "use": {
+    "hunger": 6,
+    "thirst": 4,
+    "morale": 3
+   },
+   "desc": "From the forbidden tree."
+  },
+  "chalk": {
+   "name": "Chalk",
+   "emoji": "🖍️",
+   "unit": "stick",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "desc": "Useful for… mischief."
+  },
+  "shirt": {
+   "name": "Somebody's shirt",
+   "emoji": "👕",
+   "unit": "piece",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": {
+    "hygiene": 8
+   },
+   "desc": "Clean and ironed. Not yours."
+  },
+  "slippers": {
+   "name": "Slippers",
+   "emoji": "🩴",
+   "unit": "pair",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "quest": true,
+   "desc": "Somebody's missing slippers."
+  },
+  "letter": {
+   "name": "Love letter",
+   "emoji": "💌",
+   "unit": "letter",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "quest": true,
+   "desc": "Sealed with Vaseline and hope."
+  },
+  "evidence": {
+   "name": "Stolen wrappers",
+   "emoji": "🧾",
+   "unit": "bundle",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "quest": true,
+   "desc": "Empty Milo sachets with other people's names. Proof."
+  },
+  "foundPhone": {
+   "name": "Somebody's phone",
+   "emoji": "📱",
+   "unit": "phone",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "quest": true,
+   "contraband": true,
+   "desc": "Wrapped in nylon. Not yours."
+  },
+  "stinkBomb": {
+   "name": "Stink bomb",
+   "emoji": "💨",
+   "unit": "vial",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": null,
+   "desc": "Lab chemicals in a vial. Somebody go suffer."
+  },
+  "misbaha": {
+   "name": "Prayer beads",
+   "emoji": "📿",
+   "unit": "piece",
+   "cat": "tool",
+   "price": 0,
+   "shop": false,
+   "use": {
+    "morale": 5
+   },
+   "desc": "Peaceful."
+  },
+  "slamBook": {
+   "name": "Slam book",
+   "emoji": "📒",
+   "unit": "book",
+   "cat": "tool",
+   "price": 300,
+   "shop": true,
+   "use": null,
+   "tool": true,
+   "desc": "Pass it round so friends answer questions about themselves (and you). Open it from 🎒 → ✍️ Writing."
+  }
+ },
+ "recipes": {
+  "soakGarri": {
+   "name": "Soak Garri",
+   "emoji": "🥣",
+   "needs": [
+    "garri",
+    [
+     "water",
+     "pureWater"
+    ]
+   ],
+   "bonus": [
+    "sugar",
+    "milk",
+    "groundnut"
+   ],
+   "base": {
+    "hunger": 22,
+    "thirst": 8,
+    "morale": 2
+   },
+   "perBonus": {
+    "hunger": 3,
+    "morale": 3
+   },
+   "desc": "Garri + water (+ sugar, milk, groundnut if you get). The boarding house national dish.",
+   "line": [
+    "You soak garri, the thing swell like your future. 🥣",
+    "Garri, sugar, groundnut — Michelin star no reach this one.",
+    "You drink the garri water last. Na the best part."
+   ]
+  },
+  "hotMilo": {
+   "name": "Hot Milo",
+   "emoji": "☕",
+   "needs": [
+    "milo"
+   ],
+   "bonus": [
+    "milk",
+    "sugar"
+   ],
+   "tool": "flask",
+   "base": {
+    "hunger": 8,
+    "thirst": 12,
+    "morale": 10,
+    "rest": 3
+   },
+   "perBonus": {
+    "morale": 3
+   },
+   "desc": "Milo + hot water from flask (+ milk, sugar). Pure therapy.",
+   "line": [
+    "You make thick Milo, the kind wey spoon fit stand inside. ☕",
+    "The aroma reach the next corner. Two people suddenly become your friend."
+   ]
+  },
+  "breadSardine": {
+   "name": "Bread & Sardine",
+   "emoji": "🥪",
+   "needs": [
+    "bread",
+    "sardine"
+   ],
+   "bonus": [],
+   "base": {
+    "hunger": 28,
+    "morale": 10
+   },
+   "perBonus": {},
+   "desc": "Royal meal. Lock the door before you make am.",
+   "line": [
+    "Bread and sardine. You chop am like person wey dey hide from EFCC. 🥪"
+   ]
+  },
+  "softIndomie": {
+   "name": "Soaked Indomie",
+   "emoji": "🍜",
+   "needs": [
+    "indomie"
+   ],
+   "bonus": [],
+   "tool": "flask",
+   "base": {
+    "hunger": 18,
+    "morale": 8,
+    "thirst": -2
+   },
+   "perBonus": {},
+   "desc": "Indomie soaked in flask water. No be cooking, na survival.",
+   "line": [
+    "You cover am with exercise book for 3 minutes. E soft. E sweet. 🍜"
+   ]
+  },
+  "noodles": {
+   "name": "Cooked Indomie",
+   "emoji": "🍜",
+   "needs": [
+    "indomie",
+    [
+     "water",
+     "pureWater"
+    ]
+   ],
+   "bonus": [
+    "sardine"
+   ],
+   "tool": "heater",
+   "illegal": true,
+   "base": {
+    "hunger": 32,
+    "morale": 12
+   },
+   "perBonus": {
+    "hunger": 6,
+    "morale": 4
+   },
+   "desc": "Indomie + water + heater. Proper cooked noodles. ILLEGAL — the smell go travel.",
+   "line": [
+    "The heater hum, the Indomie dance for cup. Seasoning smell reach the next hostel. 🍜",
+    "Cooked Indomie for boarding house. You be king tonight. 🍜"
+   ]
+  },
+  "heaterTea": {
+   "name": "Boiled tea",
+   "emoji": "🫖",
+   "needs": [
+    [
+     "water",
+     "pureWater"
+    ]
+   ],
+   "bonus": [
+    "milo",
+    "milk",
+    "sugar"
+   ],
+   "tool": "heater",
+   "illegal": true,
+   "base": {
+    "thirst": 18,
+    "morale": 8,
+    "rest": 3
+   },
+   "perBonus": {
+    "morale": 3,
+    "hunger": 3
+   },
+   "desc": "Heater + water (+ Milo, milk, sugar). Illegal but heavenly.",
+   "line": [
+    "You boil water with heater and make tea like Oga for office. ☕"
+   ]
+  },
+  "garriSandwich": {
+   "name": "Bread & groundnut",
+   "emoji": "🥪",
+   "needs": [
+    "bread",
+    "groundnut"
+   ],
+   "bonus": [
+    "sugar"
+   ],
+   "base": {
+    "hunger": 18,
+    "morale": 4
+   },
+   "perBonus": {
+    "morale": 2
+   },
+   "desc": "Bread + groundnut. Boarding house shawarma.",
+   "line": [
+    "Bread and groundnut. Crunchy, filling, legal. 🥪"
+   ]
+  }
+ },
+ "shop": [
+  "pureWater",
+  "zobo",
+  "bread",
+  "biscuits",
+  "gala",
+  "indomie",
+  "milo",
+  "milk",
+  "sugar",
+  "garri",
+  "groundnut",
+  "kuli",
+  "chinchin",
+  "plantainChips",
+  "sardine",
+  "bottledWater",
+  "cornflakes",
+  "soap",
+  "detergent",
+  "cream",
+  "padlock",
+  "torch",
+  "bucket",
+  "mosquitoNet",
+  "cutlass",
+  "slamBook"
+ ],
+ "starter": {
+  "bucket": 1
+ }
+}

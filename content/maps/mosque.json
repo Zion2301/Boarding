@@ -1,0 +1,22 @@
+{
+  "id": "mosque", "name": "Mosque", "emoji": "🕌", "exit": "mosque",
+  "floor": "carpet", "palette": { "wall": "#2e7d32", "top": "#4caf50" },
+  "layout": [
+    "##################",
+    "#......aaaa......#",
+    "#................#",
+    "#.mmmmmm..mmmmmm.#",
+    "#................#",
+    "#.mmmmmm..mmmmmm.#",
+    "#................#",
+    "#.mmmmmm..mmmmmm.#",
+    "#................#",
+    "#%..............g#",
+    "#................#",
+    "########EE########"
+  ],
+  "npcSeats": ["prayerMat"],
+  "spots": { "imam": [8, 2] },
+  "quiet": true,
+  "secrets": [ { "at": [7, 1], "id": "misbaha" } ]
+}

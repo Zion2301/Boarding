@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boarding House Admin</title>
+<style>
+:root { --bg: #f6f3ea; --card: #fff; --ink: #1f2421; --muted: #6b6f68; --line: #e4dccb; --bad: #c62828; --ok: #1f9d55; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #141713; --card: #1e221d; --ink: #ecebe4; --muted: #a2a59c; --line: #333a31; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, sans-serif; }
+main { max-width: 1000px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.4rem; } h2 { font-size: 1.05rem; margin: 0 0 8px; }
+section { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 12px 0; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; } td, th { text-align: left; padding: 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.muted { color: var(--muted); } button { font: inherit; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+.on { color: var(--ok); font-weight: 700; } .off { color: var(--bad); font-weight: 700; } input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: min(320px, 100%); }
+.txt { max-width: 420px; white-space: pre-wrap; word-break: break-word; }
+</style></head>
+<body><main>
+<h1>🏫 Boarding House — Admin</h1>
+<section><label>Admin token <input id="tok" type="password" placeholder="ADMIN_TOKEN"></label> <button id="go">Load</button> <span id="msg" class="muted"></span></section>
+<div id="out"></div>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let token = '';
+try { token = sessionStorage.getItem('bh_admin') || ''; } catch (e) {}
+$('#tok').value = token;
+const api = (p, body) => fetch(p, { method: body ? 'POST' : 'GET', headers: { 'content-type': 'application/json', 'x-admin-token': token }, body: body ? JSON.stringify(body) : undefined }).then((r) => r.json());
+async function load() {
+  token = $('#tok').value.trim();
+  try { sessionStorage.setItem('bh_admin', token); } catch (e) {}
+  const d = await api('/api/admin/overview');
+  if (d.error) { $('#msg').textContent = d.error; return; }
+  $('#msg').textContent = `store: ${d.store}`;
+  const row = (type, it) => `<tr><td class="muted">${esc(it.created_at.slice(0, 16))}</td><td>${esc(it.author)}</td><td class="txt">${esc(it.text)}</td><td>${esc(it.status)} · ${it.reports || 0}🚩</td><td><button data-type="${type}" data-id="${it.id}" data-status="${it.status === 'hidden' ? 'visible' : 'hidden'}">${it.status === 'hidden' ? 'Restore' : 'Hide'}</button></td></tr>`;
+  $('#out').innerHTML = `
+    <section><h2>AI</h2><p>Status: <span class="${d.ai ? 'on' : 'off'}">${d.ai ? 'ON' : 'OFF'}</span>${d.mock ? ' (mock model)' : ''} <button id="toggle">${d.ai ? 'Switch AI OFF' : 'Switch AI ON'}</button></p>
+      <p class="muted">Today ${esc(d.guard.day)}: ${d.guard.globalCount} AI calls · ${d.guard.players} players · cache ${d.guard.cacheSize} · limits ${d.guard.limits.RATE_PER_MIN}/min, ${d.guard.limits.DAILY_BUDGET}/player/day, ${d.guard.limits.GLOBAL_DAILY}/day total</p></section>
+    <section><h2>Open reports (${d.reports.length})</h2>${d.reports.length ? `<table><tr><th>When</th><th>Type</th><th>Original text</th><th>Reason</th><th></th></tr>${d.reports.map((r) => `<tr><td class="muted">${esc(r.created_at.slice(0, 16))}</td><td>${esc(r.item_type)}</td><td class="txt">${esc(r.original_text)}</td><td>${esc(r.reason)}</td><td><button data-type="${r.item_type}" data-id="${r.item_id}" data-sub="${esc(r.sub_id || '')}" data-status="hidden">Hide item</button> <button data-resolve="${r.id}">Resolve</button></td></tr>`).join('')}</table>` : '<p class="muted">Nothing reported. 🎉</p>'}</section>
+    <section><h2>Noticeboard posts</h2><table>${d.posts.map((p) => row('board_posts', p)).join('') || '<tr><td class="muted">None yet</td></tr>'}</table></section>
+    <section><h2>Graffiti</h2><table>${d.graffiti.map((p) => row('graffiti', p)).join('') || '<tr><td class="muted">None yet</td></tr>'}</table></section>`;
+  $('#toggle').onclick = async () => { await api('/api/admin/ai', { enabled: !d.ai }); load(); };
+}
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.dataset.resolve) { await api('/api/admin/report', { id: b.dataset.resolve }); load(); }
+  else if (b.dataset.type) { await api('/api/admin/item', { type: b.dataset.type, id: b.dataset.id, subId: b.dataset.sub, status: b.dataset.status }); load(); }
+});
+$('#go').onclick = load;
+if (token) load();
+</script>
+</body></html>

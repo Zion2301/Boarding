@@ -1,0 +1,13 @@
+{
+  "name": "Boarding House",
+  "short_name": "Boarding House",
+  "description": "Nigerian boarding school life simulator — JSS1 to SS3.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4efe2",
+  "theme_color": "#0f5c3f",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "_doc": "World simulation data. secrets: what you find when you search a secret spot (maps list them under 'secrets'). weather: odds per term and effects. events: things that happen without you (js/systems/world.js has a handler per 'do'); every ~30 game minutes one may fire. paths: the routes to success, their titles and endings.",
+  "secrets": {
+    "hiddenMoney":     { "text": "Under the locker, somebody hide ₦300 inside sock. Finders keepers? 👀", "money": 300 },
+    "confiscationBox": { "text": "The confiscation box! Phones, novels, a heater, one perfume… If yours dey here, you fit carry am back. 😳", "flag": "sawConfiscation" },
+    "seniorDiary":     { "text": "A diary under the bunk: 'Day 41: Junior {junior} still no bring my water.' You learn which seniors dey hate who.", "rumour": "One senior's diary don leak — the gist hot 📔" },
+    "loveLetters":     { "text": "A bundle of love letters tied with rubber band. The names inside… omo. This gist fit scatter the school.", "rumour": "Love letters don leak from behind the girls' hostel 💌", "items": { "letter": 1 } },
+    "oldNotes":        { "text": "Inside the desk: somebody's old lesson notes, neat like typewriter. 📓", "items": { "lessonNotes": 1 } },
+    "graffitiNote":    { "text": "Scratched inside the desk: 'The exam cabinet key dey under the staff room flower pot.' Hmm. 🤔", "unlock": "examLeak" },
+    "markbookScribble":{ "text": "Teacher's mark book open small: next test na on the topic they've been hammering. You memorise am. (+1 hint next test)", "flag": "testHint" },
+    "stinkBomb":       { "text": "Behind the bottles: a vial wey dem label 'H₂S — DO NOT OPEN'. 💨", "items": { "stinkBomb": 1 } },
+    "skeletonKey":     { "text": "An old key on a string, labelled 'STORE'. Na here dem dey keep the cutlasses. 🔑", "items": { "cutlass": 1 } },
+    "meatTicket":      { "text": "Under the prefects' tray: a list of who dey get extra meat. Your name no dey there. 😑", "rumour": "Dining prefects dey chop extra meat every day — list don leak 🍗" },
+    "keeperLedger":    { "text": "Mama Tuck-shop's credit book. Half the SS3 class owe her money. 📒", "rumour": "SS3 people owe Mama Tuck-shop ₦50,000 combined 😂" },
+    "pastQuestions":   { "text": "Behind the dusty encyclopaedia: a booklet of PAST QUESTIONS. Gold! 📑", "items": { "pastQuestions": 1 } },
+    "loveNote":        { "text": "Inside 'Things Fall Apart': a note — 'Meet me by the mango tree after prep.' Who wrote am?? 👀", "stats": { "morale": 3 } },
+    "sickChit":        { "text": "A pad of blank sick bay chits — one don already sign. You 'borrow' one. 🧾", "items": { "sickChit": 1 } },
+    "exeatForm":       { "text": "A blank exeat form with the VP's signature already on it. Dangerous treasure. 📝", "items": { "exeat": 1 } },
+    "yourFile":        { "text": "Your own file. 'Character: {character}. Discipline: {points} points.' Na so dem see you. 📁", "flag": "readFile" },
+    "oldHymnal":       { "text": "Inside an old hymn book: ₦200 offering wey nobody collect. Hmm. 🪙", "money": 200 },
+    "misbaha":         { "text": "Beautiful prayer beads left on the mihrab. You hold am small and feel peace. 📿", "items": { "misbaha": 1 } },
+    "testAnswers":     { "text": "Marking guide for this week's test! You see three answers before your heart start to beat. (+1 hint next test)", "flag": "testHint" },
+    "teacherGist":     { "text": "Teachers' notice: 'Exam questions are in the red cabinet. Keep it LOCKED.' Somebody no lock am. 👀", "unlock": "examLeak" },
+    "bushStash":       { "text": "Something wrapped in nylon inside the bush… a PHONE! 📱", "items": { "foundPhone": 1 }, "unlock": "lostPhone" },
+    "jollofBackdoor":  { "text": "Chalk on the wall behind the dining hall: 'JOLLOF ₦300 — 8:30PM'. 🍛", "unlock": "jollofBackdoor" }
+  },
+  "weather": {
+    "terms": {
+      "1": { "clear": 4, "rain": 5, "heat": 1, "harmattan": 0 },
+      "2": { "clear": 3, "rain": 0.5, "heat": 1, "harmattan": 5 },
+      "3": { "clear": 3, "rain": 3, "heat": 4, "harmattan": 0 }
+    },
+    "kinds": {
+      "clear":     { "emoji": "☀️", "label": "Clear", "decay": {} },
+      "rain":      { "emoji": "🌧️", "label": "Rain", "decay": { "hygiene": 1.4 }, "outdoorOnly": true, "labour": 1.6, "tint": [40, 60, 90, 0.18] },
+      "heat":      { "emoji": "🔥", "label": "Heat wave", "decay": { "thirst": 1.6, "rest": 1.15 }, "tint": [255, 170, 60, 0.08] },
+      "harmattan": { "emoji": "🌫️", "label": "Harmattan", "decay": { "hygiene": 1.5, "health": 1 }, "dry": true, "tint": [210, 190, 150, 0.22] }
+    }
+  },
+  "events": [
+    { "id": "fight", "do": "fight", "weight": 2, "when": ["!block:class", "!night"], "text": "🥊 Fight don burst for {place}! {a} and {b} dey exchange blows!" },
+    { "id": "theft", "do": "theft", "weight": 2, "text": "🫳 Somebody's provisions don miss for {place}." },
+    { "id": "teacherAbsent", "do": "teacherAbsent", "weight": 1.5, "when": ["daytype:weekday", "!night"], "text": "📢 {teacher} no come school today — free period for {subject}!" },
+    { "id": "rain", "do": "rain", "weight": 2, "text": "🌧️ Rain don start! Everybody run enter building." },
+    { "id": "nepa", "do": "nepa", "weight": 1.5, "when": ["evening"], "text": "⚡ NEPA don take light!" },
+    { "id": "raid", "do": "raid", "weight": 0.8, "when": ["!block:class"], "text": "🚨 House master dey raid the hostel for contraband!" },
+    { "id": "gistSpread", "do": "gist", "weight": 2, "text": "🗣️ New gist dey go round…" },
+    { "id": "call", "do": "call", "weight": 4, "when": ["!block:class", "!block:sleep", "!block:assembly"], "text": "" },
+    { "id": "happening", "do": "happening", "weight": 3, "text": "" }
+  ],
+  "paths": {
+    "scholar":  { "label": "Top of the Class", "emoji": "🎓", "titles": ["Bookworm", "Brainbox", "Scholar", "Valedictorian"], "ending": "You graduate as the school's academic star — your name dey the honours board forever." },
+    "sports":   { "label": "Sports Star", "emoji": "🏅", "titles": ["Jogger", "Athlete", "House Champion", "Sports Legend"], "ending": "Inter-house medals, the cheering, the trophies — the field remember your name." },
+    "leader":   { "label": "Prefect & Leader", "emoji": "🎖️", "titles": ["Responsible", "Class Rep", "Prefect Material", "Head of School Energy"], "ending": "Teachers trust you, juniors follow you. You lead from the front." },
+    "hustle":   { "label": "Hustler", "emoji": "💰", "titles": ["Trader", "Market Mover", "Business Mogul", "Hustler {crown}"], "ending": "Provisions, deliveries, credit — you run the school's economy." },
+    "popular":  { "label": "Popular Icon", "emoji": "🌟", "titles": ["Known Face", "Crowd Favourite", "Campus Celeb", "Icon"], "ending": "Everybody know your name — from JSS1 to the cooks." },
+    "trouble":  { "label": "Troublemaker Legend", "emoji": "😈", "titles": ["Mischief", "Rascal", "Notorious", "Legend of Wahala"], "ending": "Fence jumps, raids, near-expulsions — the stories go outlive you." }
+  },
+  "happenings": ["nightMosquito", "rat", "foodPoison", "waterScarcity", "foundMoney", "comedian", "gossipNews", "jollofBackdoor", "rash", "dehydrated"]
+}

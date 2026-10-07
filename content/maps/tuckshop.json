@@ -1,0 +1,17 @@
+{
+  "id": "tuckshop", "name": "Tuck Shop", "emoji": "🛒", "exit": "tuckshop",
+  "floor": "wood", "palette": { "wall": "#2e7d32", "top": "#4caf50" },
+  "layout": [
+    "############",
+    "#ssss.sssss#",
+    "#..........#",
+    "#cccccccc..#",
+    "#..........#",
+    "#..........#",
+    "#g........g#",
+    "#####EE#####"
+  ],
+  "spots": { "keeper": [4, 2] },
+  "rooms": [ { "id": "behindCounter", "rect": [1, 1, 10, 2], "forbidden": true, "name": "Behind the counter" } ],
+  "secrets": [ { "at": [9, 1], "id": "keeperLedger" } ]
+}

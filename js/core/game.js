@@ -1,0 +1,39 @@
+/* Game controller: new game, load, save, game over */
+(function (BH) {
+  const Game = {
+    s: null,
+
+    newGame(opts) {
+      const s = BH.State.create(opts);
+      Game.s = s;
+      BH.hook('onNewGame', s);
+      BH.Time.newDay(s);
+      BH.log(s, `🚌 Resumption day at ${s.player.schoolName}`, 'day');
+      BH.Time.startBlock(s);
+      BH.Events.optional(s, 'arrivalParent');
+      BH.Save.save(s);
+      BH.UI.go('game');
+    },
+
+    load(slot) {
+      const s = BH.Save.load(slot);
+      if (!s) return false;
+      Game.s = s;
+      BH.hook('onLoad', s);
+      BH.UI.go(s.gameOver ? 'gameover' : 'game');
+      return true;
+    },
+
+    save() {
+      if (!Game.s) return false;
+      return BH.Save.save(Game.s);
+    },
+
+    gameOver(s, kind, text) {
+      s.gameOver = { kind, text, when: BH.Time.dateLabel(s) };
+      BH.Save.save(s);
+    },
+  };
+
+  BH.Game = Game;
+})(window.BH);

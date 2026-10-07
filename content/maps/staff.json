@@ -1,0 +1,19 @@
+{
+  "id": "staff", "name": "Staff Room", "emoji": "🏘️", "exit": "staff",
+  "floor": "carpet", "palette": { "wall": "#546e7a", "top": "#78909c" },
+  "layout": [
+    "####################",
+    "#qqqq..qqqq...r.eee#",
+    "#..................#",
+    "#.zzz......f....!..#",
+    "#..................#",
+    "#.qqqq.......g.....#",
+    "#..................#",
+    "#########EE#########"
+  ],
+  "npcSeats": ["staffTable", "sofa"],
+  "forbidden": true,
+  "spots": { "teacher": [9, 2] },
+  "patrol": [[2, 2], [17, 2], [17, 6], [2, 6]],
+  "secrets": [ { "at": [3, 1], "id": "testAnswers" }, { "at": [11, 3], "id": "teacherGist" } ]
+}

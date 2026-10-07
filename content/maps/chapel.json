@@ -1,0 +1,22 @@
+{
+  "id": "chapel", "name": "Chapel", "emoji": "⛪", "exit": "chapel",
+  "floor": "wood", "palette": { "wall": "#3949ab", "top": "#5c6bc0" },
+  "layout": [
+    "##################",
+    "#.....aaaaaa.....#",
+    "#................#",
+    "#.pppppp..pppppp.#",
+    "#................#",
+    "#.pppppp..pppppp.#",
+    "#................#",
+    "#.pppppp..pppppp.#",
+    "#................#",
+    "#%..............g#",
+    "#................#",
+    "########EE########"
+  ],
+  "npcSeats": ["pew"],
+  "spots": { "chaplain": [8, 2] },
+  "quiet": true,
+  "secrets": [ { "at": [6, 1], "id": "oldHymnal" } ]
+}

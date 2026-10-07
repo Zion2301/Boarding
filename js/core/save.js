@@ -1,0 +1,106 @@
+/* Save / load with multiple slots in localStorage.
+   Each slot: bh_slot_<n> = full JSON state. bh_meta = { lastSlot }. */
+(function (BH) {
+  const KEY = (n) => 'bh_slot_' + n;
+  const META = 'bh_meta';
+
+  const safeGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const safeSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } };
+  const safeDel = (k) => { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } };
+
+  /* Bump SAVE_VERSION and add a step here whenever the state shape changes */
+  const MIGRATIONS = {
+    // v1 → v2: departments, exams, juniors, seniority, phone/family, report cards
+    1: (s) => {
+      s.academics.dept = s.academics.dept || null;
+      s.academics.timetable = s.academics.timetable || null;
+      Object.values(s.academics.subjects).forEach((x) => { x.exam = x.exam || []; });
+      s.npcs.juniors = s.npcs.juniors || [];
+      s.npcs.classmates.forEach((c) => { if (c.ability === undefined) c.ability = BH.NPC.baseAbility(c.arch, c.persona); });
+      s.senior = s.senior || { style: 0, prefect: null, appointed: false, stripped: false, schoolChild: null };
+      s.reports = s.reports || [];
+      s.certificates = s.certificates || {};
+      BH.Phone.ensure(s);
+      return s;
+    },
+    // v3 → v4: real-time clock on the map
+    3: (s) => {
+      if (s.today && !s.today.done) s.today.done = {};
+      s.clock = undefined; // set by Clock.onLoad from the current block
+      return s;
+    },
+    // v4 → v5: free-roam sandbox — world state, interiors, NPC schedules, data-driven missions, reputation, rumours, paths
+    4: (s) => {
+      s.world = { map: 'campus', calls: [], overrides: {} };
+      s.act = null;
+      s.missions = []; s.arcs = {}; s.unlocked = {};
+      if (s.today) { s.today.att = {}; s.today.done = undefined; }
+      if (s.pos) s.pos = null;
+      Object.values(s.academics.subjects).forEach((x) => { x.tests = x.tests || {}; x.late = x.late || 0; x.assignments = x.assignments || 0; });
+      return s; // the remaining slices are filled in by each system's onLoad
+    },
+    // v2 → v3: 3D avatar
+    2: (s) => {
+      s.player.avatar = s.player.avatar || BH.data.defaultAvatar(s.player.gender, s.player.religion);
+      return s;
+    },
+  };
+
+  BH.Save = {
+    save(s) {
+      s.updatedAt = Date.now();
+      const ok = safeSet(KEY(s.slot), JSON.stringify(s));
+      safeSet(META, JSON.stringify({ lastSlot: s.slot }));
+      return ok;
+    },
+
+    load(slot) {
+      const raw = safeGet(KEY(slot));
+      if (!raw) return null;
+      try {
+        let s = JSON.parse(raw);
+        while (s.version < BH.data.CONFIG.SAVE_VERSION) {
+          const m = MIGRATIONS[s.version];
+          if (m) s = m(s);
+          s.version++;
+        }
+        s.slot = slot;
+        return s;
+      } catch (e) {
+        console.error('Corrupt save in slot', slot, e);
+        return null;
+      }
+    },
+
+    remove(slot) { safeDel(KEY(slot)); },
+
+    meta(slot) {
+      const raw = safeGet(KEY(slot));
+      if (!raw) return null;
+      try {
+        const s = JSON.parse(raw);
+        return {
+          slot,
+          name: s.player.name,
+          level: BH.data.LEVELS[s.time.year - 1],
+          term: s.time.term,
+          week: s.time.week,
+          day: BH.data.DAYS[s.time.dow],
+          school: BH.data.SCHOOLS[s.player.school].short,
+          gameOver: !!s.gameOver,
+          updatedAt: s.updatedAt,
+        };
+      } catch (e) { return { slot, corrupt: true }; }
+    },
+
+    allMeta() {
+      const out = [];
+      for (let i = 1; i <= BH.data.CONFIG.SLOTS; i++) out.push(this.meta(i) || { slot: i, empty: true });
+      return out;
+    },
+
+    lastSlot() {
+      try { return JSON.parse(safeGet(META) || '{}').lastSlot || null; } catch (e) { return null; }
+    },
+  };
+})(window.BH);

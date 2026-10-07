@@ -1,0 +1,23 @@
+{
+  "id": "dining", "name": "Dining Hall", "emoji": "🍛", "exit": "dining",
+  "floor": "tile", "palette": { "wall": "#5d4037", "top": "#7d5a4d" },
+  "layout": [
+    "########################",
+    "#w..........#..PPPPP..!#",
+    "#VVVVVVVVVVV#..........#",
+    "#......................#",
+    "#.bbbbbbb...bbbbbbb....#",
+    "#......................#",
+    "#.bbbbbbb...bbbbbbb....#",
+    "#......................#",
+    "#.bbbbbbb...bbbbbbb....#",
+    "#......................#",
+    "#.bbbbbbb...bbbbbbb..g.#",
+    "#......................#",
+    "##########EE############"
+  ],
+  "npcSeats": ["diningTable"],
+  "houseTables": true,
+  "spots": { "cook": [6, 1], "prefect": [17, 2] },
+  "secrets": [ { "at": [16, 1], "id": "meatTicket" } ]
+}

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0f5c3f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Boarding House — a Nigerian boarding school life game. JSS1 to SS3.">
+  <title>Boarding House</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="vendor/fonts/fonts.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="app"><noscript>Boarding House needs JavaScript to run.</noscript></div>
+
+  <!-- engines (bundled locally so the game works offline) -->
+  <script src="vendor/phaser.min.js"></script>
+  <script src="vendor/three.min.js"></script>
+
+  <!-- core -->
+  <script src="js/core/util.js"></script>
+  <script src="shared/moderation.js"></script>
+  <!-- content: JSON from content/ (bundled copy for file:// + offline; live JSON is fetched over http) -->
+  <script src="js/content/bundle.js"></script>
+  <script src="js/core/content.js"></script>
+  <!-- data -->
+  <script src="js/data/config.js"></script>
+  <script src="js/data/timetable.js"></script>
+  <script src="js/data/names.js"></script>
+  <script src="js/data/questions/english.js"></script>
+  <script src="js/data/questions/maths.js"></script>
+  <script src="js/data/questions/basic_science.js"></script>
+  <script src="js/data/questions/ss_departments.js"></script>
+  <script src="js/data/phone.js"></script>
+  <script src="js/data/avatar.js"></script>
+  <script src="js/data/campus.js"></script>
+  <!-- state & save -->
+  <script src="js/core/state.js"></script>
+  <script src="js/core/save.js"></script>
+  <!-- game systems (registration order = hook order) -->
+  <script src="js/systems/events.js"></script>
+  <script src="js/systems/stats.js"></script>
+  <script src="js/systems/discipline.js"></script>
+  <script src="js/systems/inventory.js"></script>
+  <script src="js/systems/npcs.js"></script>
+  <script src="js/systems/schedule.js"></script>
+  <script src="js/systems/academics.js"></script>
+  <script src="js/systems/consequences.js"></script>
+  <script src="js/systems/gist.js"></script>
+  <script src="js/systems/missions.js"></script>
+  <script src="js/systems/seniority.js"></script>
+  <script src="js/systems/phone.js"></script>
+  <script src="js/systems/reports.js"></script>
+  <script src="js/systems/paths.js"></script>
+  <script src="js/systems/rules.js"></script>
+  <script src="js/systems/world.js"></script>
+  <script src="js/systems/activities.js"></script>
+  <script src="js/systems/time.js"></script>
+  <script src="js/systems/clock.js"></script>
+  <script src="js/systems/interaction.js"></script>
+  <script src="js/systems/actions.js"></script>
+  <script src="js/systems/ai.js"></script>
+  <script src="js/systems/excuse.js"></script>
+  <script src="js/systems/writing.js"></script>
+  <script src="js/core/game.js"></script>
+  <!-- presentation: UI core, overlays, world scenes, HUD -->
+  <script src="js/ui/sound.js"></script>
+  <script src="js/ui/ui.js"></script>
+  <script src="js/ui/panels.js"></script>
+  <script src="js/ui/three/avatar3d.js"></script>
+  <script src="js/game/sprites.js"></script>
+  <script src="js/game/maprender.js"></script>
+  <script src="js/game/scene.js"></script>
+  <script src="js/game/scenemanager.js"></script>
+  <script src="js/ui/hud.js"></script>
+  <script src="js/ui/radial.js"></script>
+  <script src="js/ui/dialogue.js"></script>
+  <script src="js/ui/chat.js"></script>
+  <!-- overlay panel contents & menu screens -->
+  <script src="js/ui/screens/avatar_ui.js"></script>
+  <script src="js/ui/screens/title.js"></script>
+  <script src="js/ui/screens/create.js"></script>
+  <script src="js/ui/screens/quiz.js"></script>
+  <script src="js/ui/screens/shop.js"></script>
+  <script src="js/ui/screens/bag.js"></script>
+  <script src="js/ui/screens/people.js"></script>
+  <script src="js/ui/screens/me.js"></script>
+  <script src="js/ui/screens/phone.js"></script>
+  <script src="js/ui/screens/writing.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

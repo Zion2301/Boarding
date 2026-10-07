@@ -1,0 +1,1408 @@
+{
+ "_doc": "Every interactable kind and its actions. Action: { id, label, emoji, do: handler name in js/systems/actions.js, args: {...}, when: condition string or array of them (all must pass; '!' negates), mins: in-game minutes it takes, crime: rule id that is 'live' while you do it (anyone who sees you catches you), prio: lower = shown first }. The first two available actions show on the E-prompt; the rest go in the radial menu (hold E / long-press / ⋯). Conditions: block:<kind> blockId:<id> has:<item> money:<n> junior senior prefect:<post> night day open owner notOwner staff:<role> nostaff:<role> dow:<0-6> daytype:<type> mission:<step tag> once:<key> myClass sleeping hiding phoneHidden phoneOut.",
+ "myBed": {
+  "name": "Your bed",
+  "emoji": "🛏️",
+  "actions": [
+   {
+    "id": "sleep",
+    "label": "Sleep",
+    "emoji": "😴",
+    "do": "sleep",
+    "args": {
+     "where": "bed"
+    },
+    "prio": 1
+   },
+   {
+    "id": "nap",
+    "label": "Nap 1 hour",
+    "emoji": "💤",
+    "do": "nap",
+    "args": {
+     "mins": 60,
+     "rest": 22,
+     "where": "bed"
+    },
+    "when": "!night",
+    "prio": 2
+   },
+   {
+    "id": "hideUnder",
+    "label": "Hide under bunk",
+    "emoji": "🫥",
+    "do": "hide",
+    "prio": 6
+   },
+   {
+    "id": "stash",
+    "label": "Hide phone in mattress",
+    "emoji": "📱",
+    "do": "stash",
+    "when": [
+     "phone",
+     "!phoneHidden"
+    ],
+    "prio": 4
+   },
+   {
+    "id": "unstash",
+    "label": "Take phone from mattress",
+    "emoji": "📱",
+    "do": "unstash",
+    "when": "phoneHidden",
+    "prio": 4
+   },
+   {
+    "id": "letter",
+    "label": "Write letter home",
+    "emoji": "✉️",
+    "do": "writeLetter",
+    "mins": 20,
+    "prio": 5
+   }
+  ]
+ },
+ "bunk": {
+  "name": "Bunk",
+  "emoji": "🛏️",
+  "actions": [
+   {
+    "id": "hideUnder",
+    "label": "Hide under bunk",
+    "emoji": "🫥",
+    "do": "hide",
+    "prio": 3
+   },
+   {
+    "id": "lie",
+    "label": "Lie down (not your bed)",
+    "emoji": "😴",
+    "do": "nap",
+    "args": {
+     "mins": 45,
+     "rest": 12,
+     "where": "bunk"
+    },
+    "prio": 5
+   },
+   {
+    "id": "search",
+    "label": "Search under mattress 👀",
+    "emoji": "🔍",
+    "do": "search",
+    "crime": "stealing",
+    "prio": 6
+   }
+  ]
+ },
+ "locker": {
+  "name": "Locker",
+  "emoji": "🗄️",
+  "actions": [
+   {
+    "id": "check",
+    "label": "Check your locker",
+    "emoji": "🗄️",
+    "do": "openBag",
+    "when": "owner",
+    "prio": 1
+   },
+   {
+    "id": "lock",
+    "label": "Padlock it",
+    "emoji": "🔒",
+    "do": "lockLocker",
+    "when": [
+     "owner",
+     "has:padlock"
+    ],
+    "prio": 2
+   },
+   {
+    "id": "steal",
+    "label": "Steal 👀",
+    "emoji": "🫳",
+    "do": "stealFrom",
+    "when": "notOwner",
+    "crime": "stealing",
+    "prio": 4
+   }
+  ]
+ },
+ "chopBox": {
+  "name": "Chop box",
+  "emoji": "📦",
+  "actions": [
+   {
+    "id": "open",
+    "label": "Open chop box",
+    "emoji": "📦",
+    "do": "openBag",
+    "when": "owner",
+    "prio": 1
+   },
+   {
+    "id": "cook",
+    "label": "Cook / combine",
+    "emoji": "🥣",
+    "do": "openBag",
+    "args": {
+     "tab": "cook"
+    },
+    "when": "owner",
+    "prio": 2
+   },
+   {
+    "id": "steal",
+    "label": "Steal 👀",
+    "emoji": "🫳",
+    "do": "stealFrom",
+    "when": "notOwner",
+    "crime": "stealing",
+    "prio": 4
+   }
+  ]
+ },
+ "shower": {
+  "name": "Bathroom",
+  "emoji": "🚿",
+  "actions": [
+   {
+    "id": "bathe",
+    "label": "Bathe",
+    "emoji": "🚿",
+    "do": "bathe",
+    "prio": 1
+   },
+   {
+    "id": "hide",
+    "label": "Hide in the stall",
+    "emoji": "🫥",
+    "do": "hide",
+    "prio": 5
+   },
+   {
+    "id": "bucketBath",
+    "label": "Bucket bath (no queue)",
+    "emoji": "🪣",
+    "do": "bathe",
+    "args": {
+     "bucket": true
+    },
+    "when": "has:water",
+    "prio": 0
+   }
+  ]
+ },
+ "toilet": {
+  "name": "Toilet",
+  "emoji": "🚽",
+  "actions": [
+   {
+    "id": "clean",
+    "label": "Clean the toilet",
+    "emoji": "🧽",
+    "do": "choreAction",
+    "args": {
+     "tag": "cleanToilet",
+     "stats": {
+      "hygiene": -6,
+      "rest": -5
+     },
+     "text": "You scrub the toilet with broom and Hypo till e shine. Your nose go need therapy. 🧽"
+    },
+    "when": "mission:cleanToilet",
+    "mins": 20,
+    "prio": 0
+   },
+   {
+    "id": "hide",
+    "label": "Hide in toilet",
+    "emoji": "🫥",
+    "do": "hide",
+    "prio": 1
+   },
+   {
+    "id": "use",
+    "label": "Use toilet",
+    "emoji": "🚽",
+    "do": "stat",
+    "args": {
+     "stats": {
+      "morale": 1
+     },
+     "mins": 5,
+     "text": [
+      "You do your business. The smell go follow you for 10 minutes. 🚽",
+      "No water to flush. You leave am for the next person. 😬"
+     ]
+    },
+    "prio": 2
+   }
+  ]
+ },
+ "houseMasterDesk": {
+  "name": "House master's desk",
+  "emoji": "🗃️",
+  "actions": [
+   {
+    "id": "recover",
+    "label": "Take back your phone 👀",
+    "emoji": "📱",
+    "do": "recoverPhone",
+    "when": "phoneSeized",
+    "crime": "outOfBounds",
+    "prio": 1
+   },
+   {
+    "id": "peek",
+    "label": "Peek at the confiscation box 👀",
+    "emoji": "📦",
+    "do": "search",
+    "crime": "outOfBounds",
+    "prio": 2
+   }
+  ]
+ },
+ "waterDrum": {
+  "name": "Water drum",
+  "emoji": "🛢️",
+  "actions": [
+   {
+    "id": "fill",
+    "label": "Pour water into drum",
+    "emoji": "🛢️",
+    "do": "choreAction",
+    "args": {
+     "tag": "fillDrum",
+     "use": "water",
+     "stats": {
+      "rest": -4
+     },
+     "text": "You pour the bucket inside the drum. House master go see say the drum full. 🛢️"
+    },
+    "when": [
+     "mission:fillDrum",
+     "has:water"
+    ],
+    "mins": 5,
+    "prio": 0
+   },
+   {
+    "id": "fetch",
+    "label": "Fetch water",
+    "emoji": "🪣",
+    "do": "fetchWater",
+    "when": "has:bucket",
+    "prio": 1
+   },
+   {
+    "id": "drink",
+    "label": "Drink from drum",
+    "emoji": "💧",
+    "do": "drinkTap",
+    "prio": 2
+   }
+  ]
+ },
+ "broom": {
+  "name": "Broom corner",
+  "emoji": "🧹",
+  "actions": [
+   {
+    "id": "sweep",
+    "label": "Sweep the corridor",
+    "emoji": "🧹",
+    "do": "sweep",
+    "mins": 20,
+    "prio": 1
+   }
+  ]
+ },
+ "mirror": {
+  "name": "Mirror",
+  "emoji": "🪞",
+  "actions": [
+   {
+    "id": "look",
+    "label": "Check yourself",
+    "emoji": "🪞",
+    "do": "mirror",
+    "prio": 1
+   },
+   {
+    "id": "groom",
+    "label": "Rub cream",
+    "emoji": "🧴",
+    "do": "useItem",
+    "args": {
+     "item": "cream"
+    },
+    "when": "has:cream",
+    "prio": 2
+   }
+  ]
+ },
+ "noticeBoard": {
+  "name": "Notice board",
+  "emoji": "📌",
+  "actions": [
+   {
+    "id": "read",
+    "label": "Read notices",
+    "emoji": "📌",
+    "do": "notices",
+    "prio": 1
+   },
+   {
+    "id": "players",
+    "label": "School noticeboard (players)",
+    "emoji": "📌",
+    "do": "boardPlayers",
+    "prio": 2
+   }
+  ]
+ },
+ "myDesk": {
+  "name": "Your desk",
+  "emoji": "🪑",
+  "actions": [
+   {
+    "id": "sit",
+    "label": "Sit (attend)",
+    "emoji": "🪑",
+    "do": "sit",
+    "prio": 1
+   },
+   {
+    "id": "assignment",
+    "label": "Do assignment",
+    "emoji": "✍️",
+    "do": "doAssignment",
+    "when": "mission:assignment",
+    "mins": 30,
+    "prio": 2
+   },
+   {
+    "id": "study",
+    "label": "Study 30 min",
+    "emoji": "📖",
+    "do": "study",
+    "args": {
+     "mins": 30,
+     "amount": 5
+    },
+    "when": "!block:class",
+    "prio": 3
+   },
+   {
+    "id": "nap",
+    "label": "Sleep on desk",
+    "emoji": "😴",
+    "do": "nap",
+    "args": {
+     "mins": 30,
+     "rest": 9,
+     "where": "desk"
+    },
+    "crime": "sleepingInClass",
+    "prio": 6
+   }
+  ]
+ },
+ "desk": {
+  "name": "Desk",
+  "emoji": "🪑",
+  "actions": [
+   {
+    "id": "sit",
+    "label": "Sit",
+    "emoji": "🪑",
+    "do": "sit",
+    "prio": 1
+   },
+   {
+    "id": "assignment",
+    "label": "Do assignment",
+    "emoji": "✍️",
+    "do": "doAssignment",
+    "when": "mission:assignment",
+    "mins": 30,
+    "prio": 2
+   },
+   {
+    "id": "study",
+    "label": "Study 30 min",
+    "emoji": "📖",
+    "do": "study",
+    "args": {
+     "mins": 30,
+     "amount": 5
+    },
+    "when": "!block:class",
+    "prio": 3
+   },
+   {
+    "id": "search",
+    "label": "Look inside desk",
+    "emoji": "🔍",
+    "do": "search",
+    "prio": 5
+   }
+  ]
+ },
+ "blackboard": {
+  "name": "Blackboard",
+  "emoji": "🧑‍🏫",
+  "actions": [
+   {
+    "id": "read",
+    "label": "Copy the notes",
+    "emoji": "📝",
+    "do": "readBoard",
+    "mins": 10,
+    "prio": 1
+   },
+   {
+    "id": "prank",
+    "label": "Write gist on the board 😈",
+    "emoji": "✏️",
+    "do": "prankBoard",
+    "crime": "vandalism",
+    "prio": 4
+   }
+  ]
+ },
+ "teacherTable": {
+  "name": "Teacher's table",
+  "emoji": "📒",
+  "actions": [
+   {
+    "id": "peek",
+    "label": "Peek at the mark book 👀",
+    "emoji": "👀",
+    "do": "peekMarkbook",
+    "crime": "snooping",
+    "prio": 1
+   },
+   {
+    "id": "chalk",
+    "label": "Pocket the chalk 👀",
+    "emoji": "🖍️",
+    "do": "steal",
+    "args": {
+     "item": "chalk",
+     "n": 1
+    },
+    "crime": "stealing",
+    "prio": 4
+   }
+  ]
+ },
+ "servingCounter": {
+  "name": "Serving counter",
+  "emoji": "🍲",
+  "actions": [
+   {
+    "id": "collect",
+    "label": "Collect food",
+    "emoji": "🍛",
+    "do": "collectFood",
+    "when": "block:meal",
+    "prio": 1
+   },
+   {
+    "id": "beg",
+    "label": "Beg the cook for bread",
+    "emoji": "🙏",
+    "do": "begFood",
+    "prio": 2
+   },
+   {
+    "id": "steal",
+    "label": "Steal bread 👀",
+    "emoji": "🍞",
+    "do": "steal",
+    "args": {
+     "item": "bread",
+     "n": 2,
+     "text": "You slide two slices into your pocket like magician. 🍞"
+    },
+    "crime": "stealing",
+    "prio": 3
+   },
+   {
+    "id": "flask",
+    "label": "Fill flask with hot water",
+    "emoji": "🫖",
+    "do": "say",
+    "args": {
+     "text": [
+      "Cook fill your flask from the big pot. Hot Milo dey come tonight. 🫖"
+     ],
+     "flag": "hotWater"
+    },
+    "when": "has:flask",
+    "prio": 5
+   }
+  ]
+ },
+ "diningTable": {
+  "name": "Dining table",
+  "emoji": "🍽️",
+  "actions": [
+   {
+    "id": "eat",
+    "label": "Sit & eat",
+    "emoji": "🍽️",
+    "do": "eatPlate",
+    "when": "flag:plate",
+    "prio": 1
+   },
+   {
+    "id": "provisions",
+    "label": "Eat provisions",
+    "emoji": "🥫",
+    "do": "openBag",
+    "prio": 3
+   },
+   {
+    "id": "sit",
+    "label": "Sit down",
+    "emoji": "🪑",
+    "do": "say",
+    "args": {
+     "text": [
+      "You sit down. The bench shake like say e wan break. 🪑"
+     ]
+    },
+    "prio": 4
+   }
+  ]
+ },
+ "prefectTable": {
+  "name": "Prefects' table",
+  "emoji": "🎖️",
+  "actions": [
+   {
+    "id": "portion",
+    "label": "Take the prefect's portion",
+    "emoji": "🍗",
+    "do": "prefectPortion",
+    "when": [
+     "prefect:dining",
+     "block:meal"
+    ],
+    "prio": 1
+   },
+   {
+    "id": "steal",
+    "label": "Steal the meat 👀",
+    "emoji": "🍗",
+    "do": "steal",
+    "args": {
+     "item": "meat",
+     "n": 1,
+     "text": "You lift one meat from the prefects' tray. E dey shine like gold. 🍗"
+    },
+    "crime": "stealing",
+    "prio": 3
+   }
+  ]
+ },
+ "shopCounter": {
+  "name": "Tuck shop counter",
+  "emoji": "🛒",
+  "actions": [
+   {
+    "id": "buy",
+    "label": "Buy",
+    "emoji": "🛒",
+    "do": "shop",
+    "prio": 1
+   },
+   {
+    "id": "sell",
+    "label": "Hustle (sell)",
+    "emoji": "💰",
+    "do": "hustle",
+    "prio": 2
+   },
+   {
+    "id": "credit",
+    "label": "Ask for credit",
+    "emoji": "🙏",
+    "do": "askCredit",
+    "prio": 4
+   }
+  ]
+ },
+ "shelf": {
+  "name": "Shelf",
+  "emoji": "📚",
+  "actions": [
+   {
+    "id": "read",
+    "label": "Read 30 min",
+    "emoji": "📖",
+    "do": "study",
+    "args": {
+     "mins": 30,
+     "amount": 6
+    },
+    "when": "map:library",
+    "prio": 1
+   },
+   {
+    "id": "search",
+    "label": "Search the shelves",
+    "emoji": "🔍",
+    "do": "search",
+    "prio": 2
+   },
+   {
+    "id": "steal",
+    "label": "Steal from shelf 👀",
+    "emoji": "🫳",
+    "do": "stealShop",
+    "when": "map:tuckshop",
+    "crime": "stealing",
+    "prio": 1
+   }
+  ]
+ },
+ "librarianDesk": {
+  "name": "Librarian's desk",
+  "emoji": "📇",
+  "actions": [
+   {
+    "id": "borrow",
+    "label": "Borrow a novel",
+    "emoji": "📗",
+    "do": "borrowNovel",
+    "prio": 1
+   },
+   {
+    "id": "debate",
+    "label": "Debate Society",
+    "emoji": "🎤",
+    "do": "debate",
+    "when": [
+     "!block:class",
+     "!night"
+    ],
+    "prio": 2
+   }
+  ]
+ },
+ "labBench": {
+  "name": "Lab bench",
+  "emoji": "🧪",
+  "actions": [
+   {
+    "id": "sit",
+    "label": "Sit",
+    "emoji": "🪑",
+    "do": "sit",
+    "prio": 1
+   },
+   {
+    "id": "experiment",
+    "label": "Practise an experiment",
+    "emoji": "🧪",
+    "do": "study",
+    "args": {
+     "mins": 30,
+     "amount": 6,
+     "science": true
+    },
+    "when": "!block:class",
+    "prio": 2
+   }
+  ]
+ },
+ "chemCabinet": {
+  "name": "Chemical cabinet",
+  "emoji": "⚗️",
+  "actions": [
+   {
+    "id": "search",
+    "label": "Rummage 👀",
+    "emoji": "🔍",
+    "do": "search",
+    "crime": "snooping",
+    "prio": 1
+   }
+  ]
+ },
+ "sickBed": {
+  "name": "Sick bay bed",
+  "emoji": "🛏️",
+  "actions": [
+   {
+    "id": "rest",
+    "label": "Lie down",
+    "emoji": "😴",
+    "do": "nap",
+    "args": {
+     "mins": 60,
+     "rest": 25,
+     "health": 6,
+     "where": "sickBed"
+    },
+    "prio": 1
+   }
+  ]
+ },
+ "medCabinet": {
+  "name": "Panadol cabinet",
+  "emoji": "💊",
+  "actions": [
+   {
+    "id": "steal",
+    "label": "Take Panadol 👀",
+    "emoji": "💊",
+    "do": "steal",
+    "args": {
+     "item": "panadol",
+     "n": 2,
+     "text": "Two Panadol strips enter your pocket. For emergency. 💊"
+    },
+    "crime": "stealing",
+    "prio": 1
+   },
+   {
+    "id": "search",
+    "label": "Search the cabinet 👀",
+    "emoji": "🔍",
+    "do": "search",
+    "crime": "snooping",
+    "prio": 3
+   }
+  ]
+ },
+ "nurseDesk": {
+  "name": "Nurse's desk",
+  "emoji": "🩺",
+  "actions": [
+   {
+    "id": "sign",
+    "label": "Sign the sick register",
+    "emoji": "📝",
+    "do": "say",
+    "args": {
+     "text": [
+      "You write your name for the sick register. Talk to Matron make she attend to you."
+     ]
+    },
+    "prio": 1
+   }
+  ]
+ },
+ "pew": {
+  "name": "Pew",
+  "emoji": "⛪",
+  "actions": [
+   {
+    "id": "worship",
+    "label": "Worship",
+    "emoji": "🙏",
+    "do": "worship",
+    "prio": 1
+   },
+   {
+    "id": "pray",
+    "label": "Pray small",
+    "emoji": "🙏",
+    "do": "stat",
+    "args": {
+     "stats": {
+      "morale": 4
+     },
+     "once": "pray",
+     "mins": 10,
+     "text": [
+      "You kneel and talk to God about Maths, seniors and your crush. 🙏"
+     ]
+    },
+    "when": "!block:worship",
+    "prio": 2
+   },
+   {
+    "id": "nap",
+    "label": "Sleep in the back row",
+    "emoji": "😴",
+    "do": "nap",
+    "args": {
+     "mins": 30,
+     "rest": 10,
+     "where": "pew"
+    },
+    "crime": "sleepingInClass",
+    "prio": 5
+   }
+  ]
+ },
+ "prayerMat": {
+  "name": "Prayer mat",
+  "emoji": "🕌",
+  "actions": [
+   {
+    "id": "worship",
+    "label": "Pray",
+    "emoji": "🤲",
+    "do": "worship",
+    "prio": 1
+   },
+   {
+    "id": "pray",
+    "label": "Quiet prayer",
+    "emoji": "🤲",
+    "do": "stat",
+    "args": {
+     "stats": {
+      "morale": 4
+     },
+     "once": "pray",
+     "mins": 10,
+     "text": [
+      "You perform ablution and pray quietly. Your heart settle. 🤲"
+     ]
+    },
+    "when": "!block:worship",
+    "prio": 2
+   }
+  ]
+ },
+ "altar": {
+  "name": "Altar",
+  "emoji": "✨",
+  "actions": [
+   {
+    "id": "lead",
+    "label": "Lead the worship",
+    "emoji": "🎙️",
+    "do": "prefectDuty",
+    "args": {
+     "duty": "worship"
+    },
+    "when": [
+     "prefect:chapel",
+     "block:worship"
+    ],
+    "prio": 1
+   },
+   {
+    "id": "look",
+    "label": "Look around",
+    "emoji": "👀",
+    "do": "say",
+    "args": {
+     "text": [
+      "Somebody carve 'JESUS IS LORD & SS2 IS WICKED' for the back of the pulpit. 😂"
+     ]
+    },
+    "prio": 3
+   }
+  ]
+ },
+ "offeringBox": {
+  "name": "Offering box",
+  "emoji": "🪙",
+  "actions": [
+   {
+    "id": "give",
+    "label": "Give ₦50",
+    "emoji": "🪙",
+    "do": "giveOffering",
+    "when": "money:50",
+    "prio": 1
+   },
+   {
+    "id": "steal",
+    "label": "Take from the box 👀",
+    "emoji": "🫳",
+    "do": "stealOffering",
+    "crime": "stealing",
+    "prio": 4
+   }
+  ]
+ },
+ "principalDesk": {
+  "name": "Principal's desk",
+  "emoji": "🏛️",
+  "actions": [
+   {
+    "id": "files",
+    "label": "Peek at the Principal's files 👀",
+    "emoji": "📁",
+    "do": "peekFiles",
+    "when": "nostaff:principal",
+    "crime": "snooping",
+    "prio": 1
+   }
+  ]
+ },
+ "officeDesk": {
+  "name": "Office desk",
+  "emoji": "🗂️",
+  "actions": [
+   {
+    "id": "search",
+    "label": "Search the drawers 👀",
+    "emoji": "🔍",
+    "do": "search",
+    "crime": "snooping",
+    "prio": 2
+   }
+  ]
+ },
+ "filingCabinet": {
+  "name": "Filing cabinet",
+  "emoji": "🗄️",
+  "actions": [
+   {
+    "id": "files",
+    "label": "Read your file 👀",
+    "emoji": "📁",
+    "do": "peekFiles",
+    "crime": "snooping",
+    "prio": 1
+   }
+  ]
+ },
+ "schoolPhone": {
+  "name": "School phone",
+  "emoji": "☎️",
+  "actions": [
+   {
+    "id": "call",
+    "label": "Call home (₦100)",
+    "emoji": "☎️",
+    "do": "callHome",
+    "when": "money:100",
+    "prio": 1
+   }
+  ]
+ },
+ "staffTable": {
+  "name": "Staff table",
+  "emoji": "🍱",
+  "actions": [
+   {
+    "id": "food",
+    "label": "Steal teacher's food 👀",
+    "emoji": "🍱",
+    "do": "steal",
+    "args": {
+     "item": "cookedFood",
+     "n": 1,
+     "text": "Somebody's jollof cooler dey open. You scoop one plate. 🍱"
+    },
+    "crime": "outOfBounds",
+    "prio": 1
+   },
+   {
+    "id": "search",
+    "label": "Look through the papers 👀",
+    "emoji": "🔍",
+    "do": "search",
+    "crime": "snooping",
+    "prio": 2
+   }
+  ]
+ },
+ "examCabinet": {
+  "name": "Exam cabinet",
+  "emoji": "🗄️",
+  "actions": [
+   {
+    "id": "steal",
+    "label": "Steal exam questions 👀",
+    "emoji": "📄",
+    "do": "stealExam",
+    "crime": "examTheft",
+    "prio": 1
+   }
+  ]
+ },
+ "staffFridge": {
+  "name": "Staff fridge",
+  "emoji": "🧊",
+  "actions": [
+   {
+    "id": "drink",
+    "label": "Drink cold water 👀",
+    "emoji": "🧊",
+    "do": "stat",
+    "args": {
+     "stats": {
+      "thirst": 35,
+      "morale": 5
+     },
+     "text": [
+      "Cold water from teacher fridge. E sweet pass heaven. 🧊"
+     ]
+    },
+    "crime": "outOfBounds",
+    "prio": 1
+   }
+  ]
+ },
+ "sofa": {
+  "name": "Sofa",
+  "emoji": "🛋️",
+  "actions": [
+   {
+    "id": "sit",
+    "label": "Sit on the teachers' sofa",
+    "emoji": "🛋️",
+    "do": "nap",
+    "args": {
+     "mins": 20,
+     "rest": 8,
+     "where": "sofa"
+    },
+    "crime": "outOfBounds",
+    "prio": 1
+   }
+  ]
+ },
+ "tap": {
+  "name": "Borehole & taps",
+  "emoji": "🚰",
+  "actions": [
+   {
+    "id": "washPlates",
+    "label": "Wash the senior's plates",
+    "emoji": "🍽️",
+    "do": "choreAction",
+    "args": {
+     "tag": "washPlates",
+     "stats": {
+      "rest": -4
+     },
+     "text": "You wash the plates till they squeak. Na your own plate never wash. 🍽️"
+    },
+    "when": "mission:washPlates",
+    "mins": 15,
+    "prio": 0
+   },
+   {
+    "id": "drink",
+    "label": "Drink water",
+    "emoji": "🚰",
+    "do": "drinkTap",
+    "prio": 1
+   },
+   {
+    "id": "fetch",
+    "label": "Fetch water",
+    "emoji": "🪣",
+    "do": "fetchWater",
+    "when": "has:bucket",
+    "prio": 2
+   },
+   {
+    "id": "wash",
+    "label": "Quick wash",
+    "emoji": "🧼",
+    "do": "quickWash",
+    "mins": 20,
+    "prio": 3
+   }
+  ]
+ },
+ "laundry": {
+  "name": "Laundry lines",
+  "emoji": "🧺",
+  "actions": [
+   {
+    "id": "wash",
+    "label": "Wash your clothes",
+    "emoji": "🧺",
+    "do": "laundry",
+    "mins": 30,
+    "prio": 1
+   },
+   {
+    "id": "steal",
+    "label": "Carry somebody's shirt 👀",
+    "emoji": "👕",
+    "do": "steal",
+    "args": {
+     "item": "shirt",
+     "n": 1,
+     "text": "You 'mistakenly' carry one clean shirt from the line. 👕"
+    },
+    "crime": "stealing",
+    "prio": 4
+   }
+  ]
+ },
+ "field": {
+  "name": "Sports field",
+  "emoji": "⚽",
+  "actions": [
+   {
+    "id": "compete",
+    "label": "Compete for your house!",
+    "emoji": "🏆",
+    "do": "compete",
+    "when": [
+     "mission:sportsDay",
+     "dow:5",
+     "!block:labour"
+    ],
+    "mins": 60,
+    "prio": 0
+   },
+   {
+    "id": "ball",
+    "label": "Play ball",
+    "emoji": "⚽",
+    "do": "playBall",
+    "mins": 30,
+    "prio": 1
+   },
+   {
+    "id": "train",
+    "label": "Train (athletics)",
+    "emoji": "🏃",
+    "do": "train",
+    "mins": 30,
+    "prio": 2
+   },
+   {
+    "id": "grass",
+    "label": "Clear grass",
+    "emoji": "🪓",
+    "do": "clearGrass",
+    "mins": 30,
+    "when": "block:labour",
+    "prio": 0
+   },
+   {
+    "id": "lead",
+    "label": "Train the house team",
+    "emoji": "🏅",
+    "do": "prefectDuty",
+    "args": {
+     "duty": "sports"
+    },
+    "when": "prefect:sports",
+    "prio": 0
+   },
+   {
+    "id": "supervise",
+    "label": "Supervise labour",
+    "emoji": "📋",
+    "do": "prefectDuty",
+    "args": {
+     "duty": "labour"
+    },
+    "when": [
+     "prefect:labour",
+     "block:labour"
+    ],
+    "prio": 0
+   }
+  ]
+ },
+ "podium": {
+  "name": "Assembly podium",
+  "emoji": "🎤",
+  "actions": [
+   {
+    "id": "line",
+    "label": "Stand in line",
+    "emoji": "🧍",
+    "do": "standLine",
+    "when": "block:assembly",
+    "prio": 1
+   },
+   {
+    "id": "lead",
+    "label": "Lead the assembly",
+    "emoji": "🎤",
+    "do": "prefectDuty",
+    "args": {
+     "duty": "assembly"
+    },
+    "when": [
+     "prefect:head",
+     "block:assembly"
+    ],
+    "prio": 0
+   },
+   {
+    "id": "salute",
+    "label": "Salute the flag",
+    "emoji": "🇳🇬",
+    "do": "say",
+    "args": {
+     "text": [
+      "Green, white, green. You salute like soldier. Nobody dey look, but e sweet you. 🇳🇬"
+     ]
+    },
+    "prio": 3
+   }
+  ]
+ },
+ "speaker": {
+  "name": "Big speaker",
+  "emoji": "🔊",
+  "actions": [
+   {
+    "id": "dance",
+    "label": "Dance",
+    "emoji": "🕺",
+    "do": "dance",
+    "mins": 20,
+    "when": "blockId:social",
+    "prio": 1
+   },
+   {
+    "id": "mc",
+    "label": "MC the night",
+    "emoji": "🎤",
+    "do": "prefectDuty",
+    "args": {
+     "duty": "social"
+    },
+    "when": [
+     "prefect:social",
+     "blockId:social"
+    ],
+    "prio": 0
+   }
+  ]
+ },
+ "backFence": {
+  "name": "Back fence 👀",
+  "emoji": "🧗",
+  "actions": [
+   {
+    "id": "jump",
+    "label": "Jump the fence — Mama Put (₦400)",
+    "emoji": "🧗",
+    "do": "jumpFence",
+    "when": "money:400",
+    "crime": "outOfBounds",
+    "prio": 1
+   },
+   {
+    "id": "look",
+    "label": "Peep outside",
+    "emoji": "👀",
+    "do": "say",
+    "args": {
+     "text": [
+      "Outside: Mama Put dey fry dodo. The smell dey call your name. 🍛"
+     ]
+    },
+    "prio": 2
+   }
+  ]
+ },
+ "mangoTree": {
+  "name": "Mango tree",
+  "emoji": "🥭",
+  "actions": [
+   {
+    "id": "gist",
+    "label": "Gist under the tree",
+    "emoji": "🗣️",
+    "do": "gistTree",
+    "mins": 15,
+    "prio": 1
+   },
+   {
+    "id": "pluck",
+    "label": "Pluck mango 👀",
+    "emoji": "🥭",
+    "do": "steal",
+    "args": {
+     "item": "mango",
+     "n": 2,
+     "text": "You climb and pluck two mangoes. Sweet, unripe, perfect. 🥭"
+    },
+    "crime": "vandalism",
+    "prio": 2
+   }
+  ]
+ },
+ "bush": {
+  "name": "Bush",
+  "emoji": "🌿",
+  "actions": [
+   {
+    "id": "hide",
+    "label": "Hide in the bush",
+    "emoji": "🌿",
+    "do": "hide",
+    "prio": 1
+   },
+   {
+    "id": "search",
+    "label": "Search the bush",
+    "emoji": "🔍",
+    "do": "search",
+    "prio": 2
+   }
+  ]
+ },
+ "behind": {
+  "name": "Behind the building",
+  "emoji": "🧱",
+  "actions": [
+   {
+    "id": "hide",
+    "label": "Hide behind the wall",
+    "emoji": "🫥",
+    "do": "hide",
+    "prio": 1
+   },
+   {
+    "id": "search",
+    "label": "Look around",
+    "emoji": "🔍",
+    "do": "search",
+    "prio": 2
+   }
+  ]
+ },
+ "gateBooth": {
+  "name": "Gate",
+  "emoji": "🚪",
+  "actions": [
+   {
+    "id": "try",
+    "label": "Try the gate",
+    "emoji": "🚪",
+    "do": "say",
+    "args": {
+     "text": [
+      "The gate locked with padlock big like your head. Freedom na for vacation.",
+      "Gateman: \"Where you dey go? Go back inside before I report you!\" 👮🏾"
+     ]
+    },
+    "prio": 1
+   }
+  ]
+ },
+ "secret": {
+  "name": "Something…",
+  "emoji": "✨",
+  "actions": [
+   {
+    "id": "search",
+    "label": "Check it out",
+    "emoji": "🔍",
+    "do": "search",
+    "prio": 1
+   }
+  ]
+ }
+}

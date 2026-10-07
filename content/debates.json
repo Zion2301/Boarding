@@ -1,0 +1,10 @@
+{
+  "_doc": "Debate Society motions. The NPC opponent argues the side the player doesn't pick. The AI judge scores both sides 0-30.",
+  "motions": [
+    { "id": "boarding_vs_day", "motion": "Boarding school is better than day school", "for": "Boarding school teaches independence, discipline and time management. Students read during prep without distractions, make friends from all over Nigeria and learn to manage their own provisions and money.", "against": "Day school keeps children close to their parents' guidance, home food is healthier, there is no senior bullying, and students can still be disciplined at home while using the evenings for lessons." },
+    { "id": "phones", "motion": "Students should be allowed to use phones in school", "for": "Phones give access to e-books and research, help students reach parents in emergencies, and teach responsible technology use which every modern job needs.", "against": "Phones distract students in class and prep, encourage exam malpractice and cyberbullying, and increase theft in the hostels." },
+    { "id": "uniforms", "motion": "School uniforms should be abolished", "for": "Uniforms are expensive for poor families, stop students expressing themselves, and do not improve results.", "against": "Uniforms create equality between rich and poor students, build school identity and pride, and make students easy to identify for safety." },
+    { "id": "science_vs_arts", "motion": "Science students contribute more to national development than arts students", "for": "Doctors, engineers and scientists build roads, cure diseases and power industries; Nigeria needs technology to develop.", "against": "Lawyers, writers, economists and leaders shape the policies, laws and culture that decide how science is used; development needs good governance first." },
+    { "id": "corporal", "motion": "Corporal punishment should be banned in schools", "for": "Flogging causes pain and fear, not learning; it can injure students and teaches that violence solves problems.", "against": "Firm punishment keeps order in large classes and hostels; without it, indiscipline and disrespect for teachers increase." }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "id": "girlsHostel", "name": "Girls' Hostel", "emoji": "🛏️", "exit": "girlsHostel",
+  "extends": "boysHostel",
+  "floor": "tile", "palette": { "wall": "#8e3b62", "top": "#b0577f" },
+  "gender": "f",
+  "labels": [ { "text": "House Mistress", "x": 2, "y": 3 }, { "text": "Bathroom", "x": 21, "y": 4 } ],
+  "secrets": [ { "at": [5, 8], "id": "hiddenMoney" }, { "at": [1, 1], "id": "confiscationBox" }, { "at": [15, 1], "id": "loveLetters" } ]
+}

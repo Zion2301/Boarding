@@ -1,0 +1,21 @@
+{
+  "_doc": "The help resources panel shown when a player may be in real distress. Edit freely (e.g. add verified local helplines for your players' countries). Last checked Oct 2026: 112 is Nigeria's official toll-free emergency number; findahelpline.com lists free youth lines for Nigeria.",
+  "title": "You're not alone",
+  "intro": "This is a game, but you are real, and how you feel matters. If something is hurting you, please don't keep it to yourself.",
+  "steps": [
+    "Talk to a trusted adult today: a parent, an aunt or uncle, a teacher, your school counsellor, a religious leader or a family friend.",
+    "If you are in danger right now, or someone is hurting you, call your local emergency number. In Nigeria that's 112.",
+    "If it's hard to say out loud, you can write it down and show it to someone you trust."
+  ],
+  "links": [
+    {
+      "label": "Free, confidential helplines for young people in Nigeria (e.g. Mentally Aware Nigeria Initiative, HDI Child Helpline)",
+      "url": "https://findahelpline.com/ng"
+    },
+    {
+      "label": "Helplines in other countries",
+      "url": "https://findahelpline.com"
+    }
+  ],
+  "footer": "You can come back to the game whenever you're ready. Take care of yourself first. 💛"
+}

@@ -1,0 +1,63 @@
+/* Basic Science — question bank. Same format as english.js */
+BH.Q.BSC = [
+  { lvl: 1, q: 'Which of these is NOT a characteristic of living things?', o: ['Growth', 'Respiration', 'Rusting', 'Reproduction'], a: 2, e: 'Rusting happens to iron, a non-living thing.' },
+  { lvl: 1, q: 'The basic unit of life is the ___.', o: ['atom', 'cell', 'tissue', 'organ'], a: 1, e: 'All living things are made of cells.' },
+  { lvl: 1, q: 'The green pigment in plants is called ___.', o: ['chlorophyll', 'haemoglobin', 'melanin', 'chloroform'], a: 0, e: 'Chlorophyll traps sunlight for photosynthesis.' },
+  { lvl: 1, q: 'The process by which green plants make their own food is ___.', o: ['respiration', 'excretion', 'photosynthesis', 'digestion'], a: 2, e: 'Photosynthesis uses sunlight, water and carbon dioxide to make food.' },
+  { lvl: 1, q: 'Which of these is a non-living thing?', o: ['Goat', 'Stone', 'Mango tree', 'Mushroom'], a: 1, e: 'A stone does not grow, feed, breathe or reproduce.' },
+  { lvl: 1, q: 'The three states of matter are ___.', o: ['solid, liquid, gas', 'hot, warm, cold', 'water, ice, fire', 'big, small, medium'], a: 0, e: 'Matter exists as solid, liquid or gas.' },
+  { lvl: 1, q: 'At sea level, pure water boils at ___.', o: ['0°C', '50°C', '100°C', '212°C'], a: 2, e: 'Pure water boils at 100°C at sea level (and freezes at 0°C).' },
+  { lvl: 1, q: 'Which of these animals is a mammal?', o: ['Lizard', 'Frog', 'Bat', 'Chicken'], a: 2, e: 'Bats are mammals — they give birth to live young and feed them milk.' },
+  { lvl: 1, q: 'The organ that pumps blood round the body is the ___.', o: ['lungs', 'heart', 'kidney', 'liver'], a: 1, e: 'The heart pumps blood through the blood vessels.' },
+  { lvl: 1, q: 'The SI unit of length is the ___.', o: ['kilogram', 'second', 'metre', 'litre'], a: 2, e: 'Length is measured in metres (m).' },
+  { lvl: 1, q: 'The main source of energy for the earth is the ___.', o: ['moon', 'sun', 'generator', 'wind'], a: 1, e: 'The sun gives light and heat energy to the earth.' },
+  { lvl: 1, q: 'Malaria is transmitted by the female ___ mosquito.', o: ['Aedes', 'Culex', 'Anopheles', 'Tsetse'], a: 2, e: 'The female Anopheles mosquito carries the malaria parasite.' },
+  { lvl: 1, q: 'During respiration, living things take in ___.', o: ['oxygen', 'carbon dioxide', 'nitrogen', 'smoke'], a: 0, e: 'We take in oxygen and give out carbon dioxide.' },
+  { lvl: 1, q: 'The change of state from solid to liquid is called ___.', o: ['freezing', 'melting', 'evaporation', 'condensation'], a: 1, e: 'Melting — like the ice block in your zobo.' },
+  { lvl: 1, q: 'Which of these helps to prevent cholera?', o: ['Sleeping under a net', 'Boiling drinking water', 'Eating more sugar', 'Running every morning'], a: 1, e: 'Cholera spreads through dirty water and food; boiling water kills the germs.' },
+  { lvl: 1, q: 'The instrument used to measure temperature is the ___.', o: ['barometer', 'thermometer', 'ruler', 'stopwatch'], a: 1, e: 'A thermometer measures how hot or cold something is.' },
+  { lvl: 1, q: 'The smallest particle of an element is the ___.', o: ['cell', 'atom', 'molecule', 'grain'], a: 1, e: 'An atom is the smallest particle of an element that can take part in a chemical reaction.' },
+  { lvl: 1, q: 'Animals that feed on plants only are called ___.', o: ['carnivores', 'omnivores', 'herbivores', 'scavengers'], a: 2, e: 'Herbivores (like goats and cows) eat only plants.' },
+  { lvl: 1, q: 'Which part of a plant absorbs water from the soil?', o: ['Leaf', 'Flower', 'Stem', 'Root'], a: 3, e: 'Roots absorb water and mineral salts from the soil.' },
+  { lvl: 1, q: 'The SI unit of mass is the ___.', o: ['newton', 'kilogram', 'metre', 'gram-force'], a: 1, e: 'Mass is measured in kilograms (kg). Weight is measured in newtons.' },
+  { lvl: 1, q: 'A magnet will attract a/an ___.', o: ['iron nail', 'wooden spoon', 'plastic cup', 'paper'], a: 0, e: 'Magnets attract magnetic materials like iron, steel, nickel and cobalt.' },
+  { lvl: 1, q: 'The process by which water changes into vapour is ___.', o: ['condensation', 'evaporation', 'freezing', 'melting'], a: 1, e: 'Evaporation is why your washed uniform dries on the line.' },
+];
+
+/* ---------- JSS2 ---------- */
+BH.Q.BSC.push(
+  { lvl: 2, q: 'The class of food that mainly gives energy is ___.', o: ['proteins', 'carbohydrates', 'vitamins', 'minerals'], a: 1, e: 'Carbohydrates (garri, rice, yam) are the main energy-giving foods.' },
+  { lvl: 2, q: 'Lack of vitamin C causes ___.', o: ['rickets', 'scurvy', 'kwashiorkor', 'goitre'], a: 1, e: 'Scurvy (bleeding gums) is caused by vitamin C deficiency.' },
+  { lvl: 2, q: 'Kwashiorkor is caused by lack of ___ in the diet.', o: ['carbohydrates', 'protein', 'fat', 'water'], a: 1, e: 'Kwashiorkor is a protein-deficiency disease.' },
+  { lvl: 2, q: 'The S.I. unit of force is the ___.', o: ['joule', 'newton', 'watt', 'pascal'], a: 1, e: 'Force is measured in newtons (N).' },
+  { lvl: 2, q: 'Which of these is a non-renewable source of energy?', o: ['Solar', 'Wind', 'Crude oil', 'Water'], a: 2, e: 'Crude oil takes millions of years to form and will run out.' },
+  { lvl: 2, q: 'The change of state from liquid to solid is called ___.', o: ['melting', 'freezing', 'boiling', 'sublimation'], a: 1, e: 'Freezing turns a liquid into a solid.' },
+  { lvl: 2, q: 'Which of these is a mixture?', o: ['Water', 'Salt', 'Air', 'Oxygen'], a: 2, e: 'Air is a mixture of nitrogen, oxygen, carbon dioxide and other gases.' },
+  { lvl: 2, q: 'Sand can be separated from water by ___.', o: ['evaporation', 'filtration', 'distillation', 'magnetism'], a: 1, e: 'Filtration traps the insoluble sand on the filter paper.' },
+  { lvl: 2, q: 'The organ of breathing in humans is the ___.', o: ['heart', 'lungs', 'kidney', 'stomach'], a: 1, e: 'Gaseous exchange takes place in the lungs.' },
+  { lvl: 2, q: 'Which of these is a sexually transmitted infection?', o: ['Malaria', 'Gonorrhoea', 'Typhoid', 'Cholera'], a: 1, e: 'Gonorrhoea is spread through sexual contact.' },
+  { lvl: 2, q: 'The movement of an organism from place to place is called ___.', o: ['locomotion', 'growth', 'excretion', 'irritability'], a: 0, e: 'Locomotion is movement of the whole organism.' },
+  { lvl: 2, q: 'Which instrument measures atmospheric pressure?', o: ['Thermometer', 'Barometer', 'Hydrometer', 'Ammeter'], a: 1, e: 'A barometer measures air pressure.' },
+  { lvl: 2, q: 'A conductor allows ___ to pass through it easily.', o: ['light only', 'electricity', 'sound only', 'air'], a: 1, e: 'Electrical conductors (like copper) allow current to flow.' },
+  { lvl: 2, q: 'The removal of metabolic waste from the body is called ___.', o: ['excretion', 'egestion', 'respiration', 'digestion'], a: 0, e: 'Excretion removes waste made by body cells (e.g. urea, CO₂).' },
+  { lvl: 2, q: 'In girls, puberty is marked by the start of ___.', o: ['menstruation', 'voice breaking', 'beard growth', 'baldness'], a: 0, e: 'Menstruation begins at puberty in girls.' },
+);
+
+/* ---------- JSS3 ---------- */
+BH.Q.BSC.push(
+  { lvl: 3, q: 'The chemical symbol of sodium is ___.', o: ['S', 'So', 'Na', 'Sd'], a: 2, e: 'Na comes from the Latin "natrium".' },
+  { lvl: 3, q: 'Atoms are made up of protons, neutrons and ___.', o: ['ions', 'electrons', 'molecules', 'cells'], a: 1, e: 'Electrons orbit the nucleus, which contains protons and neutrons.' },
+  { lvl: 3, q: 'The charge on a proton is ___.', o: ['positive', 'negative', 'neutral', 'variable'], a: 0, e: 'Protons are positive, electrons negative, neutrons neutral.' },
+  { lvl: 3, q: 'Which gas is needed for burning?', o: ['Nitrogen', 'Oxygen', 'Carbon dioxide', 'Helium'], a: 1, e: 'Oxygen supports combustion.' },
+  { lvl: 3, q: 'Work is done when a force moves an object through a ___.', o: ['distance', 'mass', 'time', 'volume'], a: 0, e: 'Work = force × distance moved in the direction of the force.' },
+  { lvl: 3, q: 'Speed = distance ÷ ___', o: ['mass', 'time', 'force', 'area'], a: 1, e: 'Speed is distance travelled per unit time.' },
+  { lvl: 3, q: 'The part of the eye that controls how much light enters is the ___.', o: ['retina', 'iris', 'lens', 'cornea'], a: 1, e: 'The iris changes the size of the pupil.' },
+  { lvl: 3, q: 'Which of these can be prevented by immunisation?', o: ['Measles', 'Malaria', 'Diabetes', 'Ulcer'], a: 0, e: 'The measles vaccine prevents measles.' },
+  { lvl: 3, q: 'The skeleton protects and supports the body, and helps in ___.', o: ['digestion', 'movement', 'respiration', 'excretion'], a: 1, e: 'Bones work with muscles to bring about movement.' },
+  { lvl: 3, q: 'Iron filings can be separated from sulphur using a ___.', o: ['magnet', 'sieve', 'filter paper', 'funnel'], a: 0, e: 'Iron is magnetic; sulphur is not.' },
+  { lvl: 3, q: 'The loss of water through the leaves of plants is called ___.', o: ['transpiration', 'respiration', 'photosynthesis', 'osmosis'], a: 0, e: 'Water evaporates through stomata in a process called transpiration.' },
+  { lvl: 3, q: 'A solution with a pH of 7 is ___.', o: ['acidic', 'alkaline', 'neutral', 'salty'], a: 2, e: 'pH 7 is neutral; below 7 is acidic; above 7 is alkaline.' },
+  { lvl: 3, q: 'Which of these is an example of a lever?', o: ['A pair of scissors', 'A ball', 'A rope', 'A nail'], a: 0, e: 'Scissors are two levers joined at a pivot (fulcrum).' },
+  { lvl: 3, q: 'The force that pulls objects towards the earth is ___.', o: ['friction', 'gravity', 'magnetism', 'tension'], a: 1, e: 'Gravity pulls everything towards the earth\'s centre.' },
+  { lvl: 3, q: 'Drug abuse can lead to ___.', o: ['better grades', 'damage to the brain and liver', 'endless energy', 'improved memory'], a: 1, e: 'Drug abuse damages organs like the brain and liver.' },
+);

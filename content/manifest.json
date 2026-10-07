@@ -1,0 +1,31 @@
+{
+  "_doc": "Every content file the game loads. Add a new interior by dropping a JSON file in content/maps/ and listing it here, then link it from a campus building ('interior') — see README. After editing content, run `node tools/build-content.js` so the offline/file:// bundle matches.",
+  "tiles": "tiles.json",
+  "interactables": "interactables.json",
+  "routines": "routines.json",
+  "rules": "rules.json",
+  "missions": "missions.json",
+  "items": "items.json",
+  "dialogue": "dialogue.json",
+  "world": "world.json",
+  "maps": [
+    "campus",
+    "boysHostel",
+    "girlsHostel",
+    "jss",
+    "ss",
+    "lab",
+    "dining",
+    "tuckshop",
+    "library",
+    "sickbay",
+    "admin",
+    "chapel",
+    "mosque",
+    "staff"
+  ],
+  "openQuestions": "open_questions.json",
+  "debates": "debates.json",
+  "slambook": "slambook.json",
+  "help": "help.json"
+}

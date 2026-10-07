@@ -1,0 +1,82 @@
+/* Mathematics — question bank. Same format as english.js */
+BH.Q.MTH = [
+  { lvl: 1, q: 'Simplify: 3/4 + 1/8', o: ['4/12', '7/8', '4/8', '1/2'], a: 1, e: '3/4 = 6/8, and 6/8 + 1/8 = 7/8.' },
+  { lvl: 1, q: 'What is the place value of 7 in 4,732?', o: ['Tens', 'Units', 'Hundreds', 'Thousands'], a: 2, e: '4,732 = 4 thousands, 7 hundreds, 3 tens, 2 units.' },
+  { lvl: 1, q: 'Find the LCM of 4 and 6.', o: ['2', '10', '12', '24'], a: 2, e: 'Multiples of 4: 4, 8, 12… Multiples of 6: 6, 12… The lowest common one is 12.' },
+  { lvl: 1, q: 'Find the HCF of 12 and 18.', o: ['3', '6', '9', '36'], a: 1, e: 'Factors of 12: 1,2,3,4,6,12. Factors of 18: 1,2,3,6,9,18. Highest common: 6.' },
+  { lvl: 1, q: 'Express 0.25 as a fraction in its lowest terms.', o: ['1/4', '25/10', '2/5', '1/25'], a: 0, e: '0.25 = 25/100 = 1/4.' },
+  { lvl: 1, q: 'What is 15% of 200?', o: ['15', '20', '30', '35'], a: 2, e: '15/100 × 200 = 30.' },
+  { lvl: 1, q: 'Round 3.476 to 2 decimal places.', o: ['3.47', '3.48', '3.5', '3.40'], a: 1, e: 'The third decimal digit is 6 (≥ 5), so round up: 3.48.' },
+  { lvl: 1, q: 'Simplify: 2x + 3x − x', o: ['4x', '5x', '6x', '3x'], a: 0, e: '2 + 3 − 1 = 4, so the answer is 4x.' },
+  { lvl: 1, q: 'If x + 7 = 15, find x.', o: ['22', '7', '8', '9'], a: 2, e: 'Subtract 7 from both sides: x = 15 − 7 = 8.' },
+  { lvl: 1, q: 'Find the perimeter of a square of side 5 cm.', o: ['10 cm', '20 cm', '25 cm', '15 cm'], a: 1, e: 'Perimeter of a square = 4 × side = 4 × 5 = 20 cm.' },
+  { lvl: 1, q: 'Find the area of a rectangle 8 m long and 3 m wide.', o: ['11 m²', '22 m²', '24 m²', '16 m²'], a: 2, e: 'Area = length × breadth = 8 × 3 = 24 m².' },
+  { lvl: 1, q: 'The sum of the angles in a triangle is ___.', o: ['90°', '180°', '270°', '360°'], a: 1, e: 'The interior angles of any triangle add up to 180°.' },
+  { lvl: 1, q: 'Express 0.6 as a percentage.', o: ['6%', '0.6%', '60%', '600%'], a: 2, e: '0.6 × 100% = 60%.' },
+  { lvl: 1, q: 'Which of these is a prime number?', o: ['21', '15', '27', '17'], a: 3, e: '17 has only two factors: 1 and itself. The others can be divided by 3.' },
+  { lvl: 1, q: 'Evaluate 2³.', o: ['6', '8', '9', '5'], a: 1, e: '2³ = 2 × 2 × 2 = 8.' },
+  { lvl: 1, q: 'Find √81.', o: ['8', '9', '7', '18'], a: 1, e: '9 × 9 = 81, so √81 = 9.' },
+  { lvl: 1, q: 'Convert 101 (base two) to base ten.', o: ['3', '4', '5', '101'], a: 2, e: '1×2² + 0×2¹ + 1×2⁰ = 4 + 0 + 1 = 5.' },
+  { lvl: 1, q: 'Evaluate: (−5) + 8', o: ['−13', '13', '3', '−3'], a: 2, e: 'Start at −5 and move 8 steps forward on the number line: 3.' },
+  { lvl: 1, q: 'Mama Nkechi sold 3 crates of eggs at ₦4,500 per crate. How much did she get?', o: ['₦12,500', '₦13,500', '₦14,500', '₦9,000'], a: 1, e: '3 × ₦4,500 = ₦13,500.' },
+  { lvl: 1, q: 'Share ₦500 between Ada and Bayo in the ratio 2 : 3. What is Bayo\'s share?', o: ['₦200', '₦250', '₦300', '₦350'], a: 2, e: 'Total parts = 5. Bayo gets 3/5 × 500 = ₦300.' },
+  { lvl: 1, q: 'How many sides does a hexagon have?', o: ['5', '6', '7', '8'], a: 1, e: 'Hexa = six. A hexagon has 6 sides.' },
+  { lvl: 1, q: 'Write 3,000,000 in standard form.', o: ['3 × 10⁵', '3 × 10⁶', '30 × 10⁵', '3 × 10⁷'], a: 1, e: '3,000,000 has six zeros after the 3: 3 × 10⁶.' },
+];
+
+/* ---------- JSS2 ---------- */
+BH.Q.MTH.push(
+  { lvl: 2, q: 'Simplify: 3(x + 4) − 2x', o: ['x + 12', '5x + 12', 'x + 4', 'x − 12'], a: 0, e: '3x + 12 − 2x = x + 12.' },
+  { lvl: 2, q: 'Solve: 2x − 5 = 11', o: ['3', '8', '6', '16'], a: 1, e: '2x = 16, so x = 8.' },
+  { lvl: 2, q: 'Find the area of a triangle with base 10 cm and height 6 cm.', o: ['60 cm²', '30 cm²', '16 cm²', '36 cm²'], a: 1, e: 'Area = ½ × base × height = ½ × 10 × 6 = 30 cm².' },
+  { lvl: 2, q: 'Express 3/5 as a percentage.', o: ['35%', '60%', '53%', '30%'], a: 1, e: '3/5 × 100% = 60%.' },
+  { lvl: 2, q: 'Find the mean of 4, 7, 9, 10 and 5.', o: ['7', '6', '8', '35'], a: 0, e: 'Sum = 35, number of items = 5, mean = 35 ÷ 5 = 7.' },
+  { lvl: 2, q: 'Find the mode of 2, 3, 3, 5, 7, 3, 5.', o: ['5', '3', '2', '7'], a: 1, e: 'The mode is the most frequent value: 3 appears three times.' },
+  { lvl: 2, q: 'Evaluate: (−3) × (−4)', o: ['−12', '12', '−7', '7'], a: 1, e: 'Negative × negative = positive: 12.' },
+  { lvl: 2, q: 'Convert 25 (base ten) to base two.', o: ['11001', '10101', '11010', '10011'], a: 0, e: '25 = 16 + 8 + 1 = 11001₂.' },
+  { lvl: 2, q: 'Find the simple interest on ₦10,000 at 5% per annum for 2 years.', o: ['₦500', '₦1,000', '₦1,500', '₦10,500'], a: 1, e: 'I = PRT/100 = 10,000 × 5 × 2 ÷ 100 = ₦1,000.' },
+  { lvl: 2, q: 'Evaluate: 5² − 3²', o: ['4', '16', '8', '2'], a: 1, e: '25 − 9 = 16.' },
+  { lvl: 2, q: 'Angles on a straight line add up to ___.', o: ['90°', '180°', '270°', '360°'], a: 1, e: 'Angles on a straight line sum to 180°.' },
+  { lvl: 2, q: 'If 5 pens cost ₦250, how much do 8 pens cost?', o: ['₦350', '₦400', '₦450', '₦500'], a: 1, e: 'One pen = ₦50, so 8 pens = ₦400.' },
+  { lvl: 2, q: 'Find the circumference of a circle of radius 7 cm. (π = 22/7)', o: ['22 cm', '44 cm', '154 cm', '49 cm'], a: 1, e: 'C = 2πr = 2 × 22/7 × 7 = 44 cm.' },
+  { lvl: 2, q: 'Expand: (x + 2)(x + 3)', o: ['x² + 5x + 6', 'x² + 6x + 5', 'x² + 5x + 5', '2x + 5'], a: 0, e: 'x² + 3x + 2x + 6 = x² + 5x + 6.' },
+  { lvl: 2, q: 'Express 0.00045 in standard form.', o: ['4.5 × 10⁻⁴', '4.5 × 10⁻³', '45 × 10⁻⁵', '4.5 × 10⁴'], a: 0, e: 'Move the decimal point 4 places right: 4.5 × 10⁻⁴.' },
+);
+
+/* ---------- JSS3 ---------- */
+BH.Q.MTH.push(
+  { lvl: 3, q: 'Factorise: x² − 9', o: ['(x − 3)(x − 3)', '(x + 3)(x − 3)', '(x + 9)(x − 1)', 'x(x − 9)'], a: 1, e: 'Difference of two squares: a² − b² = (a + b)(a − b).' },
+  { lvl: 3, q: 'Solve: x + y = 10 and x − y = 4', o: ['x = 7, y = 3', 'x = 6, y = 4', 'x = 3, y = 7', 'x = 8, y = 2'], a: 0, e: 'Adding both equations: 2x = 14, so x = 7 and y = 3.' },
+  { lvl: 3, q: 'Make r the subject of A = πr².', o: ['r = A/π', 'r = √(A/π)', 'r = πA', 'r = √(πA)'], a: 1, e: 'r² = A/π, so r = √(A/π).' },
+  { lvl: 3, q: 'The two shorter sides of a right-angled triangle are 6 cm and 8 cm. Find the hypotenuse.', o: ['10 cm', '14 cm', '12 cm', '48 cm'], a: 0, e: 'Pythagoras: √(6² + 8²) = √100 = 10 cm.' },
+  { lvl: 3, q: 'Find the volume of a cuboid 5 cm by 4 cm by 3 cm.', o: ['12 cm³', '60 cm³', '47 cm³', '20 cm³'], a: 1, e: 'V = l × b × h = 5 × 4 × 3 = 60 cm³.' },
+  { lvl: 3, q: 'Solve the inequality: 3x + 2 < 14', o: ['x < 4', 'x > 4', 'x < 6', 'x > 12'], a: 0, e: '3x < 12, so x < 4.' },
+  { lvl: 3, q: 'y varies directly as x, and y = 12 when x = 3. Find y when x = 5.', o: ['15', '20', '36', '17'], a: 1, e: 'y = kx → k = 4, so y = 4 × 5 = 20.' },
+  { lvl: 3, q: 'Simplify: 2⁵ ÷ 2³', o: ['2', '4', '8', '2¹⁵'], a: 1, e: 'Subtract indices: 2⁵⁻³ = 2² = 4.' },
+  { lvl: 3, q: 'Find the sum of the interior angles of a pentagon.', o: ['360°', '540°', '720°', '180°'], a: 1, e: '(n − 2) × 180° = 3 × 180° = 540°.' },
+  { lvl: 3, q: 'Find the median of 3, 8, 5, 9, 1.', o: ['5', '8', '3', '9'], a: 0, e: 'Arranged: 1, 3, 5, 8, 9. The middle value is 5.' },
+  { lvl: 3, q: 'An item bought for ₦2,000 is sold for ₦2,500. Find the percentage profit.', o: ['20%', '25%', '50%', '500%'], a: 1, e: 'Profit = ₦500; 500/2000 × 100% = 25%.' },
+  { lvl: 3, q: 'A fair coin is tossed once. What is the probability of a head?', o: ['1', '0', '1/2', '1/4'], a: 2, e: 'There are 2 equally likely outcomes, 1 of which is a head.' },
+  { lvl: 3, q: 'Simplify: (2a²b)(3ab³)', o: ['6a³b⁴', '5a³b⁴', '6a²b³', '6a³b³'], a: 0, e: 'Multiply numbers and add indices: 6a²⁺¹b¹⁺³ = 6a³b⁴.' },
+  { lvl: 3, q: 'What is the three-figure bearing of East?', o: ['000°', '090°', '180°', '270°'], a: 1, e: 'Bearings are measured clockwise from North: East is 090°.' },
+  { lvl: 3, q: 'Find x if 2ˣ = 32.', o: ['4', '5', '6', '16'], a: 1, e: '32 = 2⁵, so x = 5.' },
+);
+
+/* ---------- SS (SS1+) ---------- */
+BH.Q.MTH.push(
+  { lvl: 4, q: 'Evaluate: log₁₀ 1000', o: ['2', '3', '10', '100'], a: 1, e: '10³ = 1000, so log₁₀ 1000 = 3.' },
+  { lvl: 4, q: 'Solve: x² − 5x + 6 = 0', o: ['x = 2 or 3', 'x = −2 or −3', 'x = 1 or 6', 'x = −1 or 6'], a: 0, e: '(x − 2)(x − 3) = 0, so x = 2 or 3.' },
+  { lvl: 4, q: 'Find the 10th term of the A.P. 3, 7, 11, …', o: ['39', '40', '43', '37'], a: 0, e: 'Tₙ = a + (n − 1)d = 3 + 9 × 4 = 39.' },
+  { lvl: 4, q: 'If sin θ = 3/5 and θ is acute, find cos θ.', o: ['4/5', '3/4', '5/4', '5/3'], a: 0, e: 'Using a 3-4-5 triangle, cos θ = adjacent/hypotenuse = 4/5.' },
+  { lvl: 4, q: 'Simplify: √50 − √18', o: ['√32', '2√2', '4√2', '8'], a: 1, e: '5√2 − 3√2 = 2√2.' },
+  { lvl: 4, q: 'Evaluate: 8^(2/3)', o: ['4', '16', '2', '6'], a: 0, e: 'Cube root of 8 is 2, and 2² = 4.' },
+  { lvl: 4, q: 'Find the gradient of the line joining (1, 2) and (3, 8).', o: ['2', '3', '6', '1/3'], a: 1, e: 'm = (8 − 2)/(3 − 1) = 6/2 = 3.' },
+  { lvl: 4, q: 'A = {1, 2, 3, 4} and B = {3, 4, 5}. Find A ∩ B.', o: ['{1, 2}', '{3, 4}', '{1, 2, 3, 4, 5}', '{5}'], a: 1, e: 'The intersection contains elements common to both sets.' },
+  { lvl: 4, q: 'Express 0.333… (recurring) as a fraction.', o: ['3/10', '1/3', '33/100', '1/30'], a: 1, e: 'Let x = 0.333…; 10x − x = 3, so x = 3/9 = 1/3.' },
+  { lvl: 4, q: 'Find the sum of the first 5 terms of the G.P. 2, 4, 8, …', o: ['30', '62', '32', '64'], a: 1, e: '2 + 4 + 8 + 16 + 32 = 62.' },
+  { lvl: 4, q: 'Simplify: log₂ 8 + log₂ 4', o: ['5', '12', '32', '6'], a: 0, e: 'log₂ 8 = 3 and log₂ 4 = 2, so the sum is 5.' },
+  { lvl: 4, q: 'Find the area of a circle of diameter 14 cm. (π = 22/7)', o: ['44 cm²', '154 cm²', '616 cm²', '88 cm²'], a: 1, e: 'r = 7 cm; A = πr² = 22/7 × 49 = 154 cm².' },
+  { lvl: 4, q: 'Solve: x/3 + 2 = 5', o: ['3', '9', '21', '1'], a: 1, e: 'x/3 = 3, so x = 9.' },
+  { lvl: 4, q: 'Find the range of 12, 7, 19, 3, 15.', o: ['12', '16', '19', '3'], a: 1, e: 'Range = highest − lowest = 19 − 3 = 16.' },
+  { lvl: 4, q: 'Convert 1101 (base two) to base ten.', o: ['11', '13', '15', '9'], a: 1, e: '8 + 4 + 0 + 1 = 13.' },
+);

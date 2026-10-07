@@ -1,0 +1,21 @@
+{
+  "id": "library", "name": "Library", "emoji": "📖", "exit": "library",
+  "floor": "wood", "palette": { "wall": "#6d4c41", "top": "#8d6e63" },
+  "layout": [
+    "####################",
+    "#ssssss..ssssss..ss#",
+    "#..................#",
+    "#.KKKK..KKKK..i....#",
+    "#..................#",
+    "#.KKKK..KKKK.......#",
+    "#..................#",
+    "#ssss.......ssss.!.#",
+    "#..................#",
+    "#g................g#",
+    "#########EE#########"
+  ],
+  "npcSeats": ["desk"],
+  "quiet": true, "studyBoost": 1.4,
+  "spots": { "librarian": [15, 3] },
+  "secrets": [ { "at": [2, 7], "id": "pastQuestions" }, { "at": [17, 1], "id": "loveNote" } ]
+}

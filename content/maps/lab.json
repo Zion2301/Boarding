@@ -1,0 +1,20 @@
+{
+  "id": "lab", "name": "Science Lab", "emoji": "🔬", "exit": "lab",
+  "floor": "tile", "palette": { "wall": "#2f6f73", "top": "#4b9196" },
+  "layout": [
+    "########################",
+    "#vv.RRRRRR.....tt....vv#",
+    "#......................#",
+    "#.llll..llll..llll..g..#",
+    "#......................#",
+    "#.llll..llll..llll.....#",
+    "#......................#",
+    "#.llll..llll..llll.....#",
+    "#......................#",
+    "##########EE############"
+  ],
+  "npcSeats": ["labBench"],
+  "spots": { "teacher": [12, 2], "labAttendant": [20, 2] },
+  "classroom": true,
+  "secrets": [ { "at": [1, 1], "id": "stinkBomb" }, { "at": [22, 1], "id": "skeletonKey" } ]
+}

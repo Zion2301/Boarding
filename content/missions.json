@@ -1,0 +1,1490 @@
+{
+ "_doc": "Mission templates. offer: auto (assigned, shows in tracker) | call (the giver comes to find you; accept or refuse in conversation, or ignore them) | talk (offered when you talk to a matching NPC) | secret (unlocked by a secret/rumour; becomes active at once). vars: who's involved — senior:errand, role:<role>, arch:<arch>, friend, crush, staff:<role>, teacher:any, junior. deadline: {at:'HH:MM'} today (tomorrow if already past) | {before:<blockId>} = when that block ends | {mins:n} | {days:n, at:'HH:MM'} | {dow:n, at} | {endOfDay:true}. steps (all in order): give {item,to,n} · talk {to} · interact {action,kind,n} · event {event,match,n} · earn {amount} · find {item, plant:{map,kind}} · visit {object|map, window} · stat {path,min} · avoid {event,match} (completes at the deadline unless it happens). Consequence blocks (onAccept, reward, fail, expire, ignore, refuse) — see js/systems/consequences.js: money, favour, clout, groups{teachers,seniors,juniors,coursemates,house}, rel{$var:n}, stats{}, items{}, punish{reason,sev,by}, rumour, path{}, knowledge, flag. talk: extra conversation options a mission adds ({to, label, needs, cons, complete|fail}). next: template offered after this one completes (story arcs).",
+ "templates": {
+  "sweepCorridor": {
+   "type": "chore",
+   "offer": "auto",
+   "emoji": "🧹",
+   "title": "Morning duty: sweep the corridor",
+   "desc": "Your duty today: sweep the hostel corridor before bath time. The Labour Prefect go come check.",
+   "days": [
+    "weekday"
+   ],
+   "when": [
+    "junior"
+   ],
+   "weight": 3,
+   "group": "chore",
+   "deadline": {
+    "before": "duty"
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "sweep",
+     "label": "Sweep with the broom in your hostel"
+    }
+   ],
+   "reward": {
+    "favour": 2,
+    "groups": {
+     "seniors": 2
+    }
+   },
+   "fail": {
+    "favour": -3,
+    "punish": {
+     "reason": "Didn't do morning duty",
+     "sev": 0,
+     "by": "role:labourPrefect"
+    },
+    "rumour": "{name} dodged morning duty — Labour Prefect don mark am 📋"
+   }
+  },
+  "cleanToilet": {
+   "type": "chore",
+   "offer": "auto",
+   "emoji": "🚽",
+   "title": "Morning duty: wash the toilet",
+   "desc": "You were assigned the toilet. The one wey everybody fear. Finish am before bath time.",
+   "days": [
+    "weekday"
+   ],
+   "when": [
+    "junior"
+   ],
+   "weight": 2,
+   "group": "chore",
+   "deadline": {
+    "before": "duty"
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "clean",
+     "tag": "cleanToilet",
+     "label": "Clean a toilet in your hostel bathroom"
+    }
+   ],
+   "reward": {
+    "favour": 3,
+    "groups": {
+     "seniors": 2
+    },
+    "stats": {
+     "hygiene": -6
+    }
+   },
+   "fail": {
+    "favour": -4,
+    "punish": {
+     "reason": "Toilet duty not done",
+     "sev": 1,
+     "by": "role:labourPrefect"
+    }
+   }
+  },
+  "fillDrum": {
+   "type": "chore",
+   "offer": "auto",
+   "emoji": "🛢️",
+   "title": "Fill the hostel water drum",
+   "desc": "Fetch water from the borehole with a bucket and pour am inside the drum in your hostel.",
+   "days": [
+    "weekday",
+    "saturday"
+   ],
+   "when": [
+    "junior",
+    "has:bucket"
+   ],
+   "weight": 2,
+   "group": "chore",
+   "deadline": {
+    "at": "07:00"
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "fill",
+     "tag": "fillDrum",
+     "label": "Pour water into the hostel drum (fetch at the tap first)"
+    }
+   ],
+   "reward": {
+    "favour": 3,
+    "groups": {
+     "seniors": 2
+    }
+   },
+   "fail": {
+    "favour": -3,
+    "punish": {
+     "reason": "Water drum left empty",
+     "sev": 0,
+     "by": "role:labourPrefect"
+    }
+   }
+  },
+  "breadForSenior": {
+   "type": "errand",
+   "offer": "call",
+   "emoji": "🍞",
+   "title": "Bread for {giver}",
+   "desc": "{giver} want bread. How you get am na your business: buy am, beg the cook, 'borrow' from the dining counter… or pay a junior.",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "when": [
+    "junior"
+   ],
+   "weight": 3,
+   "vars": {
+    "giver": "senior:errand"
+   },
+   "deadline": {
+    "at": "20:00"
+   },
+   "steps": [
+    {
+     "type": "give",
+     "item": "bread",
+     "to": "$giver",
+     "label": "Give {giver} 1 bread"
+    }
+   ],
+   "hints": [
+    "🛒 Tuck shop sells bread",
+    "🙏 Beg the cook at the dining counter",
+    "🍞 Steal from the serving counter 👀",
+    "🤝 Pay a junior to fetch am"
+   ],
+   "reward": {
+    "favour": 8,
+    "money": 100,
+    "rel": {
+     "$giver": 8
+    },
+    "groups": {
+     "seniors": 3
+    }
+   },
+   "fail": {
+    "favour": -6,
+    "rel": {
+     "$giver": -10
+    },
+    "punish": {
+     "reason": "Failed {giver}'s errand",
+     "sev": 0,
+     "by": "$giver"
+    }
+   },
+   "ignore": {
+    "favour": -4,
+    "rel": {
+     "$giver": -6
+    },
+    "rumour": "{name} pretend say e no hear {giver} call am 🙉"
+   },
+   "refuse": {
+    "favour": -5,
+    "rel": {
+     "$giver": -8
+    },
+    "clout": 2,
+    "rumour": "{name} tell {giver} NO. Bold. 😳"
+   }
+  },
+  "waterForSenior": {
+   "type": "errand",
+   "offer": "call",
+   "emoji": "🪣",
+   "title": "Water for {giver}",
+   "desc": "{giver} want one bucket of water before siesta ends. Fetch from the borehole or the hostel drum.",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "when": [
+    "junior",
+    "has:bucket"
+   ],
+   "weight": 2,
+   "vars": {
+    "giver": "senior:errand"
+   },
+   "deadline": {
+    "before": "siesta"
+   },
+   "steps": [
+    {
+     "type": "give",
+     "item": "water",
+     "to": "$giver",
+     "label": "Give {giver} a bucket of water"
+    }
+   ],
+   "hints": [
+    "🪣 Fetch at the tap or the hostel water drum"
+   ],
+   "reward": {
+    "favour": 7,
+    "rel": {
+     "$giver": 7
+    },
+    "groups": {
+     "seniors": 2
+    }
+   },
+   "fail": {
+    "favour": -5,
+    "rel": {
+     "$giver": -8
+    },
+    "punish": {
+     "reason": "No water for {giver}",
+     "sev": 0,
+     "by": "$giver"
+    }
+   },
+   "ignore": {
+    "favour": -4,
+    "rel": {
+     "$giver": -6
+    }
+   },
+   "refuse": {
+    "favour": -5,
+    "rel": {
+     "$giver": -8
+    },
+    "clout": 1
+   }
+  },
+  "galaForSenior": {
+   "type": "errand",
+   "offer": "call",
+   "emoji": "🌭",
+   "title": "Gala for {giver}",
+   "desc": "{giver} want Gala. \"I go pay you back.\" We shall see.",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "when": [
+    "junior"
+   ],
+   "weight": 2,
+   "vars": {
+    "giver": "role:greedy"
+   },
+   "deadline": {
+    "mins": 240
+   },
+   "steps": [
+    {
+     "type": "give",
+     "item": "gala",
+     "to": "$giver",
+     "label": "Give {giver} 1 Gala"
+    }
+   ],
+   "reward": {
+    "favour": 9,
+    "rel": {
+     "$giver": 8
+    },
+    "chance": {
+     "p": 0.4,
+     "money": 250
+    }
+   },
+   "fail": {
+    "favour": -6,
+    "rel": {
+     "$giver": -10
+    }
+   },
+   "ignore": {
+    "favour": -4,
+    "rel": {
+     "$giver": -6
+    }
+   },
+   "refuse": {
+    "favour": -6,
+    "rel": {
+     "$giver": -10
+    },
+    "clout": 2
+   }
+  },
+  "pureWaterRun": {
+   "type": "errand",
+   "offer": "call",
+   "emoji": "💧",
+   "title": "Pure water for {giver}",
+   "desc": "\"Go buy me two pure water. With your own money.\" — {giver}",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "when": [
+    "junior"
+   ],
+   "weight": 2,
+   "vars": {
+    "giver": "senior:errand"
+   },
+   "deadline": {
+    "mins": 120
+   },
+   "steps": [
+    {
+     "type": "give",
+     "item": "pureWater",
+     "n": 2,
+     "to": "$giver",
+     "label": "Give {giver} 2 pure water"
+    }
+   ],
+   "reward": {
+    "favour": 6,
+    "rel": {
+     "$giver": 6
+    }
+   },
+   "fail": {
+    "favour": -5,
+    "rel": {
+     "$giver": -8
+    },
+    "punish": {
+     "reason": "Disobeyed {giver}",
+     "sev": 0,
+     "by": "$giver"
+    }
+   },
+   "ignore": {
+    "favour": -3,
+    "rel": {
+     "$giver": -5
+    }
+   },
+   "refuse": {
+    "favour": -5,
+    "rel": {
+     "$giver": -8
+    },
+    "clout": 2
+   }
+  },
+  "washPlates": {
+   "type": "errand",
+   "offer": "call",
+   "emoji": "🍽️",
+   "title": "Wash {giver}'s plates",
+   "desc": "{giver} dump plates for your hand. Wash them at the tap.",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "when": [
+    "junior"
+   ],
+   "weight": 2,
+   "vars": {
+    "giver": "senior:errand"
+   },
+   "deadline": {
+    "mins": 150
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "washPlates",
+     "tag": "washPlates",
+     "label": "Wash the plates at the borehole tap"
+    },
+    {
+     "type": "talk",
+     "to": "$giver",
+     "label": "Return the plates to {giver}"
+    }
+   ],
+   "reward": {
+    "favour": 6,
+    "rel": {
+     "$giver": 6
+    }
+   },
+   "fail": {
+    "favour": -5,
+    "rel": {
+     "$giver": -8
+    },
+    "punish": {
+     "reason": "Plates not washed",
+     "sev": 0,
+     "by": "$giver"
+    }
+   },
+   "ignore": {
+    "favour": -3,
+    "rel": {
+     "$giver": -5
+    }
+   },
+   "refuse": {
+    "favour": -5,
+    "rel": {
+     "$giver": -8
+    },
+    "clout": 1
+   }
+  },
+  "assignment": {
+   "type": "academic",
+   "offer": "auto",
+   "emoji": "✍️",
+   "title": "{subject} assignment",
+   "desc": "{teacher} give assignment. Submit am before night prep ends. Do am at any desk — or in the library.",
+   "days": [],
+   "weight": 0,
+   "vars": {
+    "teacher": "teacher:subject"
+   },
+   "deadline": {
+    "before": "prep"
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "assignment",
+     "tag": "assignment",
+     "label": "Do the {subject} assignment at a desk (30 min)"
+    }
+   ],
+   "hints": [
+    "📚 Library desks count double",
+    "🤝 Ask the brilliant kid for help"
+   ],
+   "reward": {
+    "assignment": true,
+    "rel": {
+     "$teacher": 3
+    },
+    "groups": {
+     "teachers": 1
+    }
+   },
+   "fail": {
+    "assignment": false,
+    "rel": {
+     "$teacher": -4
+    },
+    "groups": {
+     "teachers": -2
+    },
+    "excuse": {
+     "by": "$teacher",
+     "offence": "No {subject} assignment",
+     "sev": 0,
+     "kind": "assignment"
+    }
+   }
+  },
+  "studyGroup": {
+   "type": "academic",
+   "offer": "talk",
+   "emoji": "🧠",
+   "title": "Study group with {giver}",
+   "desc": "{giver} dey organise study group for the library. Read there before 9:30 PM.",
+   "talkLabel": "📚 \"Make we read together?\"",
+   "days": [
+    "weekday",
+    "sunday"
+   ],
+   "weight": 2,
+   "vars": {
+    "giver": "arch:brilliant"
+   },
+   "deadline": {
+    "at": "21:30"
+   },
+   "steps": [
+    {
+     "type": "event",
+     "event": "study",
+     "match": {
+      "map": "library"
+     },
+     "label": "Study in the library"
+    }
+   ],
+   "reward": {
+    "knowledge": 5,
+    "rel": {
+     "$giver": 6
+    },
+    "groups": {
+     "coursemates": 2
+    },
+    "path": {
+     "scholar": 2
+    }
+   },
+   "fail": {
+    "rel": {
+     "$giver": -4
+    }
+   },
+   "refuse": {}
+  },
+  "examPrep": {
+   "type": "academic",
+   "offer": "auto",
+   "emoji": "📖",
+   "title": "Exam preparation",
+   "desc": "Exams dey come. Study 3 times today — library, prep, with friends, anyhow.",
+   "days": [
+    "weekday",
+    "sunday"
+   ],
+   "when": [
+    "examSoon"
+   ],
+   "weight": 6,
+   "deadline": {
+    "endOfDay": true
+   },
+   "steps": [
+    {
+     "type": "event",
+     "event": "study",
+     "n": 3,
+     "label": "Study 3 times"
+    }
+   ],
+   "reward": {
+    "stats": {
+     "morale": 5
+    },
+    "path": {
+     "scholar": 2
+    }
+   },
+   "fail": {
+    "stats": {
+     "morale": -3
+    }
+   }
+  },
+  "sellQuota": {
+   "type": "hustle",
+   "offer": "talk",
+   "emoji": "💰",
+   "title": "Move market for Mama Tuck-shop",
+   "desc": "Mama Tuck-shop go give you commission if you sell ₦400 worth of provisions before 7 PM.",
+   "talkLabel": "💼 \"Mama, any work?\"",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "weight": 2,
+   "vars": {
+    "giver": "staff:keeper"
+   },
+   "deadline": {
+    "at": "19:00"
+   },
+   "steps": [
+    {
+     "type": "earn",
+     "amount": 400,
+     "label": "Make ₦400 hustling"
+    }
+   ],
+   "reward": {
+    "money": 150,
+    "clout": 2,
+    "path": {
+     "hustle": 3
+    }
+   },
+   "fail": {
+    "rel": {
+     "$giver": -3
+    }
+   },
+   "refuse": {}
+  },
+  "deliverBiscuits": {
+   "type": "hustle",
+   "offer": "talk",
+   "emoji": "🍪",
+   "title": "Delivery for {target}",
+   "desc": "Mama Tuck-shop give you 2 Cabin biscuits to deliver to {target}. ₦150 when you finish.",
+   "talkLabel": "📦 \"I fit do delivery.\"",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "weight": 2,
+   "vars": {
+    "giver": "staff:keeper",
+    "target": "classmate:any"
+   },
+   "deadline": {
+    "mins": 240
+   },
+   "onAccept": {
+    "items": {
+     "biscuits": 2
+    }
+   },
+   "steps": [
+    {
+     "type": "give",
+     "item": "biscuits",
+     "n": 2,
+     "to": "$target",
+     "label": "Give {target} 2 biscuits"
+    }
+   ],
+   "reward": {
+    "money": 150,
+    "rel": {
+     "$target": 3
+    },
+    "path": {
+     "hustle": 2
+    }
+   },
+   "fail": {
+    "money": -200,
+    "rel": {
+     "$giver": -6
+    },
+    "rumour": "{name} chop the biscuits wey dem give am to deliver 😂"
+   },
+   "refuse": {}
+  },
+  "findSlippers": {
+   "type": "favour",
+   "offer": "talk",
+   "emoji": "🩴",
+   "title": "Find {giver}'s slippers",
+   "desc": "Somebody 'mistakenly' carry {giver}'s slippers. Search the bunks for your hostel.",
+   "talkLabel": "🙋 \"You need help with anything?\"",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "when": [
+    "friend"
+   ],
+   "weight": 2,
+   "vars": {
+    "giver": "friend:same"
+   },
+   "deadline": {
+    "days": 1,
+    "at": "21:00"
+   },
+   "steps": [
+    {
+     "type": "find",
+     "item": "slippers",
+     "plant": {
+      "map": "$hostel",
+      "kind": "bunk"
+     },
+     "label": "Search the bunks in your hostel"
+    },
+    {
+     "type": "give",
+     "item": "slippers",
+     "to": "$giver",
+     "label": "Return the slippers to {giver}"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "$giver": 12
+    },
+    "groups": {
+     "coursemates": 2
+    },
+    "stats": {
+     "morale": 4
+    }
+   },
+   "fail": {
+    "rel": {
+     "$giver": -4
+    }
+   },
+   "refuse": {
+    "rel": {
+     "$giver": -2
+    }
+   }
+  },
+  "coverRollCall": {
+   "type": "favour",
+   "offer": "talk",
+   "emoji": "🙋",
+   "title": "Answer \"present\" for {giver}",
+   "desc": "{giver} wan dodge the next class. Attend am and answer for them at roll call.",
+   "talkLabel": "🙋 \"You need help with anything?\"",
+   "days": [
+    "weekday"
+   ],
+   "when": [
+    "friend",
+    "block:free"
+   ],
+   "weight": 1,
+   "vars": {
+    "giver": "friend:any"
+   },
+   "deadline": {
+    "before": "p4"
+   },
+   "steps": [
+    {
+     "type": "event",
+     "event": "attend",
+     "match": {
+      "kind": "class"
+     },
+     "label": "Attend a class period"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "$giver": 10
+    },
+    "groups": {
+     "coursemates": 2
+    }
+   },
+   "fail": {
+    "rel": {
+     "$giver": -6
+    }
+   },
+   "refuse": {
+    "rel": {
+     "$giver": -3
+    }
+   }
+  },
+  "letterForCrush": {
+   "type": "favour",
+   "offer": "talk",
+   "emoji": "💌",
+   "title": "Deliver {giver}'s love letter",
+   "desc": "{giver} write letter for {target}. Deliver am without anybody seeing… or read am first 👀",
+   "talkLabel": "🙋 \"You need help with anything?\"",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "when": [
+    "friend"
+   ],
+   "weight": 1,
+   "vars": {
+    "giver": "friend:any",
+    "target": "classmate:fine"
+   },
+   "deadline": {
+    "days": 1,
+    "at": "20:00"
+   },
+   "onAccept": {
+    "items": {
+     "letter": 1
+    }
+   },
+   "steps": [
+    {
+     "type": "give",
+     "item": "letter",
+     "to": "$target",
+     "label": "Give the letter to {target}"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "$giver": 12,
+     "$target": 2
+    },
+    "rumour": "Love dey air: {giver} and {target} 💞"
+   },
+   "fail": {
+    "rel": {
+     "$giver": -8
+    },
+    "rumour": "{name} lost {giver}'s love letter. Somebody go read am for assembly 😭"
+   },
+   "refuse": {
+    "rel": {
+     "$giver": -2
+    }
+   }
+  },
+  "befriend": {
+   "type": "social",
+   "offer": "auto",
+   "emoji": "🤝",
+   "title": "Make friends with {target}",
+   "desc": "Talk to {target} today. Gist, share provisions — anything.",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "weight": 2,
+   "vars": {
+    "target": "classmate:stranger"
+   },
+   "deadline": {
+    "endOfDay": true
+   },
+   "steps": [
+    {
+     "type": "talk",
+     "to": "$target",
+     "label": "Talk to {target}"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "$target": 4
+    },
+    "stats": {
+     "morale": 4
+    },
+    "clout": 1
+   },
+   "fail": {}
+  },
+  "passInspection": {
+   "type": "daily",
+   "offer": "auto",
+   "emoji": "🧐",
+   "title": "Pass morning inspection",
+   "desc": "Be at assembly by 7:45 with clean nails, low cut and ironed uniform.",
+   "days": [
+    "weekday"
+   ],
+   "weight": 2,
+   "deadline": {
+    "before": "assembly"
+   },
+   "steps": [
+    {
+     "type": "event",
+     "event": "inspection",
+     "match": {
+      "passed": true
+     },
+     "label": "Pass inspection at assembly"
+    }
+   ],
+   "reward": {
+    "clout": 2,
+    "favour": 3
+   },
+   "fail": {}
+  },
+  "allMeals": {
+   "type": "daily",
+   "offer": "auto",
+   "emoji": "🍽️",
+   "title": "No miss any meal",
+   "desc": "Breakfast, lunch AND dinner today. Na your right!",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "weight": 2,
+   "deadline": {
+    "endOfDay": true
+   },
+   "steps": [
+    {
+     "type": "event",
+     "event": "meal",
+     "n": 3,
+     "label": "Eat 3 dining hall meals"
+    }
+   ],
+   "reward": {
+    "stats": {
+     "health": 5,
+     "morale": 3
+    }
+   },
+   "fail": {}
+  },
+  "avoidLabourPrefect": {
+   "type": "daily",
+   "offer": "auto",
+   "emoji": "🫥",
+   "title": "Avoid {target}",
+   "desc": "Make {target} (Labour Prefect) no see you till 6 PM. If e see you, e go give you work.",
+   "days": [
+    "weekday",
+    "saturday"
+   ],
+   "when": [
+    "junior"
+   ],
+   "weight": 1,
+   "vars": {
+    "target": "role:labourPrefect"
+   },
+   "deadline": {
+    "at": "18:00"
+   },
+   "steps": [
+    {
+     "type": "avoid",
+     "event": "spotted",
+     "match": {
+      "npc": "$target"
+     },
+     "label": "Stay out of {target}'s sight"
+    }
+   ],
+   "reward": {
+    "stats": {
+     "morale": 6,
+     "rest": 5
+    }
+   },
+   "fail": {
+    "stats": {
+     "rest": -8
+    }
+   }
+  },
+  "labourHero": {
+   "type": "daily",
+   "offer": "auto",
+   "emoji": "🪓",
+   "title": "Labour hero",
+   "desc": "Clear your plot during Saturday general labour (6–9 AM). Cutlass make am faster.",
+   "days": [
+    "saturday"
+   ],
+   "weight": 5,
+   "deadline": {
+    "at": "09:00"
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "grass",
+     "n": 2,
+     "label": "Clear grass on the field ×2"
+    }
+   ],
+   "reward": {
+    "favour": 8,
+    "clout": 2,
+    "groups": {
+     "seniors": 3
+    }
+   },
+   "fail": {
+    "favour": -4,
+    "punish": {
+     "reason": "Plot not cleared at general labour",
+     "sev": 1,
+     "by": "role:labourPrefect"
+    }
+   }
+  },
+  "danceFloor": {
+   "type": "daily",
+   "offer": "auto",
+   "emoji": "🕺",
+   "title": "Shake body for Social Night",
+   "desc": "Dance at Saturday Night Social (assembly ground, 7 PM).",
+   "days": [
+    "saturday"
+   ],
+   "weight": 4,
+   "deadline": {
+    "at": "21:30"
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "dance",
+     "label": "Dance by the big speaker"
+    }
+   ],
+   "reward": {
+    "clout": 4,
+    "stats": {
+     "morale": 5
+    },
+    "path": {
+     "popular": 2
+    }
+   },
+   "fail": {}
+  },
+  "callHome": {
+   "type": "daily",
+   "offer": "auto",
+   "emoji": "☎️",
+   "title": "Reach home",
+   "desc": "Call home from the admin block phone or write a letter on your bed.",
+   "days": [
+    "sunday"
+   ],
+   "weight": 5,
+   "deadline": {
+    "endOfDay": true
+   },
+   "steps": [
+    {
+     "type": "event",
+     "event": "action",
+     "match": {
+      "tag": "contactHome"
+     },
+     "label": "Call or write home"
+    }
+   ],
+   "reward": {
+    "stats": {
+     "morale": 8
+    }
+   },
+   "fail": {
+    "stats": {
+     "morale": -3
+    }
+   }
+  },
+  "firstNight": {
+   "type": "story",
+   "offer": "auto",
+   "emoji": "🌙",
+   "title": "Find your bed",
+   "desc": "Welcome to boarding house. Find your bed in your hostel (the ⭐ one) and survive the night.",
+   "days": [
+    "resumption"
+   ],
+   "weight": 10,
+   "deadline": {
+    "at": "23:00"
+   },
+   "steps": [
+    {
+     "type": "event",
+     "event": "sleep",
+     "match": {
+      "where": "bed",
+      "nap": false
+     },
+     "label": "Sleep in your own bed"
+    }
+   ],
+   "reward": {
+    "stats": {
+     "morale": 5
+    }
+   },
+   "fail": {
+    "stats": {
+     "morale": -4
+    }
+   }
+  },
+  "thiefArc1": {
+   "type": "story",
+   "offer": "auto",
+   "emoji": "🕵🏾",
+   "title": "Who dey thief provisions?",
+   "desc": "Provisions dey vanish for your hostel. Somebody must know something. Start with the class gossip, {gossip}.",
+   "days": [
+    "weekday",
+    "saturday",
+    "sunday"
+   ],
+   "when": [
+    "dayCount:3",
+    "!arcDone:thief"
+   ],
+   "weight": 0,
+   "arc": "thief",
+   "vars": {
+    "gossip": "arch:gossip",
+    "thief": "arch:thief"
+   },
+   "deadline": {
+    "days": 3,
+    "at": "21:00"
+   },
+   "steps": [
+    {
+     "type": "talk",
+     "to": "$gossip",
+     "label": "Ask {gossip} for gist"
+    }
+   ],
+   "reward": {
+    "rumour": "{gossip} say na {thief} dey move funny at night 👀"
+   },
+   "fail": {},
+   "next": "thiefArc2"
+  },
+  "thiefArc2": {
+   "type": "story",
+   "offer": "auto",
+   "emoji": "🔍",
+   "title": "Evidence",
+   "desc": "{gossip} whisper say {thief} dey hide something under their bunk. Find proof — but if they catch you for their side…",
+   "arc": "thief",
+   "vars": {
+    "gossip": "keep",
+    "thief": "keep"
+   },
+   "deadline": {
+    "days": 3,
+    "at": "21:00"
+   },
+   "steps": [
+    {
+     "type": "find",
+     "item": "evidence",
+     "plant": {
+      "map": "$thiefHostel",
+      "kind": "bunk",
+      "owner": "$thief"
+     },
+     "label": "Search {thief}'s bunk"
+    }
+   ],
+   "reward": {
+    "stats": {
+     "morale": 3
+    }
+   },
+   "fail": {},
+   "next": "thiefArc3"
+  },
+  "thiefArc3": {
+   "type": "story",
+   "offer": "auto",
+   "emoji": "⚖️",
+   "title": "Confront or report?",
+   "desc": "You get the evidence. Face {thief} yourself… or carry am go the house master. Everybody go hear either way.",
+   "arc": "thief",
+   "vars": {
+    "gossip": "keep",
+    "thief": "keep"
+   },
+   "deadline": {
+    "days": 4,
+    "at": "21:00"
+   },
+   "steps": [
+    {
+     "type": "choice",
+     "label": "Talk to {thief} or the house master"
+    }
+   ],
+   "talk": [
+    {
+     "to": "$thief",
+     "label": "🫵 \"I know say na you dey thief.\"",
+     "needs": "evidence",
+     "complete": true,
+     "cons": {
+      "rel": {
+       "$thief": -15
+      },
+      "groups": {
+       "coursemates": 4
+      },
+      "clout": 6,
+      "items": {
+       "evidence": -1,
+       "milo": 3,
+       "indomie": 2
+      },
+      "rumour": "{name} confront {thief} face to face. The thief return everything! 🦸",
+      "path": {
+       "popular": 3
+      }
+     }
+    },
+    {
+     "to": "staff:houseMaster",
+     "label": "🗣️ Report {thief} with evidence",
+     "needs": "evidence",
+     "complete": true,
+     "cons": {
+      "groups": {
+       "teachers": 8,
+       "coursemates": -6
+      },
+      "items": {
+       "evidence": -1
+      },
+      "punishNpc": "$thief",
+      "rumour": "{name} snitch {thief} to the house master. Respect… or snitch? 🤐",
+      "path": {
+       "leader": 3
+      }
+     }
+    }
+   ],
+   "reward": {
+    "arcDone": "thief"
+   },
+   "fail": {
+    "rumour": "{thief} still dey thief everybody provisions. Nobody do anything."
+   }
+  },
+  "sportsArc1": {
+   "type": "story",
+   "offer": "call",
+   "emoji": "🏃",
+   "title": "Inter-house trials",
+   "desc": "{giver} say the house need athletes. Train on the field 4 times this week to make the team.",
+   "days": [
+    "weekday",
+    "saturday"
+   ],
+   "when": [
+    "week:2",
+    "!arcDone:sports"
+   ],
+   "weight": 1,
+   "arc": "sports",
+   "vars": {
+    "giver": "role:houseCaptain"
+   },
+   "deadline": {
+    "days": 6,
+    "at": "18:00"
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "train",
+     "n": 4,
+     "label": "Train on the field ×4"
+    }
+   ],
+   "reward": {
+    "rel": {
+     "$giver": 8
+    },
+    "path": {
+     "sports": 5
+    },
+    "groups": {
+     "house": 4
+    }
+   },
+   "fail": {
+    "rel": {
+     "$giver": -6
+    },
+    "groups": {
+     "house": -3
+    }
+   },
+   "ignore": {
+    "rel": {
+     "$giver": -4
+    }
+   },
+   "refuse": {
+    "rel": {
+     "$giver": -4
+    }
+   },
+   "next": "sportsArc2"
+  },
+  "sportsArc2": {
+   "type": "story",
+   "offer": "auto",
+   "emoji": "🏆",
+   "title": "Inter-house sports day",
+   "desc": "You made the team! Compete on the field on Saturday afternoon. Rest and chop well first.",
+   "arc": "sports",
+   "vars": {
+    "giver": "keep"
+   },
+   "deadline": {
+    "dow": 5,
+    "at": "18:30"
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "compete",
+     "tag": "sportsDay",
+     "label": "Compete on the field (Saturday afternoon)"
+    }
+   ],
+   "reward": {
+    "arcDone": "sports"
+   },
+   "fail": {
+    "groups": {
+     "house": -6
+    },
+    "rumour": "{name} no show for inter-house sports. The whole house dey vex 😤"
+   }
+  },
+  "examLeak": {
+   "type": "secret",
+   "offer": "secret",
+   "emoji": "🗝️",
+   "title": "The exam cabinet",
+   "desc": "Teachers dey keep the exam questions inside the red cabinet for the staff room. Students no dey enter there. At all.",
+   "deadline": {
+    "days": 7,
+    "at": "22:00"
+   },
+   "steps": [
+    {
+     "type": "interact",
+     "action": "steal",
+     "kind": "examCabinet",
+     "label": "Steal the questions from the staff room cabinet"
+    }
+   ],
+   "reward": {
+    "path": {
+     "trouble": 5
+    },
+    "rumour": "Somebody don collect exam 'expo' this term… 🤫"
+   },
+   "fail": {}
+  },
+  "jollofBackdoor": {
+   "type": "secret",
+   "offer": "secret",
+   "emoji": "🍛",
+   "title": "Back-door jollof",
+   "desc": "A note behind the dining hall: 'Jollof ₦300 — back door, 8:30 PM. Come alone.'",
+   "deadline": {
+    "at": "20:45"
+   },
+   "steps": [
+    {
+     "type": "visit",
+     "object": "jollofBackdoor",
+     "window": [
+      "20:15",
+      "20:45"
+     ],
+     "label": "Be behind the dining hall at 8:30 PM with ₦300"
+    }
+   ],
+   "reward": {
+    "money": -300,
+    "items": {
+     "cookedFood": 1
+    },
+    "stats": {
+     "morale": 6
+    }
+   },
+   "fail": {}
+  },
+  "lostPhone": {
+   "type": "secret",
+   "offer": "secret",
+   "emoji": "📱",
+   "title": "Somebody's phone",
+   "desc": "You find a phone wrapped in nylon inside the bush. E get {target}'s name for the back. Return am… or keep am?",
+   "vars": {
+    "target": "senior:any"
+   },
+   "deadline": {
+    "days": 3,
+    "at": "21:00"
+   },
+   "steps": [
+    {
+     "type": "choice",
+     "label": "Return the phone to {target} — or keep it"
+    }
+   ],
+   "talk": [
+    {
+     "to": "$target",
+     "label": "📱 Return the phone",
+     "needs": "foundPhone",
+     "complete": true,
+     "cons": {
+      "items": {
+       "foundPhone": -1
+      },
+      "rel": {
+       "$target": 18
+      },
+      "favour": 8,
+      "money": 500,
+      "rumour": "{name} return {target}'s phone. Honest person dey this school 🙏"
+     }
+    },
+    {
+     "to": "self",
+     "label": "😈 Keep the phone",
+     "needs": "foundPhone",
+     "complete": true,
+     "cons": {
+      "items": {
+       "foundPhone": -1
+      },
+      "phone": true,
+      "path": {
+       "trouble": 2
+      },
+      "rumour": "{target} dey find their phone everywhere 👀"
+     }
+    }
+   ],
+   "reward": {},
+   "fail": {
+    "items": {
+     "foundPhone": -1
+    }
+   }
+  }
+ },
+ "daily": {
+  "auto": 2,
+  "chores": 1,
+  "callsPerDay": 3
+ }
+}

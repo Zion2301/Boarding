@@ -1,0 +1,77 @@
+{
+ "id": "admin",
+ "name": "Admin Block",
+ "emoji": "🏛️",
+ "exit": "admin",
+ "floor": "marble",
+ "palette": {
+  "wall": "#8b3a2b",
+  "top": "#a85745"
+ },
+ "layout": [
+  "######################",
+  "#yyy.f.#....!.#oo.F..#",
+  "#......#......#......#",
+  "#..==..d......d......#",
+  "#......#......#......#",
+  "########......########",
+  "#g..................g#",
+  "#....................#",
+  "##########EE##########"
+ ],
+ "labels": [
+  {
+   "text": "Principal",
+   "x": 3,
+   "y": 4
+  },
+  {
+   "text": "Phone & VP",
+   "x": 18,
+   "y": 4
+  }
+ ],
+ "spots": {
+  "principal": [
+   2,
+   2
+  ],
+  "vp": [
+   16,
+   2
+  ],
+  "secretary": [
+   10,
+   2
+  ]
+ },
+ "rooms": [
+  {
+   "id": "principalOffice",
+   "rect": [
+    1,
+    1,
+    6,
+    4
+   ],
+   "forbidden": true,
+   "name": "Principal's office"
+  }
+ ],
+ "secrets": [
+  {
+   "at": [
+    16,
+    1
+   ],
+   "id": "exeatForm"
+  },
+  {
+   "at": [
+    5,
+    1
+   ],
+   "id": "yourFile"
+  }
+ ]
+}
