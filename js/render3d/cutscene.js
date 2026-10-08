@@ -121,6 +121,7 @@
       const r = Cutscene.E.rig;
       r.mode = 'follow'; r.yawGoal = 0.6; r.pitchGoal = 0.72; r.distGoal = 14;
       BH.Onboarding && BH.Onboarding.cutsceneDone(BH.Game.s);
+      (Cutscene.after || []).splice(0).forEach((fn) => setTimeout(fn, 400));
     },
   };
 

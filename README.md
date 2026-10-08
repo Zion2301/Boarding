@@ -1,6 +1,6 @@
 # Boarding House 🏫
 
-A mobile-first Nigerian boarding-school life sim. You start as a JSS1 student on resumption day and try to make it to SS3 graduation. It's a **free-roam sandbox**: the school runs on a clock, and missions and the timetable put pressure on you, but nothing forces you.
+A mobile-first Nigerian boarding-school life sim. You start as a JSS1 student on resumption day and try to make it to SS3 graduation. It's a **story-mode-first, free-roam life sim**: the school runs on a clock, your classmates are characters with their own stories, and the choices you make (or ignore) are remembered all the way to graduation. Design: **[GAME_DESIGN.md](GAME_DESIGN.md)** · cast: **[CHARACTERS.md](CHARACTERS.md)**.
 
 ## Run it
 
@@ -19,9 +19,23 @@ A mobile-first Nigerian boarding-school life sim. You start as a JSS1 student on
 - **Calls** appear at the top when someone wants you (e.g. "📢 Senior Kunle dey call you · 36m"). They walk over to find you. Talk to them, or ignore them and face the consequence when the timer runs out.
 - **👁️ Suspicion meter:** when a prefect, teacher or the house master can see you breaking a rule, it fills. When it's full, you're caught. Hide in toilets, under bunks, in the bush or behind buildings.
 
-## Multiplayer & free time
+## Story mode (the main game)
 
-Play with friends from the first minute. Everything runs on the same server (`npm run dev`), and friends on your Wi-Fi open the link it prints:
+- **A full school:** about 500 students across JSS1–SS3 (three arms each). Your set of about 30 includes **20 key characters** (`content/cast.json`) who remember you, can be talked to freely (AI) and grow up: some leave, others arrive (Musa in JSS2, Yinka in SS1, your school child in SS1). Everyone else uses preset lines.
+- **Your people:** 👥 opens your best friend, squad, closest friends and who to watch out for. You can call someone over, sit together, share food or play Whot with them. Key characters bring up the past ("Remember when you snitched on me in JSS2?") from the **story ledger**.
+- **Story arcs** (`content/arcs.json`, 81 beats): characters come and find you when something happens in their life (Uche sent home for fees, Dera's BECE expo, Halima's withdrawal letter…). What you choose, and what you ignore, changes bonds, arc states and their endings.
+- **Time control:** ⏸ / 1× 2× 4× / ⏭ next bell / ⏭⏭ next event (top right; **P** pauses). JSS1 Term 1 plays **Live**; after that the game switches to **Highlights**: ordinary days are simulated using your week plan and shown as day cards, and it stops for key days. 🎬 changes the mode (Live / Highlights / Montage).
+- **Milestones:** letterboxed cards for resumption, first punishment, first visiting day, first report card, BECE, becoming a senior, department, school child, prefect selection, WAEC, send-forth, sign-out day and graduation. Each one autosaves.
+- **Chapters & saves:** each term becomes a named chapter (⚙️ → 📖 Chapters). There are 5 save slots showing each slot's chapter, with autosave every day.
+- **Ending:** graduation shows your results, **where are they now** for every key character you met, a yearbook, and your chapters.
+
+No login is needed for story mode. The online mode is the title screen's **🌐 Private school with friends (beta)**.
+
+## Private school with friends (beta)
+
+Everyone logs in with their own account (saved on the server). The whole school shares one calendar, and each player is in their own year: newcomers arrive as late admissions, returning players are welcomed back and promoted. Background music is generated live.
+
+Play with friends from the first minute: run **`npm run play`** (same Wi-Fi) or **`npm run tunnel`** (anywhere) and send the link it prints:
 - **Resumption day:** a cutscene, then the story-tutorial; players who arrive together share a class arm, house and bunks.
 - **Games:** Whot!, football on the field, Ayo, Draughts, Ludo, races, dance battles, ten-ten, suwe, table tennis and volleyball.
 - **Social:** friends, best friend, calls, chat bubbles, gangs.
@@ -119,6 +133,9 @@ The quickest method is the browser console (`F12`) while a game is running. Run 
 | **Crafting & items** | 🎒 → Cook/combine: soaked garri needs garri + water (fetch water at the tap with your starter bucket). Buy a heater from Mama Tuck-shop's whisper option to make cooked Indomie, which is illegal: the smell lingers and prefects catch it. Hide your phone in your mattress against raids. |
 | **Sleep anywhere** | Sleep in your bed at night for full rest; a mosquito net helps. Nap on a desk, pew or sick-bay bed. Push rest to 0 and you pass out where you stand. ⏳ at night → "Sleep right here". |
 | **Paths** | 👤 → Your paths. Study, train on the field, hustle, dance, lead or cause trouble to earn titles. Your top path becomes your graduation legacy. |
+| **Story arcs** | `BH.Arcs.start(s, BH.Content.get('arcs').beats.find(b => b.id === 'emeka_board')); BH.Dialogue.event()` plays a beat right away. `s.story.ledger` holds the memories, `s.story.arcs` the arc states and endings. |
+| **Milestones & ending** | `BH.Milestones.trigger(s, 'sendForth'); BH.Dialogue.event()` plays a milestone. ⚙️ → 📖 Chapters lists the chapters. `BH.Game.gameOver(s, 'graduated', 'Done!'); BH.UI.go('gameover')` previews the ending. |
+| **Pacing** | Finish JSS1 Term 1 (or run `s.pacing.mode = 'highlights'`), then sleep. Ordinary days are simulated as day cards and key days play live. |
 | **Headless check** | `node tools/build-content.js` validates every JSON file. The game systems run without Phaser, so you can load the `js/` scripts (in `index.html` order, up to `js/core/game.js`) in a Node `vm` and tick `BH.Clock.tick(s, minutes)` to simulate days. |
 
 ## AI conversations & writing (game server)

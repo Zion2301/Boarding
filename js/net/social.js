@@ -82,9 +82,26 @@
         case 'whot': BH.Games.whot.create({ invite: pid }); break;
         case 'ayo': case 'draughts': case 'ludo': BH.Panels.closeKind('player', true); BH.Boards.board.create(op, { invite: pid }); break;
         case 'gangInvite': net.send('gang', { op: 'invite', to: pid }); toast(`🏴 Gang invite sent to ${name}.`, 'info'); break;
+        case 'joinClass': Social.joinClass(s, p); break;
         default:
       }
       BH.Panels.refresh();
+    },
+    /* testing together: move into a friend's class arm + house (same year only) */
+    joinClass(s, p) {
+      if (!p) return;
+      const first = p.name.split(' ')[0];
+      if (Number(p.level) !== s.time.year) { toast(`🏫 ${first} is in ${BH.data.LEVELS[Number(p.level) - 1]} — you're in ${BH.Time.levelName(s)}. You can only share a class in the same year.`, 'bad'); return; }
+      const st = BH.School.student(s, 'player');
+      st.arm = p.arm;
+      const h = BH.data.HOUSES.find((x) => x.tag === p.house);
+      if (h) { s.player.house = h; st.house = h.tag; }
+      const c = BH.School.myClass(s);
+      BH.School.ensureSeating(s, c.id); BH.School.ensureLeaders(s);
+      BH.Schedule.onBlockStart(); s.world.seats = {};
+      N().lastProf = '';
+      toast(`🏫 You moved to ${c.id} and ${s.player.house.name} with ${first}. Same class, same house${p.gender === s.player.gender ? ', same hostel' : ''}! 🤝`, 'good');
+      BH.Panels.closeKind('player', true);
     },
     /* sit next to a friend: the free seat nearest to them in the same room */
     sitWith(s, p) {
@@ -140,6 +157,7 @@
             ${b('follow', '👣 Walk together')} ${b('sit', '🪑 Sit together')}
             ${b('share', '🎁 Share food')} ${b('whot', '🃏 Play Whot!')}
             ${b('ayo', '🌰 Play Ayo')} ${b('draughts', '⚫ Play Draughts')}
+            ${b('joinClass', '🏫 Join their class')}
             ${Social.state.gang ? b('gangInvite', `🏴 Invite to [${U.esc(Social.state.gang.tag)}]`) : ''}
             ${fr ? b('unfriend', '✖ Unfriend', 'ghost') : ''}
           </div></div>`;
@@ -154,7 +172,7 @@
         const st = Social.state;
         const tabs = [['friends', `🤝 Friends (${st.friends.length})`], ['campus', `🌍 On campus (${net ? net.players.size : 0})`], ['gang', '🏴 Gang']];
         if (st.requests.length) tabs.splice(1, 0, ['requests', `📩 Requests (${st.requests.length})`]);
-        const head = `<h2>👥 Your people</h2>${!net || !net.online ? `<p class="warn">📴 Offline. ${net && net.available() ? '<button class="chunky small" data-act="netConnect">Go online</button>' : 'Open the game from the school server (npm run dev) to play with friends.'}</p>` : ''}
+        const head = `<h2>👥 Your people <button class="chunky small" data-act="openLobby">🔗 Invite a friend</button></h2>${!net || !net.online ? `<p class="warn">📴 Offline. ${net && net.available() ? '<button class="chunky small" data-act="netConnect">Go online</button>' : 'Open the game from the school server (npm run dev) to play with friends.'}</p>` : ''}
           <div class="seg">${tabs.map(([k, l]) => `<button class="${Social.tab === k ? 'on' : ''}" data-act="socialTab" data-arg="${k}">${l}</button>`).join('')}</div>`;
         const where = (pid) => { const p = net && net.byPid(pid); return p ? `🟢 ${U.esc(BH.School.place(p.map || 'campus').name)}` : '⚪ offline'; };
         const row = (pid, name, extra = '') => `<button class="person" data-act="playerMenu" data-arg="${U.esc(pid)}"><span class="p-emoji">${Social.isBestie(pid) ? '💛' : '🧑🏾‍🎓'}</span><span class="p-text"><b>${U.esc(name)}</b><small>${where(pid)}${extra}</small></span></button>`;
@@ -229,7 +247,7 @@
 
   const chipDone = (el) => { const id = el && el.dataset.chip; if (id) Social.dropChip(id); };
   Object.assign(BH.actions, {
-    openSocial() { Social.openPanel(); },
+    openSocial() { if (BH.Net && BH.Net.online) Social.openPanel(); else BH.Story.openPanel(); },
     socialTab(t) { Social.tab = t; BH.Panels.refresh(); },
     playerMenu(pid) { Social.openPlayer(pid); },
     socialAct(arg) { const [op, pid, extra] = String(arg).split('|'); Social.act(op, pid, extra); },

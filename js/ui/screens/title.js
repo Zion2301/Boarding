@@ -11,7 +11,7 @@
       }
       if (m.corrupt) return `<div class="slot"><div class="slot-info"><b>Slot ${m.slot}</b><span class="muted">Corrupt save</span></div><button class="btn ghost sm" data-act="deleteSlot" data-arg="${m.slot}">🗑️</button></div>`;
       const when = new Date(m.updatedAt).toLocaleString();
-      return `<div class="slot"><div class="slot-info"><b>Slot ${m.slot}: ${U.esc(m.name)}</b>
+      return `<div class="slot"><div class="slot-info"><b>Slot ${m.slot}: ${U.esc(m.name)}</b>${m.chapter ? `<span class="chap">📖 ${U.esc(m.chapter)}</span>` : ''}
           <span class="muted">${m.gameOver ? '🏁 Finished · ' : ''}${m.level} · Term ${m.term} · Wk ${m.week} · ${m.day} · ${m.school}</span>
           <span class="muted tiny">Saved ${when}</span></div>
         <div class="slot-btns">
@@ -21,23 +21,44 @@
     }).join('');
   }
 
+  /* the account card: log in to play with everyone; your student lives on the school server */
+  function accountCard() {
+    const A = BH.Account;
+    if (!A || !BH.Server.base()) return '';
+    if (!A.checked) return '<div class="account-card muted">Connecting to the school server…</div>';
+    if (!A.user) {
+      return `<div class="account-card slim"><span class="muted tiny">☁️ Optional: an account keeps your story safe on the school server and lets you play it on any device.</span>
+        <div class="row-btns"><button class="btn ghost sm" data-act="accountForm" data-arg="login">🔑 Log in</button><button class="btn ghost sm" data-act="accountForm" data-arg="signup">✨ Create account</button></div></div>`;
+    }
+    const c = A.cloud;
+    const lvl = c && c.time ? BH.data.LEVELS[(c.time.year || 1) - 1] : '';
+    return `<div class="account-card"><div class="acc-head">👋🏾 <b>${U.esc(A.user.username)}</b> <button class="btn ghost sm" data-act="accountLogout">Log out</button></div>
+      ${c && !c.gameOver ? `<button class="btn primary big" data-act="accountPlay">▶ Continue as ${U.esc(c.player.name)}<small>${lvl} · ${U.esc(c.player.schoolName || '')}</small></button>`
+        : `<button class="btn primary big" data-act="newGameMenu">✏️ Create your student</button>`}</div>`;
+  }
+
   BH.Screens.title = {
     render() {
       const last = BH.Save.lastSlot();
       const lastMeta = last && BH.Save.meta(last);
+      const online = !!(BH.Account && BH.Account.user);
       return `<div class="title-screen">
         <div class="title-card">
           <div class="crest">🏫</div>
           <h1>BOARDING<br>HOUSE</h1>
           <p class="tagline">JSS1 to SS3. Garri, wahala, and growing up.</p>
           <div class="title-btns">
-            ${lastMeta && !lastMeta.empty && !lastMeta.corrupt ? `<button class="btn primary big" data-act="loadSlot" data-arg="${last}">▶ Continue as ${U.esc(lastMeta.name)}<small>${lastMeta.level} · Term ${lastMeta.term} · ${lastMeta.day}</small></button>` : ''}
-            <button class="btn ${lastMeta && !lastMeta.empty ? 'secondary' : 'primary'} big" data-act="newGameMenu">✏️ New Student</button>
-            <button class="btn secondary" data-act="loadMenu">📂 Load Game</button>
+            ${online ? accountCard() : ''}
+            ${!online && last && lastMeta && !lastMeta.empty && !lastMeta.corrupt ? `<button class="btn primary big" data-act="loadSlot" data-arg="${last}">▶ Continue as ${U.esc(lastMeta.name)}<small>${lastMeta.level} · Term ${lastMeta.term} · ${lastMeta.day}</small></button>` : ''}
+            ${BH.Invite && BH.Invite.from ? `<div class="invite-banner">📩 ${BH.Invite.info ? `<b>${U.esc(BH.Invite.info.name)}</b> invited you${BH.Invite.info.arm ? ` to ${U.esc(BH.data.LEVELS[(Number(BH.Invite.info.level) || 1) - 1] || '')}${U.esc(BH.Invite.info.arm)}` : ''}!` : 'You were invited by a friend!'} Create a <b>New Student</b> to join their class.</div>` : ''}
+            ${online ? '' : `<button class="btn ${lastMeta && !lastMeta.empty && !(BH.Invite && BH.Invite.from) ? 'secondary' : 'primary big'}" data-act="newGameMenu">✏️ New Student</button>`}
+            <button class="btn ghost" data-act="openLobby">🌐 Private school with friends <small>(beta)</small></button>
+            <button class="btn ghost" data-act="loadMenu">📂 ${online ? 'Saves on this device' : 'Load Game'}</button>
             <button class="btn ghost" data-act="howTo">❓ How to Play</button>
             <button class="btn ghost" data-act="wTrophies">🏆 Trophy room</button>
+            ${online ? '' : accountCard()}
           </div>
-          <p class="muted tiny">Works offline · Saves on this device</p>
+          <p class="muted tiny">${online ? 'Saved to your account · play from any device' : 'Works offline · Saves on this device'}</p>
         </div>
       </div>`;
     },
@@ -64,6 +85,7 @@
             </div>
           </div>
           ${grad && s.certificates ? `<div class="card certs left">${BH.Screens.me.certHtml(s)}</div>` : ''}
+          ${BH.Milestones ? BH.Milestones.endingHtml(s) : ''}
           ${s.reports && s.reports.length ? `<button class="btn secondary" data-act="viewReport" data-arg="${s.reports.length - 1}">📜 View final report card</button>` : ''}
           <button class="btn primary big" data-act="toTitle">🏠 Back to title</button>
         </div>
@@ -72,7 +94,33 @@
   };
 
   Object.assign(BH.actions, {
+    accountForm(mode) {
+      UI().modal(`<h2>${mode === 'signup' ? '✨ Create your account' : '🔑 Log in'}</h2>
+        <form class="account-form" data-mode="${mode}" autocomplete="on">
+          <label>Username<input name="username" autocomplete="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" required placeholder="e.g. ada_obi"></label>
+          <label>Password<input name="password" type="password" autocomplete="${mode === 'signup' ? 'new-password' : 'current-password'}" minlength="6" required placeholder="at least 6 characters"></label>
+          <p class="form-err" hidden></p>
+          <button class="btn primary big" type="submit">${mode === 'signup' ? 'Create account' : 'Log in'}</button>
+          <p class="muted tiny">${mode === 'signup' ? 'No email needed. Don\'t use your real full name as a username, and never share your password.' : '<a href="#" data-act="accountForm" data-arg="signup">No account yet? Create one</a>'}</p>
+        </form>`);
+      const f = document.querySelector('.account-form');
+      f.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const err = f.querySelector('.form-err');
+        err.hidden = true;
+        try {
+          await BH.Account.login(f.username.value.trim(), f.password.value, mode === 'signup');
+          UI().closeModal(true);
+          UI().toast(`👋🏾 Welcome, ${BH.Account.user.username}!`, 'good');
+          UI().render();
+        } catch (x) { err.textContent = x.message === 'Failed to fetch' ? 'Can\'t reach the school server.' : x.message; err.hidden = false; }
+      });
+      setTimeout(() => f.username.focus(), 50);
+    },
+    accountPlay() { BH.Account.play(); },
+    async accountLogout() { await BH.Account.logout(); UI().render(); },
     newGameMenu() {
+      if (BH.Account && BH.Account.user) { BH.Screens.create.slot = 0; UI().go('create'); return; }
       UI().modal(`<h2>Choose a save slot</h2><p class="muted">Your new student will live here.</p>${slotList('new')}`);
     },
     loadMenu() {

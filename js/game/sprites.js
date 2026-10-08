@@ -110,8 +110,10 @@
       if (n.type === 'teacher' || n.type === 'staff') {
         return { av: D.npcAvatar({ id: n.id, first: n.last, gender: n.gender, tribe: n.tribe }), outfit: { kind: 'teacher', gender: n.gender, top: TEACHER_TOPS[h % TEACHER_TOPS.length], bottom: '#263238' } };
       }
-      const level = n.type === 'senior' ? Number(String(n.level).replace('SS', '')) + 3 : n.type === 'junior' ? n.level : s.time.year;
-      return { av: D.npcAvatar(n), outfit: { kind: 'student', school: s.player.school, level, gender: n.gender, house: D.HOUSES[h % D.HOUSES.length].color } };
+      const level = n.lvl || (n.type === 'senior' ? Number(String(n.level).replace('SS', '')) + 3 : n.type === 'junior' ? n.level : s.time.year);
+      const av = D.npcAvatar(n);
+      if (n.look) Object.assign(av, n.look); // key characters: Halima's hijab, Dera's glasses…
+      return { av, outfit: { kind: 'student', school: s.player.school, level, gender: n.gender, house: D.HOUSES[h % D.HOUSES.length].color } };
     },
     /* Create Phaser textures `${key}_f` and `${key}_b` */
     texture(scene, key, look) {

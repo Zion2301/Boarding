@@ -62,7 +62,7 @@
       d.points += severity;
       d.weekOffences++;
       s.today.offences++;
-      s.stats_history.punished++;
+      s.stats_history.punished++; BH.bus.emit('punished', { reason });
       d.record.unshift({ day: s.time.dayCount, label: reason, sev: severity, when: BH.Time.dateLabel(s) });
       if (d.record.length > 40) d.record.length = 40;
 
@@ -85,7 +85,7 @@
     /* On-the-spot punishment with no points on your file (failed inspection, talking…) */
     minor(s, reason, customPunish) {
       s.today.offences++;
-      s.stats_history.punished++;
+      s.stats_history.punished++; BH.bus.emit('punished', { reason });
       BH.Stats.change(s, PUNISH_FX[1]);
       BH.log(s, `Punished: ${reason}`, 'bad');
       BH.bus.emit('discipline', { reason, severity: 0 });

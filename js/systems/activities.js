@@ -39,8 +39,8 @@
     expected(s) {
       const b = BH.Time.block(s);
       if (b.kind === 'free') return null;
-      // resumption day: the story objective replaces "wait at the gate"
-      if (BH.Onboarding && BH.Onboarding.active(s) && ['arrival', 'settling'].includes(BH.Time.blockId(s))) return null;
+      // a new student settling in (resumption day or a late admission): the story objective replaces the timetable
+      if (BH.Onboarding && BH.Onboarding.settling(s)) return null;
       // school blocks: your class arm (or your department / religion / language room for split periods)
       if (['class', 'register', 'prep'].includes(b.kind) && BH.School) return BH.School.placeFor(s, 'player');
       const key = BH.Clock.location(s);
@@ -55,7 +55,7 @@
       if (e.map !== 'campus') return map === e.map;
       return map === 'campus' && s.world.area === e.key;
     },
-    excused(s) { return !!(s.today.flags.excused && s.today.flags.excused >= abs(s)); },
+    excused(s) { return !!(s.today.flags.excused && s.today.flags.excused >= abs(s)) || !!(BH.Onboarding && BH.Onboarding.settling(s)); },
     freePeriod(s) {
       const b = BH.Time.block(s);
       if (b.kind !== 'class') return false;
@@ -71,9 +71,9 @@
       const e = Activities.expected(s);
       if (s.act && s.act.type === 'sleep') return { kind: 'asleep', text: '😴 Asleep' };
       const ob = BH.Onboarding && BH.Onboarding.objective(s);
-      if (ob && ['arrival', 'settling'].includes(BH.Time.blockId(s))) return { kind: 'story', text: `⭐ ${ob.text}` };
+      if (ob && BH.Onboarding.settling(s)) return { kind: 'story', text: `⭐ ${ob.text}` };
       if (!e) return { kind: 'free', text: 'Free time — go anywhere' };
-      if (Activities.excused(s)) return { kind: 'excused', text: '🩺 Excused (sick bay)' };
+      if (Activities.excused(s)) return { kind: 'excused', text: s.today.flags.justArrived ? '🚌 Just arrived — settle in' : '🩺 Excused (sick bay)' };
       const att = s.today.att[id];
       if (Activities.present(s)) return att && att.late ? { kind: 'late', text: '⏰ Here (late)', e } : { kind: 'present', text: '✅ You\'re here', e };
       const late = s.clock - BH.Clock.blockStart(s);
@@ -202,7 +202,7 @@
       Activities.stand(s, true);
       const snap = obj && obj.seats && obj.seats[0] ? Activities.nearestSeat(s, obj) : null;
       if (snap && BH.World.snap) BH.World.snap(snap);
-      if (b.kind === 'class' && map === Activities.expected(s).map) {
+      if (b.kind === 'class' && map === (Activities.expected(s) || {}).map) {
         const code = A().periodSubject(s, b.period);
         const ownerId = obj && obj.kind === 'desk' && !BH.School.isMyDesk(s, obj) ? BH.School.deskOwner(s, obj) : null;
         const owner = ownerId && ownerId !== 'player' ? N().get(s, ownerId) : null;
@@ -212,7 +212,7 @@
         Activities.maybeTest(s);
         return { text: `**${A().name(s, code)}** with ${info.tname}. Topic: _${info.topic}_.${owner ? ` (Na ${owner.first}'s seat — they go vex.)` : ''}`, good: true, noTime: true };
       }
-      if (b.kind === 'register' && map === Activities.expected(s).map) {
+      if (b.kind === 'register' && map === (Activities.expected(s) || {}).map) {
         s.act = { type: 'seat', obj: obj && obj.id, map };
         const c = BH.School.myClass(s);
         return { text: `You sit for register. ${c && c.form ? N().name(N().get(s, c.form)) : 'Your form teacher'} go soon call your name — answer "Present". 📋`, noTime: true };

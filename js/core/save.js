@@ -64,6 +64,12 @@
       }
       return s;
     },
+    // v6 → v7: story mode — the school is full of NPC students again (key characters from content/cast.json)
+    6: (s) => {
+      if (s.school && s.school.settings) s.school.settings.fill_with_bot_students = true;
+      s.world.seats = {};
+      return s;
+    },
     // v2 → v3: 3D avatar
     2: (s) => {
       s.player.avatar = s.player.avatar || BH.data.defaultAvatar(s.player.gender, s.player.religion);
@@ -72,8 +78,17 @@
   };
 
   BH.Save = {
+    migrate(s) {
+      while (s.version < BH.data.CONFIG.SAVE_VERSION) {
+        const m = MIGRATIONS[s.version];
+        if (m) s = m(s);
+        s.version++;
+      }
+      return s;
+    },
     save(s) {
       s.updatedAt = Date.now();
+      if (BH.Account) BH.Account.push(s, document.hidden); // logged in: your student lives on the school server
       const ok = safeSet(KEY(s.slot), JSON.stringify(s));
       safeSet(META, JSON.stringify({ lastSlot: s.slot }));
       return ok;
@@ -83,12 +98,7 @@
       const raw = safeGet(KEY(slot));
       if (!raw) return null;
       try {
-        let s = JSON.parse(raw);
-        while (s.version < BH.data.CONFIG.SAVE_VERSION) {
-          const m = MIGRATIONS[s.version];
-          if (m) s = m(s);
-          s.version++;
-        }
+        const s = BH.Save.migrate(JSON.parse(raw));
         s.slot = slot;
         return s;
       } catch (e) {
@@ -100,6 +110,7 @@
     remove(slot) { safeDel(KEY(slot)); },
 
     meta(slot) {
+      const D_STAMP = (s) => BH.data.LEVELS[s.time.year - 1] + 'T' + s.time.term;
       const raw = safeGet(KEY(slot));
       if (!raw) return null;
       try {
@@ -113,6 +124,7 @@
           day: BH.data.DAYS[s.time.dow],
           school: BH.data.SCHOOLS[s.player.school].short,
           gameOver: !!s.gameOver,
+          chapter: BH.Milestones ? BH.Milestones.stampTitle(D_STAMP(s)) : null,
           updatedAt: s.updatedAt,
         };
       } catch (e) { return { slot, corrupt: true }; }

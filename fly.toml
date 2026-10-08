@@ -1,0 +1,24 @@
+# Fly.io: fly launch --copy-config --no-deploy  →  fly volumes create data --size 1  →  fly deploy
+app = "boarding-house-CHANGE-ME"
+primary_region = "lhr"
+
+[build]
+
+[env]
+  PORT = "8080"
+  AI_MOCK = "1"          # remove this line after: fly secrets set ANTHROPIC_API_KEY=sk-ant-...
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"   # multiplayer rooms live in memory — keep one machine running
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[mounts]]
+  source = "data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

@@ -137,7 +137,7 @@
     update(dtMs) {
       const s = BH.Game.s;
       if (!s || !Sim.cm) return false;
-      if (BH.Panels.isOpen() || document.hidden) { Actors.list.forEach((a) => { a.vx = a.vy = 0; a.speed = 0; if (!a.pose) a.anim = 'idle'; }); return false; }
+      if (BH.Panels.isOpen() || document.hidden || (BH.Pacing && BH.Pacing.paused(s))) { Actors.list.forEach((a) => { a.vx = a.vy = 0; a.speed = 0; if (!a.pose) a.anim = 'idle'; }); return false; }
       BH.Clock.update(s, dtMs);
       if (s.gameOver) { BH.UI.go('gameover'); return false; }
       if (s.world.moved || (s.world.map && s.world.map !== Sim.mapId)) { BH.SceneManager.load(s.world.map || 'campus', s.pos); return false; }

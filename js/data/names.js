@@ -86,6 +86,7 @@
     headPrefect:   { label: 'Head Prefect', emoji: '🎖️' },
     houseCaptain:  { label: 'House Captain', emoji: '🏠' },
     chill:         { label: 'Chill Senior', emoji: '😎' },
+    regular:       { label: 'Senior', emoji: '🧑🏾‍🎓' },
     greedy:        { label: 'Provision Collector', emoji: '🫗' },
   };
 

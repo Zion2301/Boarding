@@ -21,7 +21,7 @@
       const net = N();
       if (net && net.online) {
         try {
-          whot.bind(await net.client.create('whot', { pid: s.player.playerId, name: s.player.name.split(' ')[0], seats: opts.seats || 4, title: `${s.player.name.split(' ')[0]}'s table`, map: s.world.map }));
+          whot.bind(await net.client.create('whot', { token: BH.Account && BH.Account.token, pid: s.player.playerId, name: s.player.name.split(' ')[0], seats: opts.seats || 4, title: `${s.player.name.split(' ')[0]}'s table`, map: s.world.map }));
           if (opts.invite) net.send('invite', { to: opts.invite, kind: 'whot', roomId: whot.room.roomId, title: `${s.player.name.split(' ')[0]}'s table` });
           whot.open();
           return;
@@ -31,7 +31,7 @@
     },
     async join(roomId) {
       const s = BH.Game.s;
-      try { whot.bind(await N().client.joinById(roomId, { pid: s.player.playerId, name: s.player.name.split(' ')[0] })); whot.open(); }
+      try { whot.bind(await N().client.joinById(roomId, { token: BH.Account && BH.Account.token, pid: s.player.playerId, name: s.player.name.split(' ')[0] })); whot.open(); }
       catch (e) { toast('That table is full or already playing.', 'bad'); }
     },
     bind(room) {
@@ -44,14 +44,21 @@
       room.onLeave(() => { if (whot.room === room) { whot.room = null; whot.view = null; BH.Panels.refresh(); } });
       room.send('ready');
     },
-    startOffline(n) {
+    /* offline table: your classmates play (pass NPCs to sit them at the table), otherwise whoever is around */
+    startOffline(n, npcs) {
       const s = BH.Game.s;
       whot.leave(true);
-      const names = ['Chioma', 'Musa', 'Tunde'];
+      const pool = (npcs || []).slice();
+      // fill seats with classmates who are nearby, else your closest coursemates
+      const near = BH.World.nearbyNpcs ? BH.World.nearbyNpcs(260).filter((x) => x && ['classmate', 'senior', 'junior'].includes(x.type)) : [];
+      const close = BH.NPC.students(s).slice().sort((a, b) => b.rel - a.rel);
+      [...near, ...close].forEach((x) => { if (pool.length < n - 1 && !pool.includes(x)) pool.push(x); });
       const players = [{ id: 'me', name: s.player.name.split(' ')[0] }];
-      for (let i = 0; i < n - 1; i++) players.push({ id: 'bot' + i, name: `${names[i]} (bot)`, bot: true });
+      pool.slice(0, n - 1).forEach((x) => players.push({ id: x.id, name: x.first, bot: true }));
+      for (let i = players.length; i < n; i++) players.push({ id: 'bot' + i, name: ['Chioma', 'Musa', 'Tunde'][i % 3], bot: true });
+      whot.with = pool.slice(0, n - 1).map((x) => x.id);
       whot.offline = W().create(players, Date.now());
-      whot.info = { title: 'Whot! vs bots', humans: [players[0].name], seats: n, you: 'me' };
+      whot.info = { title: `Whot! with ${players.slice(1).map((p) => p.name).join(' & ')}`, humans: [players[0].name], seats: n, you: 'me' };
       whot.sync();
       whot.open();
     },
@@ -78,7 +85,7 @@
       const others = whot.view ? whot.view.players.filter((p) => !p.bot).length : 1;
       if (won) { const prize = 60 + 40 * Math.max(0, others - 1); BH.Stats.money(s, prize); BH.Stats.change(s, { morale: 8 }); BH.Stats.rep(s, 2); toast(`🏆 CHECK UP! You win the Whot game! +${U.money(prize)} · morale ↑ · clout ↑`, 'good'); }
       else { BH.Stats.change(s, { morale: 3 }); toast(`🃏 ${name} won this round. Rematch?`, 'info'); }
-      BH.bus.emit('minigame', { kind: 'whot', won });
+      BH.bus.emit('minigame', { kind: 'whot', won, with: whot.offline ? whot.with || [] : [] });
       BH.Paths && BH.Paths.add(s, 'popular', 1);
       BH.Panels.refresh();
     },
@@ -133,7 +140,7 @@
       const net = N();
       if (net && net.online) {
         try {
-          const room = await net.client.joinOrCreate('football', { pid: s.player.playerId, name: s.player.name.split(' ')[0], x: pl && pl.x, y: pl && pl.y, field: football.field });
+          const room = await net.client.joinOrCreate('football', { token: BH.Account && BH.Account.token, pid: s.player.playerId, name: s.player.name.split(' ')[0], x: pl && pl.x, y: pl && pl.y, field: football.field });
           football.room = room;
           room.onMessage('team', (t) => { football.team = t.team; football.field = t.field; football.goalW = t.goalW; toast(`⚽ You're on ${t.team === 'red' ? '🔴 RED' : '🔵 BLUE'}. Go to the field! Run into the ball to dribble · Space = pass · F = shoot`, 'good'); });
           room.onMessage('fb', (sn) => { football.snap = sn; });

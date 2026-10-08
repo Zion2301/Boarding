@@ -3,8 +3,8 @@
   const D = BH.data;
 
   D.CONFIG = {
-    SAVE_VERSION: 6,
-    SLOTS: 3,
+    SAVE_VERSION: 7,
+    SLOTS: 5,
     TERM_WEEKS: 10,
     TERMS_PER_YEAR: 3,
     MAX_LOG: 60,

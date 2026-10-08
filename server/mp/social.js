@@ -19,6 +19,9 @@ export const Social = {
     if (name) p.name = name;
     return p;
   },
+  /* last known class/house so invite links work while you're offline */
+  remember(pid, info) { const p = Social.profile(pid); Object.entries(info).forEach(([k, v]) => { if (v !== undefined && v !== null && v !== '') p[k] = v; }); save(); },
+  publicProfile(pid) { const p = db.profiles[pid]; return p ? { pid, name: p.name, level: p.level, arm: p.arm, house: p.house, gender: p.gender, school: p.school } : null; },
   view(pid) {
     const p = Social.profile(pid);
     const g = p.gang && db.gangs[p.gang];

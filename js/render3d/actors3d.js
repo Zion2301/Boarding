@@ -238,7 +238,9 @@
         else if (showName) {
           const n = BH.NPC.get(s, a.npcId);
           const name = n ? (n.type === 'teacher' || n.type === 'staff' ? BH.NPC.name(n) : n.first) : '';
-          nameHtml = `<span class="name3d ${n ? n.type : ''}">${BH.U.esc(name)}</span>`;
+          const St = BH.Story, sq = St && s.story && s.story.squad;
+          const pre = n && St ? `${St.isBestie(s, n.id) ? '💛 ' : ''}${sq && St.inSquad(s, n.id) ? `[${BH.U.esc(sq.tag)}] ` : ''}` : '';
+          nameHtml = `<span class="name3d ${n ? n.type : ''} ${n && n.key ? 'key' : ''}">${pre}${BH.U.esc(name)}</span>`;
         }
         const html = `<div class="tagw">${showBubble ? `<div class="bubble3d ${a.bubble.player ? 'chat' : ''}">${BH.U.esc(a.bubble.text)}</div>` : ''}${nameHtml}</div>`;
         if (el.dataset.h !== html) { el.innerHTML = html; el.dataset.h = html; }

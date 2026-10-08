@@ -1,0 +1,7 @@
+**/node_modules
+server/.env
+.env
+server/data
+dist
+.git
+tools/vendor-build/node_modules

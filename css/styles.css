@@ -659,3 +659,48 @@ body.cinematic .hud > *:not(#hud-root) { opacity: 0; pointer-events: none; trans
 .rally-bar .net { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: #fff; }
 .rally-bar i { position: absolute; top: 50%; transform: translate(-50%, -50%); font-style: normal; font-size: 1.4rem; }
 .big-hit { width: 100%; font-size: 1.2rem; }
+
+/* ---------- lobby / invites ---------- */
+.lobby-card { max-width: 560px; text-align: left; } .lobby-title { font-size: 1.8rem; text-align: center; }
+.link-box { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; background: var(--cream); border-radius: 10px; padding: 6px 8px; }
+.link-box code { flex: 1; min-width: 0; word-break: break-all; font-size: .82rem; }
+.invite-banner, .invite-card { background: #fff7d6; border: 2px solid var(--gold); border-radius: 12px; padding: 8px 12px; color: var(--ink); }
+
+/* ---------- account ---------- */
+.account-card { display: flex; flex-direction: column; gap: 6px; background: var(--green-soft); border: 2px solid var(--green-2); border-radius: 14px; padding: 10px 12px; text-align: left; }
+.account-card .row-btns { display: flex; gap: 6px; } .account-card .row-btns .btn { flex: 1; }
+.account-card .acc-head { display: flex; align-items: center; justify-content: space-between; }
+.account-form { display: flex; flex-direction: column; gap: 10px; }
+.account-form label { display: flex; flex-direction: column; gap: 4px; font-weight: 800; }
+.account-form input { font: inherit; font-size: 16px; padding: 10px 12px; border-radius: 10px; border: 2px solid var(--line); }
+.form-err { color: var(--crit); font-weight: 700; margin: 0; }
+.name3d.key { box-shadow: 0 0 0 2px rgba(255, 204, 51, .85); }
+.account-card.slim { background: transparent; border: 1px dashed var(--line); padding: 6px 10px; }
+.account-card.slim .row-btns .btn { flex: 0 0 auto; }
+
+/* ---------- time bar & pacing ---------- */
+.hud-time { display: flex; gap: 2px; padding: 3px; margin-top: 6px; pointer-events: auto; width: max-content; margin-left: auto; }
+.hud-time button { font: 800 .78rem var(--body); color: #fff; background: transparent; border: 0; border-radius: 8px; padding: 4px 7px; cursor: pointer; }
+.hud-time button.on { background: rgba(255, 204, 51, .9); color: var(--ink); }
+.day-card { background: var(--cream); border-radius: 12px; padding: 8px 10px; margin-bottom: 6px; }
+.day-card p { margin: 2px 0; font-size: .85rem; }
+.pace-modes, .pace-plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; margin-top: 6px; }
+.pace-modes .chunky small, .pace-plans .chunky small { display: block; font-weight: 600; opacity: .8; font-size: .7rem; }
+
+/* ---------- milestones: letterbox, chapters, ending ---------- */
+body.letterbox #game-root { clip-path: inset(9vh 0 9vh 0); transition: clip-path .6s ease-out; }
+body.letterbox #hud-root { opacity: 0; transition: opacity .4s; pointer-events: none; }
+#game-root { clip-path: inset(0 0 0 0); transition: clip-path .6s ease-out; }
+.dlg.cinematic { border: 2px solid #e9b949; box-shadow: 0 0 40px rgba(233, 185, 73, .35); }
+.dlg.cinematic .dlg-text { font-size: 1.05em; line-height: 1.55; }
+.chapters { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; text-align: left; }
+.chapter-card { border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 10px 12px; background: rgba(255,255,255,.04); }
+.chapter-card.now { border-color: #e9b949; }
+.chapter-card .ch-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.chapter-card ul { margin: 6px 0 0; padding-left: 18px; font-size: .9em; }
+.ending .where { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+.ending .where .em { font-size: 1.6em; } .ending .where p { margin: 2px 0 0; }
+.ending .where.low { opacity: .75; }
+.yearbook .yb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; margin: 8px 0; }
+.yearbook .yb-grid div { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 6px; border-radius: 10px; background: rgba(255,255,255,.05); }
+.yearbook .yb-grid span { font-size: 1.5em; } .yearbook .yb-grid small { opacity: .75; font-size: .75em; }

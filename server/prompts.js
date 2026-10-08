@@ -7,7 +7,10 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const readJSON = (f) => JSON.parse(fs.readFileSync(path.join(here, '..', 'content', f), 'utf8'));
 let CHAR = readJSON('characters.json');
 let STAFF = readJSON('staff.json');
-export const reloadContent = () => { CHAR = readJSON('characters.json'); STAFF = readJSON('staff.json'); };
+let CAST = readJSON('cast.json');
+export const reloadContent = () => { CHAR = readJSON('characters.json'); STAFF = readJSON('staff.json'); CAST = readJSON('cast.json'); };
+/* key characters (content/cast.json) — trusted server-side content, looked up by the NPC id */
+export const castRecord = (id) => (id && CAST.cast.find((c) => c.id === id)) || null;
 /* the staff record for an NPC id (trusted server-side content — the client never sends personality text) */
 export const staffRecord = (id) => (id && ([...STAFF.teachers, ...STAFF.staff].find((x) => x.id === id))) || null;
 export const characters = () => CHAR;
@@ -64,16 +67,22 @@ export function buildSystem({ sheetKey, npc = {}, player = {}, situation, vars =
     background: player.background || 'middle class',
   }, vars);
   // this person's own personality, voice and quirks (content/staff.json, looked up by id on the server)
-  const rec = staffRecord(npc.id);
+  const rec = staffRecord(npc.id) || castRecord(npc.id);
+  const cast = castRecord(npc.id);
   if (rec) v.staffRole = rec.label || (rec.teaches ? 'Teacher' : 'Staff member');
   const SPEECH = { pidgin: 'Speak mostly Nigerian Pidgin English.', nigerian_english: 'Speak Nigerian English (formal school register).', mix: 'Mix Nigerian English and Pidgin naturally.' };
   const speech = SPEECH[(rec && rec.speech) || sheet.speech];
   const recName = rec ? `${rec.title} ${rec.first} ${rec.last}` : null;
   const charBlock = [
-    `CHARACTER: ${recName || npc.name || 'Unnamed'} — ${fill(sheet.role, v)}.`,
+    `CHARACTER: ${cast ? `${npc.name || recName}${cast.nick ? ` ("${cast.nick.replace(/^.*"(.*)"$/, '$1')}")` : ''}` : recName || npc.name || 'Unnamed'} — ${fill(sheet.role, v)}.`,
     `Personality: ${rec && rec.personality ? rec.personality : fill(sheet.personality, v)}`,
     `Voice: ${speech} ${rec && rec.voice ? rec.voice + ' Keep replies short (max 3-4 sentences).' : fill(sheet.style, v)}`,
     rec && rec.quirks && rec.quirks.length ? `Quirks (use naturally, not every line): ${rec.quirks.join('; ')}.` : '',
+    cast ? `Who you are: ${cast.label}. Background: ${cast.backstory} What you want: ${cast.goal}` : '',
+    cast ? (Number(npc.trust) >= (cast.secretTrust || 70)
+      ? `You trust this student now. If the moment is right you may gently share your secret: ${cast.secret}`
+      : 'You have private worries you do not share with people you don\'t fully trust yet — deflect if asked.') : '',
+    cast ? `How you feel about them: trust ${Number(npc.trust) || 0}/100, rivalry ${Number(npc.rivalry) || 0}/100${npc.bestie ? ', they are your BEST FRIEND' : ''}. Things that make you like someone: ${cast.up.join(', ')}. Things that hurt you: ${cast.down.join(', ')}.` : '',
     `You know: ${fill(sheet.knows, v)}`,
     `Your goals: ${fill(sheet.goals, v)}`,
     `Actions you may choose: ${sheet.allowed_actions.join(', ')}.${Object.keys(sheet.can_give || {}).length ? ` Items you could give: ${Object.keys(sheet.can_give).join(', ')}.` : ''}${sheet.money_cap ? ` Money you could send: at most ₦${sheet.money_cap}.` : ''}${(sheet.missions || []).length ? ` Missions you could start: ${sheet.missions.join(', ')}.` : ''}`,

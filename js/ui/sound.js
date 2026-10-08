@@ -19,10 +19,11 @@
 
   const Sound = {
     get muted() { return muted; },
+    get ctx() { return ctx; }, // shared with the music
     toggle() { muted = !muted; try { localStorage.setItem('bh_muted', muted ? '1' : '0'); } catch (e) { /* ignore */ } return muted; },
     unlock() {
       if (ctx) return;
-      try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { ctx = null; }
+      try { ctx = (BH.Music && BH.Music.ctx) || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { ctx = null; }
     },
     play(name) {
       if (muted) return;

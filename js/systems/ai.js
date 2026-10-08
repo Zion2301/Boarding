@@ -13,8 +13,9 @@
     lastCheck: 0,
 
     base() {
-      if (BH.Prefs.v.aiServer) return BH.Prefs.v.aiServer.replace(/\/$/, '');
-      return /^https?:/.test(location.protocol) ? '' : 'http://localhost:8787';
+      const b = BH.Server && BH.Server.base();
+      if (b) return b === location.origin ? '' : b;
+      return 'http://localhost:8787';
     },
     playerOn() { return BH.Prefs.v.aiOn !== false; },
 
@@ -50,6 +51,8 @@
       if (n.type === 'senior') Object.assign(f, { level: String(n.level).replace('SS', ''), roleLabel: D.SENIOR_ROLES[n.role] && D.SENIOR_ROLES[n.role].label });
       if (n.type === 'classmate') { const a = D.ARCHETYPES[n.arch]; Object.assign(f, { archLabel: BH.NPC.label(n), archDesc: a ? a.desc : '', prefect: n.prefect || null }); }
       if (n.type === 'junior') f.level = n.level;
+      // key characters: the server adds their personality, voice, goal (and their secret once trust is high) from content/cast.json
+      if (n.key) Object.assign(f, { key: true, trust: Math.round(n.trust || 0), rivalry: Math.round(n.rivalry || 0), respect: Math.round(n.respect || 0), bestie: !!(BH.Story && BH.Story.isBestie(s, n.id)), arc: s.story && s.story.arcs[n.id] ? s.story.arcs[n.id].state : null });
       return f;
     },
     playerFacts(s, extra = '') {
@@ -70,7 +73,7 @@
       if (mod.verdict === 'blocked') return { blocked: true, explain: M().explain(mod.reasons) };
       if (AI.available()) {
         const r = await AI.request('/api/npc/chat', {
-          playerId: s.player.playerId, npc: AI.npcFacts(s, npc), player: AI.playerFacts(s, [factsExtra, BH.NPC.memories && npc && npc.id ? BH.NPC.memories(s, npc).slice(-4).map((m) => `You remember (${m}).`).join(' ') : ''].filter(Boolean).join(' ')), situation, vars, ctx,
+          playerId: s.player.playerId, npc: AI.npcFacts(s, npc), player: AI.playerFacts(s, [factsExtra, BH.NPC.memories && npc && npc.id ? BH.NPC.memories(s, npc).slice(-4).map((m) => `You remember (${m}).`).join(' ') : '', BH.Story && npc && npc.id ? BH.Story.memoryOf(s, npc.id).map((m) => `Between you: ${m}.`).join(' ') : ''].filter(Boolean).join(' ')), situation, vars, ctx,
           history: history.map((h) => ({ role: h.who === 'me' ? 'user' : 'npc', text: h.text })), text: mod.text,
         });
         if (r && !r.fallback) return Object.assign(r, { source: r.cached ? 'cache' : 'ai' });

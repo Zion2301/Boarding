@@ -1,0 +1,3283 @@
+{
+ "_doc": "Story arcs (GAME_DESIGN.md §6, CHARACTERS.md). A beat: id, char (the key character), window (year = your level 1–6 or [from,to], term, week, dow 0=Mon…6=Sun, blocks = block kinds/ids when it can start), when = conditions (rel:char>=50, trust:k_id>=N, ledger:snitched_on:char, arc:char=state, done:beatId, present:k_id, pos:3 = top-3 last report, religion:, gender:, money:N, or any game condition). how: call (they come and find you; ignoring has consequences) | scene (plays right away). small: allowed on a day that already had a beat. choices[].fx: rel/trust/rivalry/respect/crush (number = the beat's character, or {id: n}), stats, money, clout, favour, rep{group}, items, take, knowledge{code|any: n}, path, note[] (ledger), arc (state), end (best|mid|low — their \"where are they now\"), leave (they leave school: reason), flag, discipline (minor offence text), offence{what,sev}, game (whot|race), milestone. Text: {name} {nick} {full} {me} {when:ledgerKey} {who:k_id}.",
+ "beats": [
+  {
+   "id": "dami_cry",
+   "char": "k_dami",
+   "title": "{name} Can't Sleep",
+   "emoji": "🌙",
+   "text": "It's past lights out. From the top bunk you hear sniffing. {name} is crying quietly into the pillow.\n\n\"I want to go home… I miss my mum.\"",
+   "choices": [
+    {
+     "label": "🤝 Climb up and talk until they fall asleep",
+     "fx": {
+      "rel": 12,
+      "trust": 10,
+      "stats": {
+       "rest": -5
+      },
+      "note": [
+       "helped"
+      ],
+      "arc": "close"
+     },
+     "reply": "You whisper jokes about the house master's torchlight until {name} laughs. \"My person,\" they mumble, and finally sleep."
+    },
+    {
+     "label": "🍪 Pass up your biscuits",
+     "fx": {
+      "rel": 8,
+      "trust": 5,
+      "take": {
+       "biscuits": 1
+      },
+      "note": [
+       "shared_food"
+      ]
+     },
+     "reply": "A hand reaches down and takes the biscuits. \"Thank you,\" very small. The crying stops."
+    },
+    {
+     "label": "😴 Pretend you're asleep",
+     "fx": {
+      "rel": -4,
+      "trust": -5,
+      "note": [
+       "ignored"
+      ],
+      "arc": "distant"
+     },
+     "reply": "The sniffing goes on for a long time. In the morning {name} doesn't look at you."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    1,
+    2
+   ],
+   "blocks": [
+    "sleep"
+   ],
+   "how": "scene",
+   "priority": 8
+  },
+  {
+   "id": "dami_whot",
+   "char": "k_dami",
+   "title": "Whot Under the Bunk",
+   "emoji": "🃏",
+   "text": "{name} waves a battered pack of Whot cards: \"Make we start our own tournament. Loser washes the winner's plate for one week.\"",
+   "choices": [
+    {
+     "label": "🃏 \"Deal me in!\"",
+     "fx": {
+      "rel": 6,
+      "note": [
+       "played"
+      ],
+      "game": "whot"
+     },
+     "reply": "It becomes your thing — every siesta, under the bunk."
+    },
+    {
+     "label": "📚 \"After prep, I wan read\"",
+     "fx": {
+      "rel": -1
+     },
+     "reply": "{name} shrugs. \"Book worm.\""
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    2,
+    5
+   ],
+   "when": [
+    "rel:char>=50"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "dami_zara",
+   "char": "k_dami",
+   "title": "{name} and Zara",
+   "emoji": "💎",
+   "text": "{name} has been sitting with Zara at every meal. Zara's provisions are endless. Today they walk past you without waving.",
+   "choices": [
+    {
+     "label": "🫂 Ask {name} to come back to your table",
+     "fx": {
+      "rel": 6,
+      "trust": 6
+     },
+     "reply": "\"Sorry, my person… her chin-chin just sweet pass.\" They laugh. You're fine."
+    },
+    {
+     "label": "🤝 Invite Zara to sit with both of you",
+     "fx": {
+      "rel": {
+       "k_zara": 8,
+       "char": 6
+      },
+      "note": [
+       "helped"
+      ]
+     },
+     "reply": "Zara looks surprised to be invited somewhere without her provisions. The three of you laugh till the prefect shouts."
+    },
+    {
+     "label": "😤 Sulk",
+     "fx": {
+      "rel": -6,
+      "arc": "jealous"
+     },
+     "reply": "You eat alone. {name} notices. Nobody says anything."
+    }
+   ],
+   "year": 2,
+   "term": [
+    1,
+    2
+   ],
+   "week": [
+    2,
+    7
+   ],
+   "when": [
+    "present:k_zara",
+    "rel:char>=45"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "dami_divorce",
+   "char": "k_dami",
+   "title": "Something's Wrong With {name}",
+   "emoji": "🌧️",
+   "text": "{name} hasn't eaten properly in two days. Their test scores are falling and they jump when anybody calls their name. Today they're sitting alone behind the hostel.",
+   "choices": [
+    {
+     "label": "🫂 Sit with them and ask, gently",
+     "fx": {
+      "rel": 10,
+      "trust": 15,
+      "note": [
+       "helped"
+      ],
+      "arc": "supported"
+     },
+     "reply": "Long silence. Then: \"My parents are separating. Nobody at home is talking.\" You sit there until the bell. \"Thank you for asking,\" they say."
+    },
+    {
+     "label": "📚 Help with their notes instead",
+     "fx": {
+      "rel": 5,
+      "knowledge": {
+       "any": 2
+      }
+     },
+     "reply": "You copy notes together. {name} is grateful, but whatever it is stays unsaid."
+    },
+    {
+     "label": "🙈 Give them space",
+     "fx": {
+      "rel": -5,
+      "arc": "missed"
+     },
+     "reply": "You leave them alone. Later you hear from others what was wrong. You wish you'd asked."
+    }
+   ],
+   "year": 3,
+   "term": [
+    1,
+    2
+   ],
+   "week": [
+    3,
+    8
+   ],
+   "when": [
+    "rel:char>=40"
+   ],
+   "priority": 8,
+   "ignore": {
+    "fx": {
+     "rel": -6,
+     "arc": "missed"
+    },
+    "text": "{name} waited behind the hostel. You never came."
+   },
+   "how": "call"
+  },
+  {
+   "id": "dami_secret",
+   "char": "k_dami",
+   "title": "\"Is It True?\"",
+   "emoji": "🤐",
+   "text": "Bisola corners you by the tap, notebook ready: \"Is it true {name}'s parents are divorcing? I heard it from somebody.\"",
+   "choices": [
+    {
+     "label": "🤐 \"Mind your own business, Bisola\"",
+     "fx": {
+      "trust": 12,
+      "note": [
+       "kept_secret"
+      ]
+     },
+     "reply": "Bisola sniffs and walks off. {name} never finds out how close the secret came."
+    },
+    {
+     "label": "🗣️ Tell her",
+     "fx": {
+      "trust": -40,
+      "rel": -20,
+      "note": [
+       "told_secret"
+      ],
+      "arc": "betrayed"
+     },
+     "reply": "By dinner the whole class knows. {name} looks at you across the dining hall like a stranger."
+    }
+   ],
+   "year": 3,
+   "term": [
+    2,
+    3
+   ],
+   "when": [
+    "arc:char=supported",
+    "present:k_bisola"
+   ],
+   "how": "scene"
+  },
+  {
+   "id": "dami_triangle",
+   "char": "k_dami",
+   "title": "\"I Like Tams Too\"",
+   "emoji": "💔",
+   "text": "{name} finally says it: \"I like Tams. I know you do too. I no want make this thing scatter us.\"",
+   "choices": [
+    {
+     "label": "🤝 \"Friendship first. Always.\"",
+     "fx": {
+      "rel": 12,
+      "trust": 10,
+      "crush": {
+       "k_tams": -10
+      },
+      "end": "best"
+     },
+     "reply": "{name} hugs you. \"My person.\" Whatever happens with Tams, this stays."
+    },
+    {
+     "label": "😤 \"Then may the best person win\"",
+     "fx": {
+      "rel": -15,
+      "arc": "fallout"
+     },
+     "reply": "You both stop sitting together. The dormitory feels bigger."
+    }
+   ],
+   "year": 5,
+   "term": [
+    1,
+    2
+   ],
+   "when": [
+    "present:k_tams",
+    "rel:char>=40",
+    "!arc:char=betrayed"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "dami_mend",
+   "char": "k_dami",
+   "title": "Make Up?",
+   "emoji": "🕊️",
+   "text": "It's been weeks. {name} is alone at the tap with two buckets.",
+   "choices": [
+    {
+     "label": "🙏 Carry one bucket and apologise",
+     "fx": {
+      "rel": 15,
+      "trust": 10,
+      "arc": "mended",
+      "note": [
+       "apologised"
+      ]
+     },
+     "reply": "\"I missed you, you this stubborn somebody.\" You walk back together, splashing water everywhere."
+    },
+    {
+     "label": "🚶 Walk past",
+     "fx": {
+      "rel": -5,
+      "end": "low"
+     },
+     "reply": "Pride is heavy. So is a bucket."
+    }
+   ],
+   "year": [
+    5,
+    6
+   ],
+   "when": [
+    "arc:char=fallout"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "dami_sign",
+   "char": "k_dami",
+   "title": "First Signature",
+   "emoji": "✍️",
+   "text": "Sign-out week. {name} holds out a marker before anyone else can: \"You first. You were always first.\"",
+   "choices": [
+    {
+     "label": "✍️ Sign their shirt — and hand them yours",
+     "fx": {
+      "rel": 10,
+      "end": "best",
+      "note": [
+       "signed_shirt"
+      ]
+     },
+     "reply": "\"My person — JSS1 to SS3.\" They write the same on yours. Neither of you can talk for a minute."
+    },
+    {
+     "label": "😅 Make a joke of it",
+     "fx": {
+      "rel": 4
+     },
+     "reply": "You both laugh. Some things are too big to say."
+    }
+   ],
+   "year": 6,
+   "term": 3,
+   "week": [
+    8,
+    10
+   ],
+   "when": [
+    "rel:char>=60"
+   ],
+   "priority": 9,
+   "how": "call"
+  },
+  {
+   "id": "dera_report",
+   "char": "k_dera",
+   "title": "\"Second Position?\"",
+   "emoji": "📜",
+   "text": "{name} finds you with the report cards: \"You came top three. Interesting.\" They adjust their glasses. \"Next term I will not leave anything for you.\"",
+   "choices": [
+    {
+     "label": "🤝 \"Make we read together instead\"",
+     "fx": {
+      "rel": 8,
+      "rivalry": -5,
+      "arc": "partners"
+     },
+     "reply": "{name} hesitates, then nods. \"Library. 4 PM. Don't be late.\""
+    },
+    {
+     "label": "😏 \"Catch me if you can\"",
+     "fx": {
+      "rivalry": 20,
+      "respect": 10,
+      "arc": "rivals",
+      "path": {
+       "scholar": 2
+      }
+     },
+     "reply": "\"Point of correction: I won't need to catch you. I'm ahead.\" Game on."
+    },
+    {
+     "label": "🙇 \"You deserve first\"",
+     "fx": {
+      "rel": 3,
+      "respect": -5
+     },
+     "reply": "{name} looks almost disappointed. \"Don't give up so easily.\""
+    }
+   ],
+   "year": 1,
+   "term": 2,
+   "week": [
+    1,
+    3
+   ],
+   "when": [
+    "pos:3"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "dera_tease",
+   "char": "k_dera",
+   "title": "\"Some People Came to Play\"",
+   "emoji": "📜",
+   "text": "{name} glances at your report card: \"Hmm. Some people came to play, I see.\"",
+   "choices": [
+    {
+     "label": "🔥 \"Watch me next term\"",
+     "fx": {
+      "rivalry": 10,
+      "respect": 5,
+      "path": {
+       "scholar": 1
+      }
+     },
+     "reply": "\"I'll be watching,\" {name} says. They sound like they mean it."
+    },
+    {
+     "label": "📚 \"Teach me your way\"",
+     "fx": {
+      "rel": 6,
+      "arc": "partners",
+      "knowledge": {
+       "any": 2
+      }
+     },
+     "reply": "{name} blinks, then pulls out a timetable written in three colours."
+    }
+   ],
+   "year": 1,
+   "term": 2,
+   "week": [
+    1,
+    3
+   ],
+   "when": [
+    "!pos:3"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "dera_quiz",
+   "char": "k_dera",
+   "title": "The Quiz Team",
+   "emoji": "🏆",
+   "text": "Mrs. Johnson picks you and {name} for the inter-school quiz. {name}: \"We need to practise. Every day. I've made a schedule.\"",
+   "choices": [
+    {
+     "label": "📚 Practise together every day",
+     "fx": {
+      "rel": 8,
+      "knowledge": {
+       "any": 4
+      },
+      "arc": "partners",
+      "path": {
+       "scholar": 2
+      }
+     },
+     "reply": "Two weeks of drills. You win the semi-final — {name} high-fives you, then pretends it didn't happen."
+    },
+    {
+     "label": "🏅 Fight for the team captaincy",
+     "fx": {
+      "rivalry": 12,
+      "respect": 8
+     },
+     "reply": "You argue about who answers buzzers. You lose in the final — but the rivalry is legendary."
+    }
+   ],
+   "year": 2,
+   "term": [
+    1,
+    2
+   ],
+   "when": [
+    "present:char"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "dera_expo",
+   "char": "k_dera",
+   "title": "The Expo",
+   "emoji": "📄",
+   "text": "{name} pulls you behind the library, shaking: \"Osas has BECE expo. Maths and English. I can't come second. My father will…\" They can't finish.",
+   "choices": [
+    {
+     "label": "🛑 Talk them out of it",
+     "fx": {
+      "trust": 20,
+      "rel": 10,
+      "note": [
+       "stopped_expo"
+      ],
+      "end": "best"
+     },
+     "reply": "You talk until the prep bell. {name} tears the paper in half. \"If I fail, I fail honestly. Thank you.\""
+    },
+    {
+     "label": "🤫 Look away",
+     "fx": {
+      "arc": "cheated"
+     },
+     "reply": "You say nothing. {name} walks away with the paper, and with something heavier."
+    },
+    {
+     "label": "📣 Tell the VP",
+     "fx": {
+      "trust": -20,
+      "rivalry": 10,
+      "note": [
+       "snitched_on"
+      ],
+      "rep": {
+       "teachers": 2
+      }
+     },
+     "reply": "The VP raids the hostel. {name} is questioned for hours. They know it was you."
+    },
+    {
+     "label": "🙋 \"Share it with me\"",
+     "fx": {
+      "offence": {
+       "what": "Exam malpractice (BECE expo)",
+       "sev": 2
+      },
+      "arc": "cheated",
+      "note": [
+       {
+        "k": "joined_expo",
+        "who": null
+       }
+      ]
+     },
+     "reply": "The expo turns out to be fake. Worse — the VP found the paper in your locker."
+    }
+   ],
+   "year": 3,
+   "term": 3,
+   "week": [
+    7,
+    9
+   ],
+   "when": [
+    "present:char"
+   ],
+   "priority": 9,
+   "how": "call"
+  },
+  {
+   "id": "dera_panic",
+   "char": "k_dera",
+   "title": "{name} in the Toilet",
+   "emoji": "😮‍💨",
+   "text": "You hear counting from the end cubicle. \"…forty-one, forty-two…\" It's {name}, breathing too fast, counting tiles before the exam.",
+   "choices": [
+    {
+     "label": "🫁 Stay and breathe with them",
+     "fx": {
+      "trust": 25,
+      "rel": 10,
+      "note": [
+       "kept_secret"
+      ],
+      "arc": "trusted"
+     },
+     "reply": "In. Out. Slowly the counting stops. \"Please… don't tell anybody.\" You never do."
+    },
+    {
+     "label": "🩺 Fetch Nurse Grace",
+     "fx": {
+      "rel": 5,
+      "trust": 5
+     },
+     "reply": "Nurse Grace knows exactly what to do. {name} is embarrassed — and grateful."
+    },
+    {
+     "label": "🗣️ Tell the others later",
+     "fx": {
+      "trust": -30,
+      "rivalry": 10,
+      "note": [
+       "told_secret"
+      ]
+     },
+     "reply": "\"The brilliant one dey fear exam!\" {name} hears it everywhere. They never forgive you."
+    }
+   ],
+   "year": 4,
+   "term": [
+    1,
+    3
+   ],
+   "when": [
+    "present:char",
+    "rel:char>=35"
+   ],
+   "how": "scene",
+   "blocks": [
+    "class",
+    "free",
+    "hostel"
+   ]
+  },
+  {
+   "id": "dera_interview",
+   "char": "k_dera",
+   "title": "Mock Interview",
+   "emoji": "🎓",
+   "text": "{name} has a scholarship interview for a school abroad: \"Interview me. Be hard. Be the worst interviewer you can imagine.\"",
+   "choices": [
+    {
+     "label": "🎤 Grill them properly",
+     "fx": {
+      "rel": 10,
+      "trust": 10,
+      "end": "best",
+      "knowledge": {
+       "ENG": 2
+      }
+     },
+     "reply": "You ask the hardest questions you can think of. A month later: \"I got it. You were harder than the real panel.\""
+    },
+    {
+     "label": "😅 Go easy",
+     "fx": {
+      "rel": 3
+     },
+     "reply": "You go easy. {name} rolls their eyes but thanks you anyway."
+    }
+   ],
+   "year": 5,
+   "term": 2,
+   "when": [
+    "rel:char>=55"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "jide_bucket",
+   "char": "k_jide",
+   "title": "\"Your Bucket. Your Milo.\"",
+   "emoji": "😤",
+   "text": "{nick} blocks the corridor, arms folded: \"New student. Your bucket, your Milo. Now.\"",
+   "choices": [
+    {
+     "label": "✊ \"No. Go and fetch your own.\"",
+     "fx": {
+      "respect": 20,
+      "rel": -5,
+      "note": [
+       "stood_up"
+      ],
+      "stats": {
+       "morale": -2
+      }
+     },
+     "reply": "{nick} stares at you for a long time. Then laughs. \"You get mind.\" They walk off. People saw."
+    },
+    {
+     "label": "📣 Report to the house master",
+     "fx": {
+      "note": [
+       "snitched_on"
+      ],
+      "rel": -15,
+      "trust": -20,
+      "arc": "enemies"
+     },
+     "reply": "{nick} gets punished. Later, passing your bunk: \"Snitch. I go remember.\""
+    },
+    {
+     "label": "🥛 Hand it over",
+     "fx": {
+      "take": {
+       "milo": 1
+      },
+      "respect": -10,
+      "arc": "victim"
+     },
+     "reply": "{nick} takes it with a smirk. It won't be the last time."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    1,
+    2
+   ],
+   "priority": 7,
+   "ignore": {
+    "fx": {
+     "take": {
+      "milo": 1
+     },
+     "respect": -5
+    },
+    "text": "You avoided {nick} — so they helped themselves to your Milo."
+   },
+   "how": "call"
+  },
+  {
+   "id": "jide_letter",
+   "char": "k_jide",
+   "title": "{nick} and the Letter",
+   "emoji": "✉️",
+   "text": "You find {nick} alone by the tap, frowning at a punishment letter, lips moving slowly. You realise the paper is upside down.",
+   "choices": [
+    {
+     "label": "📖 Quietly offer to read it with them",
+     "fx": {
+      "trust": 30,
+      "rel": 15,
+      "note": [
+       "helped"
+      ],
+      "arc": "reading"
+     },
+     "reply": "{nick} goes rigid. Then, very quietly: \"Nobody must know.\" You read it together, slowly, one word at a time."
+    },
+    {
+     "label": "😂 Laugh",
+     "fx": {
+      "trust": -30,
+      "rel": -15,
+      "note": [
+       "laughed_at"
+      ],
+      "arc": "enemies"
+     },
+     "reply": "{nick} crumples the letter. \"Laugh. Go on. I go show you something.\""
+    },
+    {
+     "label": "🚶 Pretend you saw nothing",
+     "fx": {},
+     "reply": "You walk on. Some secrets are not yours."
+    }
+   ],
+   "year": [
+    1,
+    2
+   ],
+   "week": [
+    4,
+    9
+   ],
+   "when": [
+    "!arc:char=enemies"
+   ],
+   "how": "scene",
+   "blocks": [
+    "free",
+    "hostel"
+   ],
+   "priority": 8
+  },
+  {
+   "id": "jide_lessons",
+   "char": "k_jide",
+   "title": "Secret Lessons",
+   "emoji": "📖",
+   "text": "{nick} finds you after prep: \"Those lessons… make we continue. Every night. Nobody must know.\"",
+   "choices": [
+    {
+     "label": "📚 Teach them every night",
+     "fx": {
+      "rel": 10,
+      "trust": 10,
+      "stats": {
+       "rest": -5
+      },
+      "arc": "reader",
+      "end": "best"
+     },
+     "reply": "Weeks of whispered reading under a torchlight. One night {nick} reads a whole page alone and nearly cries."
+    },
+    {
+     "label": "😓 \"I no get time\"",
+     "fx": {
+      "rel": -5,
+      "arc": "struggling"
+     },
+     "reply": "\"Okay.\" Just that. {nick} doesn't ask again."
+    }
+   ],
+   "year": 2,
+   "when": [
+    "arc:char=reading"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "jide_remember",
+   "char": "k_jide",
+   "title": "{nick} Remembers",
+   "emoji": "👊",
+   "text": "{nick} blocks your path: \"You remember {when:snitched_on}? You sold me out. Today I go collect.\"",
+   "choices": [
+    {
+     "label": "🙏 Apologise — properly",
+     "fx": {
+      "rel": 8,
+      "trust": 8,
+      "note": [
+       "apologised"
+      ]
+     },
+     "reply": "{nick} wasn't expecting that. \"…Okay. We dey even.\""
+    },
+    {
+     "label": "✊ Stand your ground",
+     "fx": {
+      "respect": 12,
+      "stats": {
+       "health": -8,
+       "morale": -3
+      },
+      "note": [
+       "fought"
+      ]
+     },
+     "reply": "It turns into a scuffle before Senior Chuka pulls you apart. Nobody wins. Everybody saw you didn't run."
+    },
+    {
+     "label": "📣 Call your school parent",
+     "fx": {
+      "rel": -5,
+      "favour": 2
+     },
+     "reply": "Senior Chuka appears. {nick} backs off — for now."
+    }
+   ],
+   "year": 2,
+   "when": [
+    "ledger:snitched_on:char"
+   ],
+   "priority": 7,
+   "how": "call"
+  },
+  {
+   "id": "jide_commander",
+   "char": "k_jide",
+   "title": "{nick} vs Commander",
+   "emoji": "⚔️",
+   "text": "Commander slaps a small JSS1 boy for \"looking at him\". {nick} steps between them: \"Senior, e don do.\" The whole corridor goes silent.",
+   "choices": [
+    {
+     "label": "🧍 Stand beside {nick}",
+     "fx": {
+      "rel": {
+       "k_commander": -10,
+       "char": 15
+      },
+      "respect": 15,
+      "arc": "protector"
+     },
+     "reply": "Two of you. Commander looks from {nick} to you… and walks off cursing. The JSS1 boy will never forget it."
+    },
+    {
+     "label": "🤐 Stay out of it",
+     "fx": {
+      "rel": -5
+     },
+     "reply": "{nick} takes two strokes of the belt alone. They don't look at you after."
+    }
+   ],
+   "year": 2,
+   "term": [
+    2,
+    3
+   ],
+   "when": [
+    "present:k_commander",
+    "!arc:char=enemies"
+   ],
+   "how": "scene",
+   "priority": 7
+  },
+  {
+   "id": "jide_bece",
+   "char": "k_jide",
+   "title": "{nick}'s BECE",
+   "emoji": "📋",
+   "text": "BECE results are pinned on the noticeboard.",
+   "choices": [
+    {
+     "label": "📋 Look for {nick}'s name",
+     "fx": {
+      "end": "best",
+      "clout": 2
+     },
+     "reply": "{nick} passed — every subject. They find you in the crowd and lift you off the ground. \"YOU! Na you do this!\"",
+     "when": [
+      "arc:char=reader"
+     ]
+    },
+    {
+     "label": "📋 Look for {nick}'s name",
+     "fx": {
+      "leave": "is repeating JSS3 and drops out of your set",
+      "end": "low"
+     },
+     "reply": "{nick} didn't make it. They're repeating JSS3. They pack their box without a word.",
+     "when": [
+      "!arc:char=reader"
+     ]
+    }
+   ],
+   "year": 3,
+   "term": 3,
+   "week": [
+    10,
+    10
+   ],
+   "how": "scene",
+   "priority": 9
+  },
+  {
+   "id": "jide_prefect",
+   "char": "k_jide",
+   "title": "Labour Prefect",
+   "emoji": "🧹",
+   "text": "The prefect list goes up. Under Labour Prefect: {full}. {nick} finds you: \"Me. A prefect. Who for think am?\"",
+   "choices": [
+    {
+     "label": "😄 \"I always knew\"",
+     "fx": {
+      "rel": 10,
+      "end": "best",
+      "prefect": {
+       "char": "labourPrefect"
+      }
+     },
+     "reply": "{nick} spends SS3 protecting juniors from the kind of senior they used to be."
+    }
+   ],
+   "year": 6,
+   "term": 1,
+   "week": [
+    2,
+    4
+   ],
+   "when": [
+    "arc:char=reader"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "emeka_board",
+   "char": "k_emeka",
+   "title": "\"WHO DID THIS?\"",
+   "emoji": "😂",
+   "text": "{name} draws a perfect Mr. Bassey on the blackboard — cane, belly and all. The class is crying with laughter. Then Mr. Bassey walks in.\n\n\"WHO. DID. THIS?\"",
+   "choices": [
+    {
+     "label": "🙋 Take the blame with {name}",
+     "fx": {
+      "respect": 15,
+      "rel": 12,
+      "note": [
+       "defended"
+      ],
+      "discipline": "Defacing the blackboard"
+     },
+     "reply": "You both kneel at the back for the whole period. {name} whispers impressions the entire time. Worth it."
+    },
+    {
+     "label": "👉 Point at {name}",
+     "fx": {
+      "note": [
+       "snitched_on"
+      ],
+      "rel": -15,
+      "trust": -20,
+      "rep": {
+       "coursemates": -3
+      }
+     },
+     "reply": "{name} gets three strokes. The class looks at you differently."
+    },
+    {
+     "label": "🤐 Stay silent with everyone",
+     "fx": {
+      "stats": {
+       "rest": -8,
+       "morale": -3
+      },
+      "rel": 4
+     },
+     "reply": "\"Then EVERYBODY frog jump!\" The whole class suffers together. Somehow, it bonds you."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    2,
+    6
+   ],
+   "how": "scene",
+   "blocks": [
+    "class"
+   ],
+   "priority": 6
+  },
+  {
+   "id": "emeka_skit",
+   "char": "k_emeka",
+   "title": "Cultural Day Skit",
+   "emoji": "🎭",
+   "text": "{name} has written a skit for Cultural Day: \"The Principal's Generator\". \"I need you for the main role. You get the face.\"",
+   "choices": [
+    {
+     "label": "🎭 Take the role",
+     "fx": {
+      "rel": 8,
+      "clout": 6,
+      "stats": {
+       "morale": 6
+      },
+      "path": {
+       "popular": 2
+      }
+     },
+     "reply": "The skit brings the house down. Even the principal laughs — once."
+    },
+    {
+     "label": "🙅 \"Stage fright, sorry\"",
+     "fx": {
+      "rel": -3
+     },
+     "reply": "{name} finds someone else. You laugh from the audience."
+    }
+   ],
+   "year": 2,
+   "term": 2,
+   "week": [
+    3,
+    7
+   ],
+   "how": "call"
+  },
+  {
+   "id": "emeka_father",
+   "char": "k_emeka",
+   "title": "{name} Goes Home",
+   "emoji": "🕯️",
+   "text": "The house master calls {name} out of class. By evening, everybody knows: his father has passed. He's going home for the burial.",
+   "choices": [
+    {
+     "label": "✍️ Write him a letter",
+     "fx": {
+      "rel": 12,
+      "trust": 15,
+      "note": [
+       "helped"
+      ]
+     },
+     "reply": "Weeks later he comes back with your letter folded in his pocket. \"You wrote three pages. I read am every night.\""
+    },
+    {
+     "label": "💰 Collect a class contribution",
+     "fx": {
+      "money": -500,
+      "rel": 10,
+      "rep": {
+       "coursemates": 3
+      }
+     },
+     "reply": "The class raises ₦8,400. He tries to joke about it and can't."
+    },
+    {
+     "label": "🤷 Leave it to the teachers",
+     "fx": {
+      "note": [
+       "ignored"
+      ]
+     },
+     "reply": "He comes back quieter. Something has changed."
+    }
+   ],
+   "year": 4,
+   "term": [
+    1,
+    2
+   ],
+   "when": [
+    "present:char"
+   ],
+   "priority": 8,
+   "how": "call"
+  },
+  {
+   "id": "emeka_laugh",
+   "char": "k_emeka",
+   "title": "Make Him Laugh Again",
+   "emoji": "😶",
+   "text": "{name} hasn't made a single joke all term. The class is too quiet.",
+   "choices": [
+    {
+     "label": "🎭 Do your worst Mr. Bassey impression for him",
+     "fx": {
+      "rel": 10,
+      "end": "best",
+      "stats": {
+       "morale": 4
+      }
+     },
+     "reply": "It's terrible. {name} laughs so hard he cries — and then he's back. \"Your impression no reach mine at all.\""
+    },
+    {
+     "label": "🤐 Give him time",
+     "fx": {
+      "rel": 2
+     },
+     "reply": "Time helps, slowly."
+    }
+   ],
+   "year": 5,
+   "when": [
+    "ledger:helped:char"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "emeka_mc",
+   "char": "k_emeka",
+   "title": "Co-host the Send-forth?",
+   "emoji": "🎤",
+   "text": "{name} is MC for the send-forth party: \"Co-host with me. You and me. One last show.\"",
+   "choices": [
+    {
+     "label": "🎤 \"Let's go!\"",
+     "fx": {
+      "rel": 8,
+      "clout": 5,
+      "end": "best"
+     },
+     "reply": "You two run the whole night. The juniors will talk about it for years."
+    },
+    {
+     "label": "🙈 \"I go dey watch\"",
+     "fx": {},
+     "reply": "You watch him own the stage."
+    }
+   ],
+   "year": 6,
+   "term": 3,
+   "week": [
+    7,
+    9
+   ],
+   "when": [
+    "rel:char>=50"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "halima_board",
+   "char": "k_halima",
+   "title": "The Rough Sheet",
+   "emoji": "🧮",
+   "text": "Mr. Bassey is still writing the problem on the board. {name} has already solved it on her rough sheet — two lines, perfect. Nobody notices except you.",
+   "choices": [
+    {
+     "label": "🧮 Ask her to explain it after class",
+     "fx": {
+      "rel": 8,
+      "trust": 5,
+      "knowledge": {
+       "MTH": 3
+      }
+     },
+     "reply": "She explains it in four words and one diagram. Suddenly it's obvious."
+    },
+    {
+     "label": "📣 \"Sir! Halima don solve am!\"",
+     "fx": {
+      "rel": -4,
+      "respect": -5
+     },
+     "reply": "Every head turns. {name} looks at her desk like she wants to disappear."
+    },
+    {
+     "label": "👀 Keep the secret",
+     "fx": {
+      "rel": 3
+     },
+     "reply": "She notices you noticed. A tiny nod."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    3,
+    7
+   ],
+   "how": "scene",
+   "blocks": [
+    "class"
+   ],
+   "small": true
+  },
+  {
+   "id": "halima_olympiad",
+   "char": "k_halima",
+   "title": "The Olympiad Form",
+   "emoji": "🏅",
+   "text": "There's a state Mathematics Olympiad form on the noticeboard. {name} has stood in front of it three days in a row, but she hasn't signed it.",
+   "choices": [
+    {
+     "label": "✍️ \"We sign together. I'll be your team.\"",
+     "fx": {
+      "rel": 10,
+      "trust": 8,
+      "knowledge": {
+       "MTH": 4
+      },
+      "arc": "olympiad",
+      "path": {
+       "scholar": 2
+      }
+     },
+     "reply": "She signs. You come second-to-last; she comes FIRST in the state."
+    },
+    {
+     "label": "🤷 \"Maybe next year\"",
+     "fx": {},
+     "reply": "The form comes down on Friday."
+    }
+   ],
+   "year": 2,
+   "term": [
+    1,
+    2
+   ],
+   "when": [
+    "rel:char>=40"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "halima_letter",
+   "char": "k_halima",
+   "title": "The Letter From Home",
+   "emoji": "✉️",
+   "text": "{name} shows you a letter, hands shaking. Her uncle wants her withdrawn after JSS3. \"He says girls don't need more school. My mother is fighting, but…\"",
+   "choices": [
+    {
+     "label": "🏛️ Go with her to the principal",
+     "fx": {
+      "arc": "staying",
+      "trust": 25,
+      "rel": 15,
+      "rep": {
+       "teachers": 2
+      },
+      "end": "best"
+     },
+     "reply": "Dr. Bamidele reads the letter and picks up the phone. A scholarship. A meeting with her uncle. She stays."
+    },
+    {
+     "label": "✍️ Get Miss Ekwueme and the teachers to write",
+     "fx": {
+      "arc": "staying",
+      "trust": 20,
+      "rel": 12,
+      "clout": 3
+     },
+     "reply": "Twelve teachers sign. Her uncle backs down. \"I've never seen my name in so many people's handwriting,\" she says."
+    },
+    {
+     "label": "🤲 \"I'm so sorry…\"",
+     "fx": {
+      "arc": "leaving",
+      "rel": 5
+     },
+     "reply": "She folds the letter away. \"It's okay. It's not your fight.\""
+    }
+   ],
+   "year": 3,
+   "term": 3,
+   "week": [
+    4,
+    8
+   ],
+   "priority": 9,
+   "ignore": {
+    "fx": {
+     "arc": "leaving"
+    },
+    "text": "{name} waited for you by the library. Nobody else knew."
+   },
+   "how": "call"
+  },
+  {
+   "id": "halima_leaves",
+   "char": "k_halima",
+   "title": "Goodbye, {name}",
+   "emoji": "🧕🏾",
+   "text": "Her uncle's car is at the gate. {name} hugs you once, quickly, and presses a folded paper into your hand: a perfect geometry proof, signed \"for my friend\".",
+   "choices": [
+    {
+     "label": "💌 Keep it forever",
+     "fx": {
+      "leave": "was withdrawn after JSS3",
+      "end": "low",
+      "note": [
+       "said_goodbye"
+      ]
+     },
+     "reply": "You keep the proof in your Bible/Qur'an for six years."
+    }
+   ],
+   "year": 3,
+   "term": 3,
+   "week": [
+    10,
+    10
+   ],
+   "when": [
+    "!arc:char=staying"
+   ],
+   "how": "scene",
+   "priority": 9
+  },
+  {
+   "id": "halima_nationals",
+   "char": "k_halima",
+   "title": "Nationals",
+   "emoji": "🥇",
+   "text": "{name} made the national team. \"They said I can bring one friend as my 'team'. Will you come?\"",
+   "choices": [
+    {
+     "label": "🎒 Of course",
+     "fx": {
+      "rel": 10,
+      "end": "best",
+      "stats": {
+       "morale": 8
+      }
+     },
+     "reply": "Abuja. A hotel with a swimming pool. {name} wins gold and dedicates it \"to my school and my friend\"."
+    }
+   ],
+   "year": 5,
+   "term": 2,
+   "when": [
+    "arc:char=staying"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "osas_bucket",
+   "char": "k_osas",
+   "title": "Business Proposal",
+   "emoji": "💸",
+   "text": "{nick} holds up a blue bucket: \"Brand new. ₦500. Special price for you.\"\n\nIt's YOUR bucket. Your name is written on it in marker.",
+   "choices": [
+    {
+     "label": "😂 Laugh — \"My guy, partner with me instead\"",
+     "fx": {
+      "rel": 8,
+      "arc": "partners",
+      "path": {
+       "hustle": 1
+      }
+     },
+     "reply": "\"Ah! You get business sense!\" A partnership is born."
+    },
+    {
+     "label": "📣 Report him",
+     "fx": {
+      "note": [
+       "snitched_on"
+      ],
+      "rel": -10,
+      "trust": -10
+     },
+     "reply": "He gets punished. He also never sells you anything ever again."
+    },
+    {
+     "label": "💰 Buy it back for ₦100",
+     "fx": {
+      "money": -100,
+      "rel": 3,
+      "clout": 1
+     },
+     "reply": "\"Customer is king!\" He even polishes it."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    1,
+    2
+   ],
+   "how": "call"
+  },
+  {
+   "id": "osas_provisions",
+   "char": "k_osas",
+   "title": "The Provision Business",
+   "emoji": "🧺",
+   "text": "{nick}: \"Mama Bisi raised her prices. We sell Gala and pure water in the hostel at night. Put in ₦300, you double am by Friday.\"",
+   "choices": [
+    {
+     "label": "🤝 Invest ₦300",
+     "fx": {
+      "money": 300,
+      "rel": 6,
+      "path": {
+       "hustle": 3
+      }
+     },
+     "reply": "By Friday you have ₦600. {nick} even shows you the books. Honest hustle."
+    },
+    {
+     "label": "🙅 \"Too risky\"",
+     "fx": {},
+     "reply": "He shrugs. \"Your loss.\""
+    }
+   ],
+   "year": 2,
+   "term": [
+    1,
+    2
+   ],
+   "when": [
+    "arc:char=partners"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "osas_mum",
+   "char": "k_osas",
+   "title": "Where the Money Goes",
+   "emoji": "📞",
+   "text": "You catch {nick} at the school phone, voice soft: \"Mummy, I don send am. Buy the drugs first.\" He sees you.",
+   "choices": [
+    {
+     "label": "🤐 \"I didn't hear anything\"",
+     "fx": {
+      "trust": 20,
+      "rel": 8,
+      "note": [
+       "kept_secret"
+      ]
+     },
+     "reply": "\"…Thank you. Make e stay that way.\" He tells you the whole story later anyway."
+    },
+    {
+     "label": "🗣️ Tease him about it",
+     "fx": {
+      "trust": -20,
+      "note": [
+       "laughed_at"
+      ]
+     },
+     "reply": "His face closes like a door."
+    }
+   ],
+   "year": 3,
+   "when": [
+    "rel:char>=50"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "osas_expo",
+   "char": "k_osas",
+   "title": "The Expo Business",
+   "emoji": "📄",
+   "text": "{nick} has WAEC mock \"expo\" and a list of buyers. \"Twenty people don pay. I need one partner wey I fit trust. ₦2,000 your share.\"",
+   "choices": [
+    {
+     "label": "🛑 Talk him out of it",
+     "fx": {
+      "trust": 15,
+      "rel": 5,
+      "arc": "straight",
+      "end": "best",
+      "note": [
+       "stopped_expo"
+      ]
+     },
+     "reply": "It takes all night. He burns the papers. \"If my mother hear, she go die. You don save me.\""
+    },
+    {
+     "label": "💸 Join him",
+     "fx": {
+      "money": 2000,
+      "arc": "expo",
+      "note": [
+       "joined_expo"
+      ]
+     },
+     "reply": "Easy money. Too easy."
+    },
+    {
+     "label": "📣 Report him to the VP",
+     "fx": {
+      "note": [
+       "snitched_on"
+      ],
+      "leave": "was expelled for selling exam expo",
+      "end": "low",
+      "rep": {
+       "teachers": 3
+      }
+     },
+     "reply": "The VP storms the hostel. {nick} is expelled by Monday. He never looks back at you."
+    },
+    {
+     "label": "🤷 Stay out of it",
+     "fx": {
+      "arc": "expo"
+     },
+     "reply": "You say nothing. That's a choice too."
+    }
+   ],
+   "year": 5,
+   "term": 3,
+   "week": [
+    5,
+    8
+   ],
+   "priority": 9,
+   "when": [
+    "present:char"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "osas_caught",
+   "char": "k_osas",
+   "title": "Caught",
+   "emoji": "🚨",
+   "text": "The VP's raid finds {nick}'s expo list. Your name is on it.",
+   "choices": [
+    {
+     "label": "😰 Face the VP",
+     "fx": {
+      "offence": {
+       "what": "Exam malpractice (expo)",
+       "sev": 3
+      },
+      "leave": "was expelled for selling exam expo",
+      "end": "low"
+     },
+     "reply": "{nick} is expelled. You're on final warning.",
+     "when": [
+      "ledger:joined_expo"
+     ]
+    },
+    {
+     "label": "😮 Watch it happen",
+     "fx": {
+      "leave": "was expelled for selling exam expo",
+      "end": "low"
+     },
+     "reply": "{nick} is expelled. He packs his box alone.",
+     "when": [
+      "!ledger:joined_expo"
+     ]
+    }
+   ],
+   "year": 5,
+   "term": 3,
+   "week": [
+    9,
+    10
+   ],
+   "when": [
+    "arc:char=expo"
+   ],
+   "how": "scene",
+   "priority": 9
+  },
+  {
+   "id": "osas_shop",
+   "char": "k_osas",
+   "title": "The First Receipt",
+   "emoji": "🧾",
+   "text": "A letter from Benin, in {nick}'s mother's careful handwriting, and a receipt: \"Igbinedion Provisions — Customer No. 1\". It's made out to you.",
+   "choices": [
+    {
+     "label": "🧾 Keep it in your box",
+     "fx": {
+      "rel": 6,
+      "end": "best",
+      "stats": {
+       "morale": 6
+      }
+     },
+     "reply": "{nick}: \"She say make I thank the friend wey stop me.\""
+    }
+   ],
+   "year": 6,
+   "term": [
+    2,
+    3
+   ],
+   "when": [
+    "arc:char=straight"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "bisola_note",
+   "char": "k_bisola",
+   "title": "Your Name in the Notebook",
+   "emoji": "📓",
+   "text": "{nick} writes your name in her little notebook: \"Talking after lights out.\" She doesn't even look up.",
+   "choices": [
+    {
+     "label": "🍛 Invite her to sit with you at dinner",
+     "fx": {
+      "rel": 10,
+      "trust": 10,
+      "arc": "included"
+     },
+     "reply": "She stares. \"…Why?\" But she comes. She doesn't write your name again."
+    },
+    {
+     "label": "😠 Confront her",
+     "fx": {
+      "rel": -5,
+      "respect": 5
+     },
+     "reply": "\"Rules are rules,\" she says, voice shaking."
+    },
+    {
+     "label": "🙏 Beg her",
+     "fx": {
+      "rel": 2
+     },
+     "reply": "She sighs and crosses it out. Just this once."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    2,
+    6
+   ],
+   "small": true,
+   "how": "call"
+  },
+  {
+   "id": "bisola_notebook",
+   "char": "k_bisola",
+   "title": "The Missing Notebook",
+   "emoji": "🔍",
+   "text": "You find {nick}'s notebook in the bin behind the hostel. Emeka grins: \"Read am! The whole class gist dey inside!\"",
+   "choices": [
+    {
+     "label": "📓 Return it to her — unread",
+     "fx": {
+      "trust": 25,
+      "rel": 15,
+      "note": [
+       "kept_secret"
+      ],
+      "arc": "included"
+     },
+     "reply": "She clutches it. \"You didn't read it?\" \"No.\" She believes you. Nobody has ever done that."
+    },
+    {
+     "label": "👀 Read it first",
+     "fx": {
+      "note": [
+       {
+        "k": "read_notebook",
+        "who": "char"
+       }
+      ]
+     },
+     "reply": "Pages of names… and, at the back: \"Things I would say if anybody asked me.\" You put it back, feeling strange."
+    },
+    {
+     "label": "📢 Read it out to the class",
+     "fx": {
+      "rel": -25,
+      "trust": -30,
+      "clout": 3,
+      "arc": "enemy"
+     },
+     "reply": "The class roars. {nick} runs out. You were funny for one evening."
+    }
+   ],
+   "year": 2,
+   "term": [
+    1,
+    2
+   ],
+   "how": "call"
+  },
+  {
+   "id": "bisola_alone",
+   "char": "k_bisola",
+   "title": "{nick} Alone",
+   "emoji": "🌧️",
+   "text": "{nick} eats alone every day now. Someone poured water on her bed. She's pretending not to care.",
+   "choices": [
+    {
+     "label": "🏴 Invite her into your squad / group",
+     "fx": {
+      "rel": 15,
+      "trust": 10,
+      "arc": "included"
+     },
+     "reply": "She doesn't smile at first. By Friday she's organising your study timetable."
+    },
+    {
+     "label": "🤷 Not your business",
+     "fx": {},
+     "reply": "It isn't. Or is it?"
+    }
+   ],
+   "year": 3,
+   "when": [
+    "!arc:char=included"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "bisola_prefect",
+   "char": "k_bisola",
+   "title": "\"Will You Endorse Me?\"",
+   "emoji": "🎖️",
+   "text": "Prefect selection is coming. {nick}: \"The principal asks seniors for endorsements. Will you… endorse me for Head Girl?\"",
+   "choices": [
+    {
+     "label": "✍️ Endorse her",
+     "fx": {
+      "rel": 10,
+      "end": "best",
+      "prefect": {
+       "char": "headPrefect"
+      }
+     },
+     "reply": "She becomes the fairest Head Girl the school has had in years.",
+     "when": [
+      "gender:f"
+     ]
+    },
+    {
+     "label": "✍️ Endorse her for Head Prefect",
+     "fx": {
+      "rel": 10,
+      "end": "best",
+      "prefect": {
+       "char": "headPrefect"
+      }
+     },
+     "reply": "She becomes the fairest Head Prefect the school has had in years.",
+     "when": [
+      "gender:m"
+     ]
+    },
+    {
+     "label": "🤔 Endorse someone else",
+     "fx": {
+      "rel": -5
+     },
+     "reply": "She understands. Mostly."
+    }
+   ],
+   "year": 6,
+   "term": 1,
+   "week": [
+    1,
+    3
+   ],
+   "when": [
+    "arc:char=included"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "zara_boxes",
+   "char": "k_zara",
+   "title": "Three Chop Boxes",
+   "emoji": "💎",
+   "text": "{name}'s driver carries in her third chop box. She glances at yours: \"Is that all you brought? Cute.\"",
+   "choices": [
+    {
+     "label": "😂 Laugh it off",
+     "fx": {
+      "respect": 5
+     },
+     "reply": "\"Okay, you're funny,\" she admits."
+    },
+    {
+     "label": "🔥 \"At least I carried mine myself\"",
+     "fx": {
+      "rel": -3,
+      "clout": 2
+     },
+     "reply": "The corridor goes \"OHHH\". {name} looks… impressed?"
+    },
+    {
+     "label": "🍪 Ask what's inside hers",
+     "fx": {
+      "rel": 5
+     },
+     "reply": "Pringles. Imported Milo. She gives you one Pringle. Generous, by her standards."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    1,
+    1
+   ],
+   "small": true,
+   "how": "call"
+  },
+  {
+   "id": "zara_visiting",
+   "char": "k_zara",
+   "title": "Nobody Came",
+   "emoji": "🧺",
+   "text": "Visiting Day. Cars everywhere, coolers of jollof, mothers crying. You find {name} hiding in the toilets, eyes red.\n\n\"Nobody came. Again.\"",
+   "choices": [
+    {
+     "label": "🍛 Bring her to share your family's food",
+     "fx": {
+      "rel": 20,
+      "trust": 20,
+      "note": [
+       "shared_food"
+      ],
+      "arc": "friends",
+      "end": "best"
+     },
+     "reply": "She eats your mum's jollof like it's the best food in the world. Your mum adopts her on the spot."
+    },
+    {
+     "label": "🫂 Sit with her for a while",
+     "fx": {
+      "rel": 10,
+      "trust": 10,
+      "arc": "friends"
+     },
+     "reply": "You don't say much. She doesn't need you to."
+    },
+    {
+     "label": "🚶 Leave her be",
+     "fx": {
+      "arc": "alone"
+     },
+     "reply": "You hear her come out much later, face washed, chin up."
+    }
+   ],
+   "year": [
+    1,
+    2
+   ],
+   "week": [
+    3,
+    3
+   ],
+   "dow": 5,
+   "priority": 9,
+   "blocks": [
+    "free",
+    "meal",
+    "hostel"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "zara_scandal",
+   "char": "k_zara",
+   "title": "The Newspaper",
+   "emoji": "📰",
+   "text": "Somebody smuggled in a newspaper. Front page: {name}'s father, a corruption scandal. The whole school is talking. {name} sits very straight at dinner, alone.",
+   "choices": [
+    {
+     "label": "🛡️ Sit with her, loudly",
+     "fx": {
+      "rel": 15,
+      "trust": 10,
+      "clout": -2,
+      "arc": "friends"
+     },
+     "reply": "\"Anybody get something to say?\" Nobody does. She squeezes your hand under the table."
+    },
+    {
+     "label": "🗞️ Join the gossip",
+     "fx": {
+      "rel": -20,
+      "arc": "alone"
+     },
+     "reply": "It's juicy gist. You don't think about her face."
+    }
+   ],
+   "year": 4,
+   "term": [
+    1,
+    2
+   ],
+   "priority": 8,
+   "how": "call"
+  },
+  {
+   "id": "zara_transfer",
+   "char": "k_zara",
+   "title": "Transferred",
+   "emoji": "✈️",
+   "text": "{name}'s mother arrives from London. Two days later, {name} is gone.",
+   "choices": [
+    {
+     "label": "👋 Watch the car go",
+     "fx": {
+      "leave": "was transferred to a school in London",
+      "end": "low"
+     },
+     "reply": "She doesn't look back. Or maybe she does, and you missed it."
+    }
+   ],
+   "year": 4,
+   "term": 3,
+   "week": [
+    1,
+    3
+   ],
+   "when": [
+    "arc:char=alone"
+   ],
+   "how": "scene"
+  },
+  {
+   "id": "zara_party",
+   "char": "k_zara",
+   "title": "The After-Party",
+   "emoji": "🎉",
+   "text": "{name}: \"Send-forth after-party. My aunty's house in town. You're my guest of honour. No arguments.\"",
+   "choices": [
+    {
+     "label": "🎉 Go",
+     "fx": {
+      "rel": 8,
+      "stats": {
+       "morale": 10
+      },
+      "end": "best"
+     },
+     "reply": "Best night of SS3. She gives a speech about \"the person who shared jollof with me in JSS1\"."
+    }
+   ],
+   "year": 6,
+   "term": 3,
+   "week": [
+    8,
+    10
+   ],
+   "when": [
+    "arc:char=friends"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "uche_tuck",
+   "char": "k_uche",
+   "title": "The Tuck Shop Queue",
+   "emoji": "🌶️",
+   "text": "{name} stands near the tuck shop every break, watching. He never joins the queue.",
+   "choices": [
+    {
+     "label": "🍪 Buy two Gala and \"accidentally\" have one extra",
+     "fx": {
+      "rel": 8,
+      "trust": 8,
+      "money": -100,
+      "note": [
+       "shared_food"
+      ]
+     },
+     "reply": "\"You buy two? Okay… I go help you finish am.\" He grins. No pity, just Gala."
+    },
+    {
+     "label": "❓ Ask why he never buys anything",
+     "fx": {
+      "trust": 3,
+      "rel": -1
+     },
+     "reply": "\"I no dey hungry,\" he says. He is."
+    },
+    {
+     "label": "🚶 Join the queue",
+     "fx": {},
+     "reply": "He's still there when you come back."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    3,
+    7
+   ],
+   "small": true,
+   "how": "call"
+  },
+  {
+   "id": "uche_fees",
+   "char": "k_uche",
+   "title": "Sent Home for Fees",
+   "emoji": "🧳",
+   "text": "At assembly the bursar reads a list: students owing fees must go home TODAY. \"…{full}.\" {name} walks to the gate carrying his box, chin up.",
+   "choices": [
+    {
+     "label": "💰 Organise a class contribution",
+     "fx": {
+      "money": -1000,
+      "clout": 5,
+      "rep": {
+       "coursemates": 5
+      },
+      "arc": "helped",
+      "note": [
+       "defended"
+      ],
+      "end": "best"
+     },
+     "reply": "The class raises the balance by evening. {name} comes back from the gate. He can't speak. He just nods at you, again and again."
+    },
+    {
+     "label": "🏛️ Go to the principal about a scholarship",
+     "fx": {
+      "arc": "scholarship",
+      "rep": {
+       "teachers": 2
+      },
+      "end": "best",
+      "note": [
+       "defended"
+      ]
+     },
+     "reply": "Dr. Bamidele checks his grades. \"This boy is first in Chemistry?\" A scholarship, on one condition: stay in the top five."
+    },
+    {
+     "label": "✍️ Promise to write to him",
+     "fx": {
+      "arc": "letters",
+      "rel": 5,
+      "leave": "was sent home for fees"
+     },
+     "reply": "You write every week. He writes back from Aba market."
+    },
+    {
+     "label": "😔 Watch him go",
+     "fx": {
+      "leave": "was sent home for fees and never came back",
+      "end": "low"
+     },
+     "reply": "The bus leaves. His bunk stays empty for the rest of the year."
+    }
+   ],
+   "year": 2,
+   "term": 2,
+   "week": [
+    3,
+    5
+   ],
+   "how": "scene",
+   "blocks": [
+    "assembly",
+    "register",
+    "free",
+    "meal"
+   ],
+   "priority": 10
+  },
+  {
+   "id": "uche_study",
+   "char": "k_uche",
+   "title": "The Scholarship Exam",
+   "emoji": "📐",
+   "text": "{name} has to stay in the top five to keep his scholarship. \"Chemistry is fine. Maths is killing me.\"",
+   "choices": [
+    {
+     "label": "📚 Study together every night",
+     "fx": {
+      "rel": 8,
+      "knowledge": {
+       "any": 4
+      },
+      "path": {
+       "scholar": 2
+      }
+     },
+     "reply": "You both finish top five. He buys you a Gala with his own money. First time."
+    },
+    {
+     "label": "😅 \"You go manage\"",
+     "fx": {},
+     "reply": "He manages. Barely."
+    }
+   ],
+   "year": 3,
+   "term": [
+    1,
+    2
+   ],
+   "when": [
+    "arc:char=scholarship"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "uche_waec",
+   "char": "k_uche",
+   "title": "WAEC Results",
+   "emoji": "🏆",
+   "text": "{name}'s WAEC results come in: nine A1s. He walks straight past the crowd to find you.",
+   "choices": [
+    {
+     "label": "🤗 Hug him",
+     "fx": {
+      "rel": 10,
+      "end": "best"
+     },
+     "reply": "\"If not for you, I for still dey Aba market,\" he says. You both know it's not entirely true. You let him say it."
+    }
+   ],
+   "year": 6,
+   "term": 3,
+   "week": [
+    9,
+    10
+   ],
+   "when": [
+    "present:char"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "kunle_relay",
+   "char": "k_kunle",
+   "title": "The Relay Team",
+   "emoji": "⚡",
+   "text": "{nick} at inter-house practice: \"We need a fourth leg for the relay. You fit run small?\"",
+   "choices": [
+    {
+     "label": "🏃🏾 \"Put me in!\"",
+     "fx": {
+      "rel": 8,
+      "path": {
+       "sports": 2
+      },
+      "game": "race"
+     },
+     "reply": "You train with him every Wednesday. Your house wins the relay."
+    },
+    {
+     "label": "🙅 \"I go cheer\"",
+     "fx": {
+      "rel": 2
+     },
+     "reply": "He finds another runner. You cheer the loudest."
+    }
+   ],
+   "year": 1,
+   "term": [
+    2,
+    3
+   ],
+   "week": [
+    2,
+    7
+   ],
+   "dow": 2,
+   "how": "call"
+  },
+  {
+   "id": "kunle_boots",
+   "char": "k_kunle",
+   "title": "Torn Boots",
+   "emoji": "🥾",
+   "text": "{nick}'s football boots split in two during practice. He tapes them with nylon and pretends it's fine.",
+   "choices": [
+    {
+     "label": "💸 Buy him boots (₦1,500)",
+     "fx": {
+      "money": -1500,
+      "rel": 20,
+      "trust": 10,
+      "note": [
+       "helped"
+      ]
+     },
+     "reply": "He scores four goals the next match. Points at you after every one."
+    },
+    {
+     "label": "🩹 Help him tape them properly",
+     "fx": {
+      "rel": 6
+     },
+     "reply": "They hold. Mostly."
+    }
+   ],
+   "year": 2,
+   "when": [
+    "rel:char>=45"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "kunle_english",
+   "char": "k_kunle",
+   "title": "Failing English",
+   "emoji": "📝",
+   "text": "{nick} shows you his English test: 12%. \"If I fail English for BECE, Papa go carry me back to the farm.\"",
+   "choices": [
+    {
+     "label": "📚 Tutor him",
+     "fx": {
+      "rel": 10,
+      "knowledge": {
+       "ENG": 2
+      },
+      "arc": "passing"
+     },
+     "reply": "Comprehension passages every night. He gets 58% in BECE English and runs a lap of honour."
+    },
+    {
+     "label": "🙈 \"You go pass\"",
+     "fx": {
+      "arc": "struggling"
+     },
+     "reply": "He scrapes through. Barely."
+    }
+   ],
+   "year": 3,
+   "term": [
+    1,
+    2
+   ],
+   "how": "call"
+  },
+  {
+   "id": "kunle_scout",
+   "char": "k_kunle",
+   "title": "The Scout",
+   "emoji": "🔭",
+   "text": "A football academy scout watched {nick} at sports day. They're offering a place in Lagos — now, before WAEC. \"What should I do?\"",
+   "choices": [
+    {
+     "label": "⚽ \"Go. This is your dream.\"",
+     "fx": {
+      "leave": "left for a football academy in Lagos",
+      "end": "best"
+     },
+     "reply": "He leaves on a Tuesday with one bag and your house colours tied round his wrist."
+    },
+    {
+     "label": "📚 \"Finish school first\"",
+     "fx": {
+      "arc": "stayed",
+      "end": "mid"
+     },
+     "reply": "He stays. He finishes. The dream waits — or doesn't."
+    }
+   ],
+   "year": 5,
+   "term": 2,
+   "priority": 9,
+   "how": "call"
+  },
+  {
+   "id": "esther_vigil",
+   "char": "k_esther",
+   "title": "Night Vigil",
+   "emoji": "📿",
+   "text": "{nick} whispers in the dark: \"We're holding a vigil in the bathroom. Midnight. Come and pray with us — revival must happen!\"",
+   "choices": [
+    {
+     "label": "🙏 Join them",
+     "fx": {
+      "rel": 10,
+      "stats": {
+       "rest": -10
+      },
+      "discipline": "Night vigil after lights out"
+     },
+     "reply": "The house master's torchlight catches all twelve of you mid-chorus. Worth it, says {nick}."
+    },
+    {
+     "label": "😴 \"I go pray from my bed\"",
+     "fx": {
+      "rel": -2
+     },
+     "reply": "You hear singing at midnight. Then the house master. Then silence."
+    },
+    {
+     "label": "📣 Warn the house master",
+     "fx": {
+      "note": [
+       "snitched_on"
+      ],
+      "rel": -12
+     },
+     "reply": ""
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    3,
+    8
+   ],
+   "blocks": [
+    "sleep",
+    "hostel"
+   ],
+   "when": [
+    "religion:christian"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "esther_halima",
+   "char": "k_esther",
+   "title": "{nick} and Halima",
+   "emoji": "🕊️",
+   "text": "{nick} and Halima are arguing about prayer times in the corridor. It's getting loud.",
+   "choices": [
+    {
+     "label": "🤝 Bridge them — \"Both of una dey pray for the same school\"",
+     "fx": {
+      "rel": {
+       "k_halima": 8,
+       "char": 8
+      },
+      "note": [
+       "bridged"
+      ]
+     },
+     "reply": "They stare at you. Then at each other. By the end of term they're study partners."
+    },
+    {
+     "label": "🚶 Stay out of it",
+     "fx": {},
+     "reply": "It blows over. Mostly."
+    }
+   ],
+   "year": 2,
+   "when": [
+    "present:k_halima"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "esther_brother",
+   "char": "k_esther",
+   "title": "The Letter From Prison",
+   "emoji": "✉️",
+   "text": "{nick} is crying behind the chapel, a letter crushed in her hand. \"My brother. He's in prison. I've been praying so loud so nobody would hear how scared I am.\"",
+   "choices": [
+    {
+     "label": "🫂 Sit with her",
+     "fx": {
+      "trust": 30,
+      "rel": 15,
+      "end": "best",
+      "note": [
+       "kept_secret"
+      ]
+     },
+     "reply": "You don't need to say anything. Later she says you were the first person she told."
+    },
+    {
+     "label": "🙏 Pray with her",
+     "fx": {
+      "trust": 20,
+      "rel": 12
+     },
+     "reply": "Quietly this time."
+    },
+    {
+     "label": "😬 \"That's heavy…\" and go",
+     "fx": {
+      "rel": -5
+     },
+     "reply": ""
+    }
+   ],
+   "year": 4,
+   "term": [
+    1,
+    2
+   ],
+   "how": "call"
+  },
+  {
+   "id": "tams_letter",
+   "char": "k_tams",
+   "title": "The Love Letter",
+   "emoji": "💌",
+   "text": "Someone wrote {name} a love letter, full of terrible poetry, and signed it with YOUR name. Emeka is giggling behind his hand.",
+   "choices": [
+    {
+     "label": "😤 Confront Emeka",
+     "fx": {
+      "rel": {
+       "k_emeka": -4
+      },
+      "respect": 5
+     },
+     "reply": "\"It was a joke!\" {name} heard everything — and laughs."
+    },
+    {
+     "label": "😏 Play along",
+     "fx": {
+      "crush": 10,
+      "clout": 3
+     },
+     "reply": "\"Your poetry is… something,\" {name} says, smiling."
+    },
+    {
+     "label": "🫣 Tell {name} the truth",
+     "fx": {
+      "respect": 10,
+      "rel": 5
+     },
+     "reply": "\"I know. Emeka can't spell 'beautiful'.\""
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    4,
+    8
+   ],
+   "how": "call"
+  },
+  {
+   "id": "tams_slambook",
+   "char": "k_tams",
+   "title": "The Slam Book",
+   "emoji": "📒",
+   "text": "{name}'s slam book reaches you. Question 12: \"Who is your crush?\"",
+   "choices": [
+    {
+     "label": "✍️ Write something honest (and PG)",
+     "fx": {
+      "crush": 10,
+      "rel": 5
+     },
+     "reply": "You write \"no comment 🙈\". {name} reads it and doesn't stop smiling all day."
+    },
+    {
+     "label": "😂 Write something funny",
+     "fx": {
+      "rel": 4
+     },
+     "reply": "\"Mr. Bassey's cane.\" The whole class reads it."
+    }
+   ],
+   "year": 2,
+   "term": 2,
+   "how": "call"
+  },
+  {
+   "id": "tams_sketch",
+   "char": "k_tams",
+   "title": "The Sketchbook",
+   "emoji": "✏️",
+   "text": "{name} drops a sketchbook. It falls open: page after page of buildings — towers, a new hostel, a library with a glass roof.",
+   "choices": [
+    {
+     "label": "🏛️ \"These are amazing. You should be an architect.\"",
+     "fx": {
+      "trust": 25,
+      "rel": 10,
+      "arc": "architect",
+      "end": "best"
+     },
+     "reply": "Nobody has ever said that to {name}. They show you every new drawing for three years."
+    },
+    {
+     "label": "😂 \"You dey draw house?\"",
+     "fx": {
+      "trust": -20,
+      "rel": -5
+     },
+     "reply": "{name} snatches it back and never mentions it again."
+    }
+   ],
+   "year": 3,
+   "when": [
+    "rel:char>=45"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "tams_dance",
+   "char": "k_tams",
+   "title": "The Send-forth Dance",
+   "emoji": "💃🏾",
+   "text": "Send-forth night. The DJ plays the slow song. {name} looks across the hall at you.",
+   "choices": [
+    {
+     "label": "💃🏾 Ask {name} to dance",
+     "fx": {
+      "crush": 10,
+      "rel": 8,
+      "stats": {
+       "morale": 10
+      }
+     },
+     "reply": "One dance. Everybody whistles. You'll remember this one."
+    },
+    {
+     "label": "🙈 Dance with your squad instead",
+     "fx": {
+      "rel": 2
+     },
+     "reply": "You dance with everybody. {name} dances near enough."
+    }
+   ],
+   "year": 6,
+   "term": 3,
+   "week": [
+    8,
+    10
+   ],
+   "when": [
+    "rel:char>=55"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "ife_campaign",
+   "char": "k_ife",
+   "title": "Campaign Manager",
+   "emoji": "📋",
+   "text": "{nick} has posters already: \"VOTE IFE — Discipline, Unity, Progress\". \"I need a campaign manager. You have people skills.\"",
+   "choices": [
+    {
+     "label": "🤝 Run their campaign",
+     "fx": {
+      "rel": 10,
+      "arc": "allies",
+      "path": {
+       "leader": 2
+      }
+     },
+     "reply": "They win by a landslide. \"My first appointment: you, Assistant Class Captain.\""
+    },
+    {
+     "label": "🗳️ \"I'm running against you\"",
+     "fx": {
+      "rivalry": 20,
+      "flag": "runningCaptain"
+     },
+     "reply": "\"Then may the best leader win.\" They shake your hand, firmly."
+    },
+    {
+     "label": "🤷 Stay neutral",
+     "fx": {},
+     "reply": ""
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    1,
+    1
+   ],
+   "dow": [
+    2,
+    3,
+    4
+   ],
+   "how": "call"
+  },
+  {
+   "id": "ife_list",
+   "char": "k_ife",
+   "title": "The Noisemakers' List",
+   "emoji": "📝",
+   "text": "{nick} hands the noisemakers' list to the teacher. Your best friend's name is on it — for laughing at a joke YOU told.",
+   "choices": [
+    {
+     "label": "⚖️ Argue it fairly after class",
+     "fx": {
+      "respect": 12,
+      "rel": 4
+     },
+     "reply": "{nick} listens, then crosses the name out. \"You're right. Thank you for telling me straight.\""
+    },
+    {
+     "label": "📢 Turn the class against {nick}",
+     "fx": {
+      "rel": -15,
+      "clout": 3,
+      "arc": "opponents"
+     },
+     "reply": "The class boos {nick} for a week. You win this one."
+    },
+    {
+     "label": "🤐 Let it go",
+     "fx": {},
+     "reply": ""
+    }
+   ],
+   "year": 2,
+   "when": [
+    "present:char"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "ife_burnout",
+   "char": "k_ife",
+   "title": "{nick} Collapses",
+   "emoji": "😵",
+   "text": "{nick} faints during morning assembly. Nurse Grace says: exhaustion. They've been sleeping three hours a night.",
+   "choices": [
+    {
+     "label": "🫂 Take over some of their duties for a week",
+     "fx": {
+      "trust": 20,
+      "rel": 12,
+      "end": "best",
+      "path": {
+       "leader": 2
+      }
+     },
+     "reply": "\"Nobody has ever helped me carry anything,\" they say. They learn to delegate. Slowly."
+    },
+    {
+     "label": "📚 Bring them notes in sick bay",
+     "fx": {
+      "rel": 6
+     },
+     "reply": ""
+    }
+   ],
+   "year": 5,
+   "term": [
+    1,
+    3
+   ],
+   "how": "call"
+  },
+  {
+   "id": "musa_arrives",
+   "char": "k_musa",
+   "title": "The New Boy",
+   "emoji": "🔦",
+   "text": "A tall, thin new boy stands at the front of class: \"My name is Musa Abdullahi. I come from Sokoto.\" His English is slow. Somebody laughs. Then everybody laughs.",
+   "choices": [
+    {
+     "label": "👋 Move your bag so he can sit beside you",
+     "fx": {
+      "rel": 15,
+      "trust": 10,
+      "arc": "friends",
+      "note": [
+       "defended"
+      ]
+     },
+     "reply": "\"Na gode,\" he whispers. Thank you. He sits with you every day after."
+    },
+    {
+     "label": "😂 Laugh with the class",
+     "fx": {
+      "rel": -10,
+      "note": [
+       "laughed_at"
+      ]
+     },
+     "reply": "He looks at his desk for the rest of the period."
+    }
+   ],
+   "year": 2,
+   "term": 1,
+   "week": [
+    1,
+    3
+   ],
+   "how": "scene",
+   "blocks": [
+    "class",
+    "register"
+   ],
+   "priority": 8
+  },
+  {
+   "id": "musa_pact",
+   "char": "k_musa",
+   "title": "The Pact",
+   "emoji": "🤝",
+   "text": "{name}: \"You help me with English. I help you with maths. Deal?\"",
+   "choices": [
+    {
+     "label": "🤝 Deal",
+     "fx": {
+      "rel": 10,
+      "knowledge": {
+       "MTH": 3
+      },
+      "path": {
+       "scholar": 1
+      }
+     },
+     "reply": "By SS1 his English is better than half the class. Your maths is better than ever."
+    }
+   ],
+   "year": 3,
+   "when": [
+    "arc:char=friends"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "musa_lamp",
+   "char": "k_musa",
+   "title": "The Solar Lamp",
+   "emoji": "💡",
+   "text": "{name}'s science-fair project: a solar lamp made from a broken radio, a pure-water sachet and a car battery. It works. \"For my village.\"",
+   "choices": [
+    {
+     "label": "💡 Help him present it",
+     "fx": {
+      "rel": 8,
+      "end": "best",
+      "clout": 3
+     },
+     "reply": "First prize. The commissioner shakes his hand."
+    }
+   ],
+   "year": 6,
+   "term": 2,
+   "when": [
+    "present:char"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "yinka_bath",
+   "char": "k_yinka",
+   "title": "First Bucket Bath",
+   "emoji": "🪣",
+   "text": "{nick} stares at a bucket of cold water and a cup. \"…Where's the shower? Like, the actual shower?\"",
+   "choices": [
+    {
+     "label": "🪣 Show them the bucket technique",
+     "fx": {
+      "rel": 12,
+      "arc": "friends"
+     },
+     "reply": "\"This is mad.\" Ten minutes later: \"Actually… that's kind of efficient.\""
+    },
+    {
+     "label": "😂 Film their face (mentally)",
+     "fx": {
+      "rel": -6
+     },
+     "reply": "The whole hostel laughs. {nick} goes red."
+    }
+   ],
+   "year": 4,
+   "term": 1,
+   "week": [
+    1,
+    3
+   ],
+   "how": "call"
+  },
+  {
+   "id": "yinka_social",
+   "char": "k_yinka",
+   "title": "London Night",
+   "emoji": "🎧",
+   "text": "{nick}: \"Let me DJ Social Night. UK garage, grime, Afroswing. Trust me.\"",
+   "choices": [
+    {
+     "label": "🎧 Back them",
+     "fx": {
+      "rel": 8,
+      "clout": 4
+     },
+     "reply": "First 10 minutes: confused silence. Then the juniors go crazy. Legendary."
+    },
+    {
+     "label": "😬 \"Them no go understand\"",
+     "fx": {
+      "rel": -3
+     },
+     "reply": ""
+    }
+   ],
+   "year": 5,
+   "term": 1,
+   "when": [
+    "arc:char=friends"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "yinka_stay",
+   "char": "k_yinka",
+   "title": "Staying?",
+   "emoji": "🏠",
+   "text": "{nick}'s parents say they can go back to London for university. \"I don't know anymore. This place is… home now? Is that mad?\"",
+   "choices": [
+    {
+     "label": "🏠 \"Stay. Lagos needs your music.\"",
+     "fx": {
+      "rel": 8,
+      "end": "best"
+     },
+     "reply": "They stay. Their first song samples the rising bell."
+    },
+    {
+     "label": "✈️ \"Go — but don't forget us\"",
+     "fx": {
+      "end": "low"
+     },
+     "reply": "They promise. They mostly keep it."
+    }
+   ],
+   "year": 6,
+   "term": 2,
+   "when": [
+    "present:char"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "chuka_parent",
+   "char": "k_chuka",
+   "title": "Your School Parent",
+   "emoji": "🤝",
+   "text": "{full} finds you after the provision inspection: \"From today, you are under me. Anybody touch you, mention my name. And BATHE — I'll check.\"",
+   "choices": [
+    {
+     "label": "🙇 \"Thank you, Senior!\"",
+     "fx": {
+      "rel": 10,
+      "favour": 4
+     },
+     "reply": "They pat your head. You feel ten feet tall."
+    },
+    {
+     "label": "😅 \"Senior, I dey bathe na!\"",
+     "fx": {
+      "rel": 6
+     },
+     "reply": "\"We shall see,\" they say, sniffing theatrically."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    1,
+    2
+   ],
+   "priority": 6,
+   "how": "call"
+  },
+  {
+   "id": "chuka_waec",
+   "char": "k_chuka",
+   "title": "WAEC Errands",
+   "emoji": "📚",
+   "text": "{full} is drowning in WAEC revision: \"Junior, I need water, garri, and somebody to quiz me on Biology.\"",
+   "choices": [
+    {
+     "label": "🧺 Run their errands and quiz them",
+     "fx": {
+      "rel": 10,
+      "favour": 5,
+      "knowledge": {
+       "any": 2
+      },
+      "stats": {
+       "rest": -4
+      }
+     },
+     "reply": "They pass every paper. They say it was the garri."
+    },
+    {
+     "label": "😓 \"I get my own reading\"",
+     "fx": {
+      "rel": -3
+     },
+     "reply": ""
+    }
+   ],
+   "year": 2,
+   "term": 3,
+   "week": [
+    5,
+    8
+   ],
+   "when": [
+    "present:char"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "chuka_bye",
+   "char": "k_chuka",
+   "title": "Senior {name} Graduates",
+   "emoji": "🎓",
+   "text": "Sign-out day for the SS3s. {full} gives you their old mattress, a bucket and a folded note: \"Be a better senior than the ones who were wicked to you.\"",
+   "choices": [
+    {
+     "label": "🎓 Sign their shirt",
+     "fx": {
+      "rel": 10,
+      "items": {
+       "bucket": 1
+      },
+      "note": [
+       "said_goodbye"
+      ],
+      "end": "best"
+     },
+     "reply": "You write \"Thank you\" in letters so big they cover the whole back."
+    }
+   ],
+   "year": 2,
+   "term": 3,
+   "week": [
+    10,
+    10
+   ],
+   "when": [
+    "present:char"
+   ],
+   "how": "scene",
+   "priority": 8
+  },
+  {
+   "id": "commander_frog",
+   "char": "k_commander",
+   "title": "\"Frog Jump. NOW.\"",
+   "emoji": "😈",
+   "text": "{nick} catches you walking past the SS2 corridor: \"Junior! You no greet? Frog jump to the tap and back. NOW.\"",
+   "choices": [
+    {
+     "label": "🐸 Do it without complaining",
+     "fx": {
+      "respect": 15,
+      "stats": {
+       "rest": -8,
+       "morale": -4
+      }
+     },
+     "reply": "Your thighs are on fire. {nick} watches, almost impressed you didn't cry."
+    },
+    {
+     "label": "📣 Report to the house master",
+     "fx": {
+      "note": [
+       "snitched_on"
+      ],
+      "arc": "reported",
+      "rel": -10
+     },
+     "reply": "{nick} is warned. The SS2s now call you \"Snitch\" whenever you pass."
+    },
+    {
+     "label": "✊ \"Senior, I greeted you. I won't frog jump.\"",
+     "fx": {
+      "respect": 25,
+      "offence": {
+       "what": "Disrespecting a senior",
+       "sev": 1
+      }
+     },
+     "reply": "Gasps. You're punished — but word spreads: this junior has liver."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    2,
+    5
+   ],
+   "priority": 7,
+   "how": "call"
+  },
+  {
+   "id": "commander_push",
+   "char": "k_commander",
+   "title": "The Stairs",
+   "emoji": "🚑",
+   "text": "{nick} pushed a JSS1 boy down the hostel stairs for \"sleeping in\". The boy is in sick bay with a broken arm. Everybody saw. Nobody is saying anything.",
+   "choices": [
+    {
+     "label": "📣 Tell the house master what you saw",
+     "fx": {
+      "arc": "suspended",
+      "clout": 5,
+      "note": [
+       "snitched_on"
+      ],
+      "leave": "was suspended for a term"
+     },
+     "reply": "Commander is suspended. Some seniors hate you. The JSS1s look at you like a hero."
+    },
+    {
+     "label": "🤐 Stay silent",
+     "fx": {
+      "stats": {
+       "morale": -5
+      }
+     },
+     "reply": "The boy says he \"fell\". You know he didn't."
+    }
+   ],
+   "year": 2,
+   "term": 2,
+   "week": [
+    2,
+    6
+   ],
+   "when": [
+    "present:char"
+   ],
+   "priority": 8,
+   "how": "call"
+  },
+  {
+   "id": "commander_sorry",
+   "char": "k_commander",
+   "title": "An Unexpected Apology",
+   "emoji": "🙇",
+   "text": "On their last day, {nick} finds you by the gate. They don't look at you. \"Junior. That thing I did to you people… my father did it to me. E no make am right. Sorry.\"",
+   "choices": [
+    {
+     "label": "🤝 Accept it",
+     "fx": {
+      "rel": 20,
+      "end": "best"
+     },
+     "reply": "They nod once and walk to the car. You'll think about this when you're SS2."
+    },
+    {
+     "label": "🚶 Walk away",
+     "fx": {
+      "end": "low"
+     },
+     "reply": "Some sorries come too late."
+    }
+   ],
+   "year": 2,
+   "term": 3,
+   "week": [
+    9,
+    10
+   ],
+   "when": [
+    "present:char",
+    "respect:char>=30"
+   ],
+   "priority": 7,
+   "how": "call"
+  },
+  {
+   "id": "fola_speech",
+   "char": "k_fola",
+   "title": "The Assembly Speech",
+   "emoji": "🎖️",
+   "text": "{full} gives the assembly speech: \"This school is not these buildings. It's how we treat the smallest person in it.\" The whole ground is silent.",
+   "choices": [
+    {
+     "label": "👏 Clap loudest",
+     "fx": {
+      "rel": 5,
+      "stats": {
+       "morale": 5
+      }
+     },
+     "reply": "{full} catches your eye and nods."
+    },
+    {
+     "label": "✍️ Write it down",
+     "fx": {
+      "rel": 3,
+      "flag": "fola_words"
+     },
+     "reply": "You keep it in your notebook for six years."
+    }
+   ],
+   "year": 1,
+   "term": 1,
+   "week": [
+    2,
+    4
+   ],
+   "blocks": [
+    "assembly"
+   ],
+   "how": "scene",
+   "small": true
+  },
+  {
+   "id": "fola_note",
+   "char": "k_fola",
+   "title": "A Note for the Future",
+   "emoji": "📜",
+   "text": "{full} graduates. On the prefects' noticeboard: a sealed envelope — \"For whoever becomes Head Prefect one day. Don't open until then.\"",
+   "choices": [
+    {
+     "label": "📜 Remember it",
+     "fx": {
+      "flag": "fola_note"
+     },
+     "reply": "Somebody in this school will open it in five years."
+    }
+   ],
+   "year": 1,
+   "term": 3,
+   "week": [
+    10,
+    10
+   ],
+   "how": "scene",
+   "small": true
+  },
+  {
+   "id": "chisom_arrives",
+   "char": "k_chisom",
+   "title": "Your School Child",
+   "emoji": "🐣",
+   "text": "A small JSS1 student is crying at the hostel door, holding a bucket with both hands. The house master: \"This is {full}. Your school child. Take care of them.\"",
+   "choices": [
+    {
+     "label": "🤝 \"Nobody touches you while I'm here\"",
+     "fx": {
+      "rel": 15,
+      "note": [
+       "defended"
+      ],
+      "arc": "protected"
+     },
+     "reply": "{name} stops crying. You see yourself, five years ago."
+    },
+    {
+     "label": "😤 \"Carry my bucket first\"",
+     "fx": {
+      "rel": -10,
+      "arc": "neglected"
+     },
+     "reply": "{name} carries it, shaking. Hmm. Is this who you became?"
+    }
+   ],
+   "year": 4,
+   "term": 1,
+   "week": [
+    1,
+    2
+   ],
+   "how": "scene",
+   "priority": 9,
+   "milestone": "schoolChild"
+  },
+  {
+   "id": "chisom_bullied",
+   "char": "k_chisom",
+   "title": "Somebody Is Bullying {name}",
+   "emoji": "😢",
+   "text": "{name} has a bruise and won't say where it came from. Then you hear: a boy in YOUR set has been \"collecting\" {name}'s provisions.",
+   "choices": [
+    {
+     "label": "🛡️ Confront your coursemate",
+     "fx": {
+      "rel": 15,
+      "trust": 15,
+      "note": [
+       "defended"
+      ],
+      "end": "best",
+      "rep": {
+       "juniors": 4
+      }
+     },
+     "reply": "\"Touch my school child again and see.\" It stops that day."
+    },
+    {
+     "label": "🤷 \"Na so school be\"",
+     "fx": {
+      "rel": -15,
+      "end": "low",
+      "rep": {
+       "juniors": -4
+      },
+      "note": [
+       {
+        "k": "became_like_commander",
+        "who": null
+       }
+      ]
+     },
+     "reply": "{name} stops coming to you for anything. Later you hear them say: \"Senior, why are you like Commander?\""
+    }
+   ],
+   "year": 4,
+   "term": [
+    2,
+    3
+   ],
+   "when": [
+    "present:char"
+   ],
+   "how": "call"
+  },
+  {
+   "id": "ali_cheek",
+   "char": "k_ali",
+   "title": "\"Small\" Ali",
+   "emoji": "🤏🏾",
+   "text": "A tiny JSS1 boy, {name}, mimics YOUR walk in front of the whole corridor. Perfectly. The juniors are dying of laughter.",
+   "choices": [
+    {
+     "label": "😂 Laugh — it was good",
+     "fx": {
+      "rel": 12,
+      "rep": {
+       "juniors": 3
+      }
+     },
+     "reply": "\"Senior, you get sense!\" He becomes your unofficial court jester."
+    },
+    {
+     "label": "🐸 Punish him",
+     "fx": {
+      "rel": -12,
+      "rep": {
+       "juniors": -3
+      }
+     },
+     "reply": "Ten frog jumps. He grins through every one."
+    },
+    {
+     "label": "🎭 \"Do the house master next\"",
+     "fx": {
+      "rel": 10,
+      "stats": {
+       "morale": 4
+      }
+     },
+     "reply": "He does. It's even better."
+    }
+   ],
+   "year": 5,
+   "term": 1,
+   "week": [
+    1,
+    5
+   ],
+   "how": "call"
+  }
+ ]
+}

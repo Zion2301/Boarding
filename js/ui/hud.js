@@ -108,6 +108,7 @@
       HUD.placePrompt(s);
       BH.LessonUI && BH.LessonUI.update();
       BH.Social && BH.Social.update();
+      BH.TimeBar && BH.TimeBar.update();
       const now = performance.now();
       if (!force && !HUD.dirty && now - HUD.last < 250) return;
       HUD.last = now; HUD.dirty = false;
@@ -220,6 +221,7 @@
 
   /* ---------- HUD actions ---------- */
   Object.assign(BH.actions, {
+    openChapters() { BH.Milestones.openChapters(); },
     promptDo(i) { const p = HUD.prompt; const a = p.actions[Number(i)]; if (a) HUD.runAction(p.target, a); },
     openRadial() { HUD.radial(); },
     camSnap() { const E = BH.Engine3D; if (E && E.rig) E.rig.snapBack(); },
@@ -291,6 +293,8 @@
       BH.Panels.open(() => `<div class="menu-panel">
           <h2>⏸ Paused</h2>
           <button class="chunky primary" data-act="closePanel">▶ Resume</button>
+          <button class="chunky" data-act="openLobby">🌐 Play with friends ${BH.Net && BH.Net.online ? `<small>(${BH.Net.players.size} online)</small>` : ''}</button>
+          <button class="chunky" data-act="openChapters">📖 Chapters <small>${U.esc(BH.Milestones.current(BH.Game.s).title)}</small></button>
           <button class="chunky" data-act="saveNow">💾 Save game</button>
           <button class="chunky" data-act="loadMenu">📂 Load game</button>
           <div class="setting"><b>⏱ Game speed</b><small>in-game minutes per real second</small>
@@ -301,12 +305,15 @@
             <div class="seg"><button class="${BH.School.botsOn(BH.Game.s) ? 'on' : ''}" data-act="setBots" data-arg="1">On</button><button class="${BH.School.botsOn(BH.Game.s) ? '' : 'on'}" data-act="setBots" data-arg="0">Off</button></div></div>
           <button class="chunky" data-act="openHelp">💛 Help & support</button>
           <button class="chunky" data-act="howTo">❓ How to play</button>
+          <div class="setting"><b>🎵 Music</b><small>Afrobeat by day, calm at night, party at Social Night</small>
+            <div class="seg">${[['Off', 0], ['Low', 0.25], ['Mid', 0.5], ['Loud', 0.9]].map(([l, v]) => `<button class="${Math.abs(BH.Music.volume - v) < 0.01 ? 'on' : ''}" data-act="setMusic" data-arg="${v}">${l}</button>`).join('')}</div></div>
           <button class="chunky" data-act="toggleSound">${BH.Sound.muted ? '🔇 Sound: off' : '🔊 Sound: on'}</button>
           <button class="chunky ghost" data-act="quitToTitle">🏠 Save & quit to title</button>
         </div>`, { cls: 'pop', kind: 'menu' });
       return scale;
     },
     setBots(v) { BH.School.setBots(BH.Game.s, v === '1'); BH.Panels.refresh(); },
+    setMusic(v) { BH.Music.setVolume(Number(v)); BH.Music.start(); BH.Panels.refresh(); },
     setAi(v) { BH.Prefs.set('aiOn', v === '1'); BH.AI.check(true).then(() => BH.Panels.refresh()); },
     setScale(v) { BH.Prefs.set('timeScale', Number(v)); BH.Panels.refresh(); BH.UI.toast(`⏱ 1 real second = ${v} game minute${Number(v) === 1 ? '' : 's'}`, 'info'); },
     toggleSound() { BH.Sound.toggle(); BH.Panels.refresh(); },

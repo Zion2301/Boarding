@@ -27,7 +27,7 @@
         <button class="dlg-choice ${c.ghost ? 'ghost' : ''} ${c.primary ? 'primary' : ''}" data-act="dlgPick" data-arg="${i}" ${c.disabled ? 'disabled' : ''}>
           <span class="c-label">${U.esc(c.label)}</span>${c.sub ? `<span class="c-sub">${U.esc(c.sub)}</span>` : ''}
         </button>`).join('');
-      return `<div class="dlg ${d.mode === 'outcome' ? 'is-outcome' : ''}">
+      return `<div class="dlg ${d.mode === 'outcome' ? 'is-outcome' : ''} ${d.cinematic ? 'cinematic' : ''}">
         <div class="dlg-head">
           <div class="dlg-portrait ${d.portrait && d.portrait.img ? 'img' : ''}">${portrait}</div>
           <div class="dlg-name"><b>${U.esc(d.name || '')}</b>${d.sub ? `<small>${U.esc(d.sub)}</small>` : ''}</div>
@@ -39,7 +39,7 @@
     },
 
     pick(i) { const c = Dialogue.st && Dialogue.st.choices[i]; if (!c || c.disabled) return; c.onPick(); },
-    close() { Dialogue.st = null; P().closeKind('dialogue', true); BH.Store.changed(); },
+    close() { document.body.classList.remove('letterbox'); Dialogue.st = null; P().closeKind('dialogue', true); BH.Store.changed(); },
 
     outcome({ text, fx, then, label }) {
       const d = Dialogue.st || {};
@@ -71,9 +71,10 @@
       if (!v || P().isOpen()) return;
       const npc = v.q.ctx && (v.q.ctx.npc || v.q.ctx.j) && BH.NPC.get(s, v.q.ctx.npc || v.q.ctx.j);
       BH.Sound.play('notify');
+      document.body.classList.toggle('letterbox', !!v.e.cinematic);
       Dialogue.show({
-        portrait: npc ? portraitOf(s, npc) : { emoji: v.e.emoji }, name: v.e.title, sub: npc ? `${BH.NPC.name(npc)} · ${BH.NPC.label(npc)}` : '⚡ Something don happen',
-        text: v.text, mode: 'choices',
+        portrait: npc ? portraitOf(s, npc) : { emoji: v.e.emoji }, name: v.e.title, sub: npc ? `${BH.NPC.name(npc)} · ${BH.NPC.label(npc)}` : v.e.cinematic ? '✨ A moment you will remember' : '⚡ Something don happen',
+        text: v.text, mode: 'choices', cinematic: !!v.e.cinematic,
         choices: v.choices.map((c, i) => ({
           label: c.label, sub: c.sub,
           onPick: () => {
@@ -164,11 +165,14 @@
         label: o.label, sub: o.disabled || o.sub, disabled: !!o.disabled,
         onPick: () => Dialogue.act(() => o.run(), () => Dialogue.npc(id)),
       }));
-      choices.push(...Dialogue.freeText(s, n));
+      // free typing (AI) for the people who matter: key characters, seniors, teachers & staff — background students keep preset chat
+      if (n.key || ['teacher', 'staff'].includes(n.type) || (n.type === 'senior' && !n.crowd)) choices.push(...Dialogue.freeText(s, n));
       choices.push({ label: 'ℹ️ About', ghost: true, onPick: () => { Dialogue.close(); BH.actions.profile(id); } });
       choices.push({ label: '🚶 Walk away', ghost: true, onPick: () => Dialogue.close() });
       const where = BH.Schedule.placeLabel(s, n);
-      Dialogue.show({ portrait: portraitOf(s, n), name: N.fullName(n), sub: `${N.label(n)} · ${N.relLabel(n)} · ${Math.round(n.rel)}/100`, text: `${n.type === 'teacher' ? N.name(n) : n.first}: ${greet}\n\n_${where}_`, choices, mode: 'choices' });
+      const memo = BH.Story && BH.Story.callback(s, n); // "You remember JSS2? You sold me out."
+      const bond = BH.Story ? BH.Story.bondLabel(n) : '';
+      Dialogue.show({ portrait: portraitOf(s, n), name: `${BH.Story && BH.Story.isBestie(s, n.id) ? '💛 ' : ''}${N.fullName(n)}${n.nick && n.key ? ` "${n.nick.replace(/^.*"(.*)"$/, '$1')}"` : ''}`, sub: `${N.label(n)} · ${N.relLabel(n)} · ${Math.round(n.rel)}/100${bond ? ' · ' + bond : ''}`, text: `${n.type === 'teacher' ? N.name(n) : n.first}: ${memo || greet}\n\n_${where}_`, choices, mode: 'choices' });
     },
 
     /* staff conversation trees from content/dialogue.json */

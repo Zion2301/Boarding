@@ -58,7 +58,7 @@
     defaultBots() {
       const q = typeof location !== 'undefined' && typeof URLSearchParams !== 'undefined' && location.search ? new URLSearchParams(location.search).get('bots') : null;
       if (q === '1' || q === '0') return q === '1';
-      return !!(BH.Prefs && BH.Prefs.v.fill_with_bot_students);
+      return true; // story mode: the school is full of NPC students (GAME_DESIGN.md)
     },
     botsOn(s) { return !!(s.school && s.school.settings.fill_with_bot_students); },
     setBots(s, on) {
@@ -168,6 +168,7 @@
     setDept(s, sid, dept) { const st = School.student(s, sid); if (st) st.dept = dept; },
     levelOfNpc(s, n) {
       if (n.type === 'classmate') return s.time.year;
+      if (n.lvl) return n.lvl;
       if (n.type === 'senior') return Number(String(n.level).replace('SS', '')) + 3;
       if (n.type === 'junior') return n.level;
       return null;
@@ -179,9 +180,10 @@
       if (s.school.students[sid]) return s.school.students[sid];
       if (String(sid).startsWith('r:') && BH.Net) return BH.Net.students().find((x) => x.id === sid) || null;
       const n = BH.NPC.get(s, sid);
+      if (n && n.crowd) return BH.Crowd.entry(s, n);
       return n && ['classmate', 'senior', 'junior'].includes(n.type) ? School.botEntry(s, n) : null;
     },
-    students(s) { return [...Object.values(s.school.students), ...(BH.Net && BH.Net.online ? BH.Net.students() : []), ...BH.NPC.students(s).map((n) => School.botEntry(s, n))]; },
+    students(s) { return [...Object.values(s.school.students), ...(BH.Net && BH.Net.online ? BH.Net.students() : []), ...BH.NPC.students(s).map((n) => School.botEntry(s, n)), ...(BH.Crowd ? BH.Crowd.entries(s) : [])]; },
     /* online: everybody shares one school (name, uniform, timetables) — the room's */
     adoptSchool(s, sc) {
       if (sc.name) s.player.schoolName = sc.name;
@@ -205,6 +207,8 @@
     syncBots(s, quiet) {
       const on = School.botsOn(s);
       const N = s.npcs;
+      // story mode: the school needs the key characters (older saves had random coursemates)
+      if (on && ![...N.classmates, ...N.seniors, ...(N.juniors || [])].some((n) => n.key)) { delete N._bots; BH.NPC.makeBots(s); }
       const have = N.classmates.length + N.seniors.length + (N.juniors || []).length > 0;
       if (on && !have) {
         if (N._bots) { Object.assign(N, N._bots); delete N._bots; } else BH.NPC.makeBots(s);

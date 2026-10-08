@@ -1,6 +1,6 @@
 /* Offline cache. Bump CACHE when files change so players get the update.
    FILES = index.html scripts + content/manifest.json entries (regenerate when adding files). */
-const CACHE = 'boarding-house-v9';
+const CACHE = 'boarding-house-v12';
 const FILES = [
   './',
   'index.html',
@@ -20,6 +20,9 @@ const FILES = [
   'vendor/colyseus.js',
   'js/content/bundle.js',
   'js/core/content.js',
+  'js/net/server-url.js',
+  'js/net/config.js',
+  'shared/calendar.js',
   'js/data/config.js',
   'js/data/timetable.js',
   'js/data/names.js',
@@ -62,6 +65,7 @@ const FILES = [
   'js/systems/writing.js',
   'js/core/game.js',
   'js/ui/sound.js',
+  'js/ui/music.js',
   'js/ui/ui.js',
   'js/ui/panels.js',
   'js/ui/three/avatar3d.js',
@@ -84,6 +88,7 @@ const FILES = [
   'js/render3d/cutscene.js',
   'js/ui/hud.js',
   'js/ui/lesson.js',
+  'js/net/account.js',
   'js/net/net.js',
   'js/net/social.js',
   'js/net/games.js',
@@ -101,6 +106,7 @@ const FILES = [
   'js/ui/screens/me.js',
   'js/ui/screens/phone.js',
   'js/ui/screens/writing.js',
+  'js/ui/screens/lobby.js',
   'js/main.js',
   'content/manifest.json',
   'content/tiles.json',
@@ -134,6 +140,13 @@ const FILES = [
   'content/maps/chapel.json',
   'content/maps/mosque.json',
   'content/maps/staff.json',
+  'js/systems/crowd.js',
+  'js/systems/story.js',
+  'js/systems/pacing.js',
+  'js/systems/arcs.js',
+  'js/systems/milestones.js',
+  'content/cast.json',
+  'content/arcs.json',
 ];
 
 self.addEventListener('install', (e) => {

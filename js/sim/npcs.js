@@ -16,15 +16,34 @@
 
     placeKey(p) { return p ? `${p.map}|${p.key}|${p.patrol || ''}|${p.seek ? 1 : 0}|${p.fight ? 1 : 0}` : ''; },
 
-    /* who should be in this map right now */
+    /* how many people a room shows at once (the school has ~550 students; phones can't draw them all) */
+    cap(map) {
+      const cm = BH.Sim.cm;
+      let n = cm.outdoor ? 60 : cm.src.classId ? 36 : /Hostel$/.test(map) ? 36 : map === 'dining' ? 48 : 30;
+      if (BH.Engine3D && BH.Engine3D.mobile) n = Math.round(n * 0.7);
+      return n;
+    },
+
+    /* who should be in this map right now — key characters first, then staff, your arm, your set, then the crowd */
     sync(initial) {
       const s = BH.Game.s;
       const map = BH.Sim.mapId;
-      BH.NPC.all(s).forEach((n) => {
+      const me = BH.School && s.school ? BH.School.myClass(s) : null;
+      const here = [];
+      [...BH.NPC.all(s), ...(BH.Crowd ? BH.Crowd.all(s) : [])].forEach((n) => {
         const place = BH.Schedule.where(s, n);
-        const here = place.map === map;
-        let a = A().get(id(n));
-        if (here && !a) {
+        const a = A().get(id(n));
+        if (place.map === map) here.push({ n, place, a });
+        else if (a && !a.leaving) {
+          a.leaving = true; a.place = place; a.patrolPts = null; a.seat = false; a.pose = null;
+          I().push(a.id, { type: 'path', path: BH.Nav.path(map, a, NPC3.exitPoint(place)) });
+        }
+        if (a) a.lastPlace = place;
+      });
+      const rank = ({ n, a }) => (a && !a.leaving ? -1 : 0) * 5000 + (n.key ? 0 : n.type === 'teacher' || n.type === 'staff' ? 1 : !n.crowd && me && n.arm === me.arm ? 2 : !n.crowd ? 3 : 4) * 1000 + (U.hash(n.id) % 1000);
+      here.sort((p, q) => rank(p) - rank(q));
+      here.slice(0, NPC3.cap(map)).forEach(({ n, place, a }) => {
+        if (!a) {
           const pos = initial ? NPC3.goalPoint(n, place) : NPC3.arrivalPoint(n);
           a = A().make(id(n), {
             kind: 'npc', npcId: n.id, map, x: pos.x, y: pos.y, h: Math.PI / 2,
@@ -32,14 +51,11 @@
             auth: BH.Schedule.authority(s, n), wait: Math.random() * 2,
           });
           NPC3.setGoal(a, n, place, initial);
-        } else if (!here && a && !a.leaving) {
-          a.leaving = true; a.place = place; a.patrolPts = null; a.seat = false; a.pose = null;
-          I().push(a.id, { type: 'path', path: BH.Nav.path(map, a, NPC3.exitPoint(place)) });
-        } else if (here && a && NPC3.placeKey(a.place) !== NPC3.placeKey(place)) {
+        } else if (NPC3.placeKey(a.place) !== NPC3.placeKey(place) || a.leaving) {
           a.leaving = false;
           NPC3.setGoal(a, n, place, false);
         }
-        if (a) a.lastPlace = place;
+        a.lastPlace = place;
       });
     },
 
@@ -125,7 +141,12 @@
           const d = Math.hypot(pl.x - a.x, pl.y - a.y);
           a.reT = (a.reT || 0) - dt;
           if (d > 70 && (!a.path.length || a.reT <= 0)) { a.reT = 0.6; I().push(a.id, { type: 'moveTo', x: pl.x, y: pl.y + 26 }); }
-          if (d <= 70) { if (a.path.length) I().push(a.id, { type: 'stop' }); I().push(a.id, { type: 'face', x: pl.x, y: pl.y }); if (!a.saidHi) { a.saidHi = true; NPC3.say(a, U.pick(['"Hey! You! Come here!"', '"I dey find you since!"', '"Oya come, I wan talk to you."'])); } }
+          if (d <= 70 && a.place && a.place.sitWith && !BH.Sim.cm.outdoor) {
+            // "come sit with me": take the free seat closest to you
+            const seat = BH.Sim.cm.objects.filter((o) => o.seats && o.seats.length && Math.hypot(o.x - pl.x, o.y - pl.y) > 20).sort((p, q) => Math.hypot(p.x - pl.x, p.y - pl.y) - Math.hypot(q.x - pl.x, q.y - pl.y))[0];
+            a.seek = false;
+            if (seat) { a.goal = { x: seat.seats[0].x, y: seat.seats[0].y, seat: true }; a.wantSeat = true; I().push(a.id, { type: 'path', path: BH.Nav.path(map, a, a.goal) }); NPC3.say(a, '"Shift small, I dey come." 🪑'); }
+          } else if (d <= 70) { if (a.path.length) I().push(a.id, { type: 'stop' }); I().push(a.id, { type: 'face', x: pl.x, y: pl.y }); if (!a.saidHi) { a.saidHi = true; NPC3.say(a, U.pick(['"Hey! You! Come here!"', '"I dey find you since!"', '"Oya come, I wan talk to you."'])); } }
         }
         if (a.wait > 0) { a.wait -= dt; if (a.path.length) { a.pausedPath = a.path; a.path = []; } return; }
         if (a.pausedPath) { a.path = a.pausedPath; a.pausedPath = null; }

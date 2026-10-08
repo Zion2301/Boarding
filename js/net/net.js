@@ -7,7 +7,6 @@
    Single-player keeps working when there's no server (file://, offline) or when you switch "Online" off. */
 (function (BH) {
   const U = BH.U;
-  const WEEK = 7 * 1440;
   const toast = (t, k = 'info') => BH.UI && BH.UI.toast && BH.UI.toast(t, k);
 
   const Net = {
@@ -17,22 +16,24 @@
     tables: [], chat: [], time: null, base: null, counted: 0, bestieLoc: null, waypoint: null, cohort: null,
     sendAcc: 0, profAcc: 0, lastSent: '', lastProf: '',
 
-    available() { return /^https?:/.test(location.protocol) && !!window.Colyseus; },
-    wanted() { return Net.available() && BH.Prefs.v.online !== false; },
+    available() { return !!window.Colyseus && !!(BH.Server && BH.Server.base()); },
+    /* story mode is single-player; only a "private school" save goes online (GAME_DESIGN.md §11) */
+    wanted() { const s = BH.Game && BH.Game.s; return Net.available() && BH.Prefs.v.online !== false && !!(s && s.mode === 'private'); },
     send(type, msg) { if (Net.room && Net.online) try { Net.room.send(type, msg); } catch (e) { /* closed */ } },
 
     /* ---------- connect ---------- */
     async connect() {
       const s = BH.Game.s;
       if (!s || !Net.wanted() || Net.online || Net.connecting) return;
+      // online play needs your account (and only the account that owns this student)
+      if (!BH.Account || !BH.Account.token || (s.account && BH.Account.user && s.account !== BH.Account.user.id)) return;
       Net.connecting = true;
       try {
-        Net.client = Net.client || new window.Colyseus.Client(location.origin);
+        Net.client = Net.client || new window.Colyseus.Client(BH.Server.base());
         const st = BH.School.student(s, 'player') || {};
-        const loc = Net.localWeekMin(s);
         Net.room = await Net.client.joinOrCreate('campus', Object.assign(Net.profile(s), {
-          school: 'main', pid: s.player.playerId, newPlayer: !s.flags.onboarded && s.time.dayCount === 0,
-          dow: Math.floor(loc / 1440), min: loc % 1440, map: s.world.map || 'campus', x: s.pos ? s.pos.x : 1200, y: s.pos ? s.pos.y : 1660,
+          school: 'main', token: BH.Account.token, newPlayer: !s.flags.onboarded && s.time.dayCount === 0, invite: s.onboard && s.onboard.inviteFrom,
+          map: s.world.map || 'campus', x: s.pos ? s.pos.x : 1200, y: s.pos ? s.pos.y : 1660,
           schoolName: s.player.schoolName, schoolType: s.player.school, seed: s.school.seed, arm: st.arm,
         }));
         Net.bind(Net.room);
@@ -94,6 +95,7 @@
       if (m.school) BH.School.adoptSchool(s, m.school);
       Net.onTime(m.time);
       Net.align(s);
+      if (s.gameOver) { BH.UI.go('gameover'); return; }
       m.players.forEach((p) => Net.addPlayer(p));
       Net.tables = m.tables || [];
       if (m.social) BH.Social && BH.Social.on('social', m.social);
@@ -167,14 +169,27 @@
     onTime(t) { if (t) Net.time = Object.assign(t, { at: performance.now() }); },
     est() { const t = Net.time; return t ? t.abs + ((performance.now() - t.at) / 1000) * t.rate : 0; },
     clockOn() { return Net.online && !!Net.time && Net.base !== null; },
-    localWeekMin(s) { const day = (s.time.dow + Math.floor(s.clock / 1440)) % 7; return day * 1440 + (((s.clock % 1440) + 1440) % 1440); },
-    /* catch my clock up with the room's (forward only), then follow it */
+    /* show something after the arrival cutscene (not on top of it) */
+    later(fn) { if (BH.Cutscene && BH.Cutscene.active) (BH.Cutscene.after = BH.Cutscene.after || []).push(fn); else fn(); },
+    /* join the school's "now" (the server's calendar), then follow its clock.
+       Same day → just catch up the minutes. Another day → late admission (new student) or welcome back. */
     align(s) {
-      const want = ((Math.floor(Net.est()) % WEEK) + WEEK) % WEEK;
-      let diff = (want - Net.localWeekMin(s) + WEEK) % WEEK;
-      if (diff > WEEK - 30) diff = 0; // a few minutes "behind" → just wait for the room
-      if (diff > 0) { toast(`⏩ Joining the school day (${BH.Clock.until(diff)} ahead)…`, 'info'); BH.Clock.tick(s, diff); }
-      Net.base = Net.est(); Net.counted = 0;
+      const t = Net.time;
+      const day = Math.floor(t.abs / 1440), min = Math.floor(window.BHCalendar.DAY_START + (Net.est() - day * 1440));
+      if (s.time.calDay === day && s.clock <= min) { if (min - s.clock > 0) BH.Clock.tick(s, min - s.clock); }
+      else if (s.time.calDay !== day) {
+        const r = BH.Time.joinCalendar(s, day, min);
+        const isNew = !s.flags.onboarded && r && !r.away;
+        if (r && r.graduated) return;
+        if (r && BH.Cutscene && BH.Cutscene.active) BH.Cutscene.caption(s.player.schoolName, `${s.time.dayType === 'resumption' ? 'Resumption Day' : isNew ? 'Late admission' : 'Back at school'} · ${r.label.split(' · ').slice(1).join(' · ')}`);
+        if (isNew && s.time.dayType !== 'resumption') {
+          toast(`🚌 Late admission! School is already in session — ${r.label}. Register at the Admin Block first.`, 'info');
+        } else if (r && r.away > 0) {
+          Net.later(() => BH.Dialogue.say({ portrait: { emoji: '👋🏾' }, name: 'Welcome back!', sub: r.label, text: `You were away for **${r.away} school day${r.away === 1 ? '' : 's'}**. The school carried on without you — it's now **${r.label}**.${r.report.length ? `\n\n${r.report.join('\n')}` : ''}\n\nYou're rested and fed from home. Nobody marked you absent. 😌` }));
+        }
+      }
+      Net.base = Net.est();
+      Net.counted = s.time.calDay === day ? Math.max(0, s.clock - min) : 0; // we're a few minutes ahead (spent time) → wait for the school
     },
     /* minutes the local clock should tick now (server time minus what we already ticked) */
     due() { return Math.floor(Net.est() - Net.base - Net.counted); },

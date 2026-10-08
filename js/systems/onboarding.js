@@ -10,7 +10,7 @@
   const toast = (t, k = 'info') => BH.UI && BH.UI.toast(t, k);
 
   const STEPS = {
-    cutscene: { text: 'Resumption day!' },
+    cutscene: { text: 'Arriving at school…' },
     register: { text: 'Register at the Admin Block', hint: 'Walk there (WASD / joystick / tap the ground). Follow the gold arrow.', key: 'admin', map: 'admin', obj: ['officeDesk', 'principalDesk'] },
     box: { text: 'Carry your chop box to your hostel', hint: 'Hold Shift (or push the stick all the way) to run.', hostel: true },
     bunk: { text: 'Choose your bunk', hint: 'Walk up to any free bunk and press Space (or tap the button).', hostel: true, obj: ['bunk', 'myBed'] },
@@ -23,9 +23,16 @@
 
   const Onboarding = {
     STEPS,
-    onNewGame(s) { s.onboard = { step: 'cutscene', t: 0, mate: null }; s.flags.onboarded = false; },
+    onNewGame(s) {
+      s.onboard = { step: 'cutscene', t: 0, mate: null };
+      s.flags.onboarded = false;
+      // opened a friend's invite link: join their class arm + house (the server also groups you with them)
+      if (BH.Invite && BH.Invite.from) { s.onboard.inviteFrom = BH.Invite.from; s.onboard.invite = BH.Invite.info; BH.Invite.used(); }
+    },
     onLoad(s) { if (!s.onboard && !s.flags.onboarded) s.flags.onboarded = true; },
     active(s) { return !!(s.onboard && !s.flags.onboarded); },
+    /* still arriving (before free time): the school timetable doesn't apply yet, nobody marks you absent */
+    settling(s) { return Onboarding.active(s) && ['cutscene', 'register', 'box', 'bunk', 'mate', 'senior'].includes(s.onboard.step); },
     step(s) { return Onboarding.active(s) ? s.onboard.step : null; },
     go(s, step) {
       s.onboard.step = step; s.onboard.t = 0;
@@ -73,8 +80,11 @@
       return [];
     },
     register(s) {
-      const c = s.onboard.cohort;
+      let c = s.onboard.cohort;
       const st = BH.School.student(s, 'player');
+      // offline fallback for an invite: the inviter's class arm + house (same year only)
+      const inv = s.onboard.invite;
+      if (!c && inv && inv.arm && Number(inv.level || 1) === s.time.year) c = { arm: inv.arm, house: Math.max(0, D.HOUSES.findIndex((h) => h.tag === inv.house)), members: [inv.name, s.player.name] };
       if (c) {
         st.arm = c.arm;
         s.player.house = D.HOUSES[c.house % D.HOUSES.length];

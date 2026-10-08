@@ -1,0 +1,4 @@
+# Netlify (client only). Set the site's environment variable GAME_SERVER_URL to your Fly/Railway server URL.
+[build]
+  command = "node tools/build-client.mjs"
+  publish = "dist"

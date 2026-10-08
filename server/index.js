@@ -1,7 +1,7 @@
 // Boarding House game server: serves the static game + the /api used for AI NPCs, grading, moderation and shared text.
 //   npm start            (needs ANTHROPIC_API_KEY for real AI)
 //   npm run dev          (AI_MOCK=1: fake model, no key needed)
-// Env: PORT (8787), ANTHROPIC_API_KEY, AI_ENABLED, AI_MOCK, AI_RATE_PER_MIN, AI_DAILY_BUDGET, AI_GLOBAL_DAILY,
+// Env: PORT (8787), HOST, PUBLIC_URL, ALLOW_GUESTS (1 = play online without an account), DATA_DIR, ANTHROPIC_API_KEY, AI_ENABLED, AI_MOCK, AI_RATE_PER_MIN, AI_DAILY_BUDGET, AI_GLOBAL_DAILY,
 //      ADMIN_TOKEN, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, DATA_FILE
 import http from 'node:http';
 import fs from 'node:fs';
@@ -15,7 +15,11 @@ import { npcChat, gradeAnswer, judgeDebate, moderateText, AIUnavailable, CHAT_MO
 import { validate } from './effects.js';
 import { Server as GameServer } from 'colyseus';
 import { WebSocketTransport } from '@colyseus/ws-transport';
-import { CampusRoom, WhotRoom, FootballRoom, BoardRoom } from './mp/rooms.js';
+import { CampusRoom, WhotRoom, FootballRoom, BoardRoom, Online, Tables } from './mp/rooms.js';
+import { Social } from './mp/social.js';
+import { Accounts } from './mp/accounts.js';
+import { SchoolClock } from './mp/schoolclock.js';
+import os from 'node:os';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(here, '..');
@@ -34,12 +38,12 @@ const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
 
 /* ---------------- helpers ---------------- */
 const send = (res, code, body, headers = {}) => {
-  res.writeHead(code, Object.assign({ 'content-type': 'application/json; charset=utf-8', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, x-admin-token', 'cache-control': 'no-store' }, headers));
+  res.writeHead(code, Object.assign({ 'content-type': 'application/json; charset=utf-8', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, x-admin-token, authorization', 'access-control-allow-methods': 'GET, POST, PUT, OPTIONS', 'cache-control': 'no-store' }, headers));
   res.end(typeof body === 'string' ? body : JSON.stringify(body));
 };
-const readBody = (req) => new Promise((resolve, reject) => {
+const readBody = (req, limit = 16 * 1024) => new Promise((resolve, reject) => {
   let size = 0; const chunks = [];
-  req.on('data', (c) => { size += c.length; if (size > 16 * 1024) { reject(new Error('too large')); req.destroy(); } else chunks.push(c); });
+  req.on('data', (c) => { size += c.length; if (size > limit) { reject(new Error('too large')); req.destroy(); } else chunks.push(c); });
   req.on('end', () => { try { resolve(chunks.length ? JSON.parse(Buffer.concat(chunks).toString('utf8')) : {}); } catch { reject(new Error('bad json')); } });
 });
 const str = (v, max) => String(v ?? '').slice(0, max);
@@ -67,6 +71,50 @@ const SAFE_DISTRESS_REPLY = 'Let\'s step out of the game for a second. What you 
 
 /* ---------------- routes ---------------- */
 const routes = {
+  /* ---------- accounts & cloud saves ---------- */
+  'POST /api/auth/register': async (req, res, q, b) => {
+    if (Accounts.throttle(req.socket.remoteAddress)) return send(res, 429, { error: 'Too many tries. Wait a minute.' });
+    const name = Mod.moderate(str(b.username, 20), { context: 'public', max: 20 });
+    if (name.verdict === 'blocked') return send(res, 400, { error: 'Pick a different username.' });
+    const r = Accounts.register(b.username, b.password);
+    send(res, r.error ? 400 : 200, r);
+  },
+  'POST /api/auth/login': async (req, res, q, b) => {
+    if (Accounts.throttle(req.socket.remoteAddress)) return send(res, 429, { error: 'Too many tries. Wait a minute.' });
+    const r = Accounts.login(b.username, b.password);
+    send(res, r.error ? 401 : 200, r);
+  },
+  'POST /api/auth/logout': async (req, res) => { const h = req.headers.authorization || ''; Accounts.logout(h.slice(7)); send(res, 200, { ok: true }); },
+  'GET /api/auth/me': async (req, res) => { const u = Accounts.fromRequest(req); send(res, u ? 200 : 401, u ? { user: u, time: SchoolClock.now() } : { error: 'not logged in' }); },
+  'GET /api/save': async (req, res) => { const u = Accounts.fromRequest(req); if (!u) return send(res, 401, { error: 'not logged in' }); send(res, 200, Accounts.loadSave(u.id)); },
+  'PUT /api/save': async (req, res, q, b) => {
+    const u = Accounts.fromRequest(req);
+    if (!u) return send(res, 401, { error: 'not logged in' });
+    if (!b.save || typeof b.save !== 'object' || !b.save.player) return send(res, 400, { error: 'bad save' });
+    b.save.player.playerId = u.id; // your save is always yours
+    Accounts.writeSave(u.id, b.save);
+    send(res, 200, { ok: true });
+  },
+  /* the school clock right now (also sent to everyone in the campus room) */
+  'GET /api/time': async (req, res) => send(res, 200, SchoolClock.now()),
+  /* testing: jump the whole school to a date (host only — needs ADMIN_TOKEN, or a request from this computer) */
+  'POST /api/admin/time': async (req, res, q, b) => {
+    const local = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress);
+    if (!isAdmin(req) && !local) return send(res, 403, { error: 'host only' });
+    const Cal = SchoolClock.Cal;
+    const day = b.term ? ((Number(b.year || 1) - 1) * Cal.TERMS + (Number(b.term) - 1)) * Cal.TERM_DAYS + (b.week ? 1 + (Number(b.week) - 1) * 7 + Number(b.dow || 0) : 0) : Number(b.day || 0);
+    SchoolClock.set(day, Number(b.min || Cal.ARRIVAL));
+    send(res, 200, SchoolClock.now());
+  },
+
+  /* lobby: who's online + the links friends can use */
+  'GET /api/online': async (req, res) => send(res, 200, {
+    players: [...Online.values()].map((p) => ({ pid: p.pid, name: p.name, level: p.level, arm: p.arm, house: p.house, map: p.map, gang: p.gang })),
+    tables: [...Tables.values()].map((t) => ({ kind: t.kind, title: t.title, players: t.players.length, seats: t.seats, playing: t.playing })),
+    links: links(),
+  }),
+  /* who sent this invite link (works even when they're offline) */
+  'GET /api/invite': async (req, res, q) => { const p = Social.publicProfile(str(q.get('from'), 64).replace(/[^a-zA-Z0-9-]/g, '')); send(res, p ? 200 : 404, p || { error: 'unknown player' }); },
   'GET /api/status': async (req, res, q) => send(res, 200, { ok: true, ai: await guard.aiEnabled(), mock: MOCK, models: { chat: CHAT_MODEL, grade: GRADE_MODEL }, remaining: guard.remaining(str(q.get('playerId'), 64)), store: store.kind }),
 
   /* NPC conversation → structured reply + validated effects */
@@ -283,13 +331,23 @@ function serveStatic(req, res, urlPath) {
   });
 }
 
+/* the addresses friends can use: LAN IPs (+ the public tunnel link when npm run tunnel is running) */
+const HOST = process.env.HOST || undefined;
+function links() {
+  const lan = Object.entries(os.networkInterfaces()).flatMap(([name, l]) => (l || []).filter((i) => i.family === 'IPv4' && !i.internal).map((i) => ({ name, url: `http://${i.address}:${PORT}` })))
+    .sort((a, b) => (/^(en0|wlan|wl|Wi-?Fi)/i.test(b.name) ? 1 : 0) - (/^(en0|wlan|wl|Wi-?Fi)/i.test(a.name) ? 1 : 0)).map((x) => x.url);
+  let pub = process.env.PUBLIC_URL || null;
+  try { pub = pub || fs.readFileSync(path.join(here, 'data', 'public-url.txt'), 'utf8').trim() || null; } catch { /* no tunnel */ }
+  return { lan, public: pub };
+}
+
 const app = async (req, res) => {
   const url = new URL(req.url, 'http://x');
   if (req.method === 'OPTIONS') return send(res, 204, '');
   const route = routes[`${req.method} ${url.pathname}`];
   if (!route) return url.pathname.startsWith('/api/') ? send(res, 404, { error: 'no route' }) : serveStatic(req, res, url.pathname);
   try {
-    const body = req.method === 'POST' ? await readBody(req) : {};
+    const body = ['POST', 'PUT'].includes(req.method) ? await readBody(req, url.pathname === '/api/save' ? 4 * 1024 * 1024 : 16 * 1024) : {};
     await route(req, res, url.searchParams, body);
   } catch (e) {
     log('error', req.method, url.pathname, e.message);
@@ -303,7 +361,7 @@ gameServer.define('campus', CampusRoom).filterBy(['school']);
 gameServer.define('whot', WhotRoom);
 gameServer.define('football', FootballRoom);
 gameServer.define('board', BoardRoom);
-await gameServer.listen(PORT);
+await gameServer.listen(PORT, HOST);
 // Colyseus registered its own HTTP handler: give it only its matchmaking routes, everything else is ours
 {
   const coly = server.listeners('request').slice();
@@ -312,6 +370,6 @@ await gameServer.listen(PORT);
 }
 {
   const lan = Object.values((await import('node:os')).networkInterfaces()).flat().filter((i) => i && i.family === 'IPv4' && !i.internal).map((i) => i.address);
-  log(`Multiplayer ready · friends on the same Wi-Fi can open ${lan.map((a) => `http://${a}:${PORT}`).join(' or ') || `http://<this-computer's-IP>:${PORT}`}`);
+  if (!process.env.QUIET_BANNER) log(`Multiplayer ready · friends on the same Wi-Fi can open ${lan.map((a) => `http://${a}:${PORT}`).join(' or ') || `http://<this-computer's-IP>:${PORT}`}`);
 }
 log(`Boarding House server on http://localhost:${PORT}  ·  store: ${store.kind}  ·  AI: ${process.env.AI_ENABLED === '0' ? 'OFF' : MOCK ? 'MOCK' : process.env.ANTHROPIC_API_KEY ? 'ON' : 'ON (no ANTHROPIC_API_KEY set — calls will fall back)'}${ADMIN_TOKEN ? '  ·  admin: /admin.html' : '  ·  set ADMIN_TOKEN to use /admin.html'}`);

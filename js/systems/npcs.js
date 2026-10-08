@@ -30,49 +30,87 @@
       s.npcs = { classmates: [], seniors: [], teachers: [], juniors: [], staff: [] };
     },
 
+    /* Story mode: the school is full. Your set = the key characters (content/cast.json) + background classmates so
+       every arm of your level has ~28–30 students; key characters sit in YOUR arm. Role seniors fill the jobs the
+       systems need (prefects, house captain…). Everyone else in the school is the seeded crowd (js/systems/crowd.js). */
     makeBots(s) {
       const used = NPC.usedNames(s);
-      const pg = s.player.gender;
-      const other = pg === 'm' ? 'f' : 'm';
-
-      // ---- 30 coursemates (your set, spread across the arms of your level) ----
-      const archList = [];
-      Object.entries(D.ARCHETYPES).forEach(([k, a]) => { for (let i = 0; i < a.count; i++) archList.push(k); });
-      const classmates = archList.map((arch, i) => {
-        let gender = U.chance(0.5) ? 'm' : 'f';
-        if (arch === 'fine') gender = i % 2 ? 'm' : 'f';
-        const p = makePerson(gender, used);
-        const persona = U.pick(D.PERSONAS).key;
-        return Object.assign(p, {
-          id: 'c' + i, type: 'classmate', bot: true, arch, persona,
-          rel: U.randInt(30, 52),
-          ability: NPC.baseAbility(arch, persona),
-        });
+      s.npcs.classmates = []; s.npcs.seniors = []; s.npcs.juniors = [];
+      NPC.addCast(s, used);
+      NPC.fillSet(s, used);
+      NPC.fillRoleSeniors(s, used);
+    },
+    castGender(s, c) {
+      const pg = s.player.gender, other = pg === 'm' ? 'f' : 'm';
+      if (c.gender === 'player') return pg;
+      if (c.gender === 'opposite') return other;
+      if (c.gender === 'seed') return U.hash(c.id + (s.school ? s.school.seed : s.createdAt)) % 2 ? 'm' : 'f';
+      return c.gender;
+    },
+    /* key characters who have arrived by now (Musa in JSS2, Yinka in SS1, your school child in SS1…) */
+    addCast(s, used = NPC.usedNames(s)) {
+      const cast = (BH.Content.get('cast') || { cast: [] }).cast;
+      const year = s.time.year;
+      const added = [];
+      cast.forEach((c) => {
+        if (c.joinYear > year || NPC.get(s, c.id) || (s.npcs.gone || []).includes(c.id)) return;
+        const g = NPC.castGender(s, c);
+        const [first, last] = c.names[g] || Object.values(c.names)[0];
+        used.add(first);
+        const base = { id: c.id, key: true, first, last, gender: g, tribe: c.tribe, origin: c.origin, nick: c.nick, persona: c.persona, arch: c.arch, rel: c.rel, look: c.look || null, religion: c.religion || null, joined: s.time.dayCount };
+        if (c.type === 'classmate') {
+          s.npcs.classmates.push(Object.assign(base, { type: 'classmate', ability: c.ability || NPC.baseAbility(c.arch, c.persona), role: c.role || null }));
+        } else if (c.type === 'senior') {
+          const lvl = Number(String(c.level).replace('SS', '')) + 3 + (year - c.joinYear);
+          if (lvl > 6) return; // already graduated
+          s.npcs.seniors.push(Object.assign(base, { type: 'senior', role: c.role, level: 'SS' + (lvl - 3) }));
+        } else if (c.type === 'junior') {
+          s.npcs.juniors = s.npcs.juniors || [];
+          s.npcs.juniors.push(Object.assign(base, { type: 'junior', level: c.level || 1, schoolChild: !!c.schoolChild }));
+          if (c.schoolChild && s.senior) s.senior.schoolChild = c.id;
+        }
+        added.push(c.id);
       });
-      // a seatmate and a bunkmate — your first padis
-      const regulars = U.shuffle(classmates.filter((c) => c.arch === 'regular'));
-      const seat = regulars[0]; seat.role = 'seatmate'; seat.rel = 55;
-      const bunk = regulars.find((c) => c.gender === pg && c !== seat) || regulars[1];
-      bunk.role = 'bunkmate'; bunk.rel = 55;
-
-      // ---- seniors: hostel ones share your gender ----
-      const lvl = s.time.year;
-      const seniorDefs = [
-        ['bully', pg, 'SS2'], ['schoolParent', pg, 'SS3'], ['labourPrefect', pg, 'SS3'], ['greedy', pg, 'SS1'],
-        ['chill', pg, 'SS2'], ['houseCaptain', pg, 'SS3'], ['diningPrefect', U.pick([pg, other]), 'SS3'], ['headPrefect', U.pick([pg, other]), 'SS3'],
-      ].filter(([, , L]) => Number(L.replace('SS', '')) + 3 > lvl);
-      const seniors = seniorDefs.map(([role, g, level], i) => Object.assign(makePerson(g, used), {
-        id: 's' + i, type: 'senior', bot: true, role, level,
-        persona: U.pick(D.PERSONAS).key,
-        rel: role === 'schoolParent' ? 62 : role === 'bully' ? 18 : role === 'chill' ? 50 : U.randInt(28, 45),
-      }));
-      // ---- juniors (only once you're past JSS1) ----
-      const juniors = [];
-      for (let L = 1; L < lvl; L++) for (let k = 0; k < 3; k++) {
-        const g = U.chance(0.75) ? pg : other;
-        juniors.push(Object.assign(makePerson(g, used), { id: 'j' + U.uid(), type: 'junior', bot: true, level: L, persona: U.pick(D.PERSONAS).key, rel: U.randInt(35, 55) }));
-      }
-      Object.assign(s.npcs, { classmates, seniors, juniors });
+      return added;
+    },
+    /* background classmates: fill every arm of your level */
+    fillSet(s, used = NPC.usedNames(s)) {
+      const me = BH.School && s.school && BH.School.student(s, 'player');
+      const myArm = me ? me.arm : 'A';
+      const L = (BH.Content.get('school').levels || []).find((x) => x.n === s.time.year) || { arms: ['A', 'B', 'C'] };
+      const extra = ['gossip', 'gossip', 'thief', 'fine', 'sporty', 'churchy', 'hustler'];
+      let i = s.npcs.classmates.filter((c) => !c.key).length;
+      L.arms.forEach((arm) => {
+        const want = arm === myArm ? 30 : 27;
+        let have = s.npcs.classmates.filter((c) => (c.key ? myArm : c.arm) === arm).length;
+        while (have < want) {
+          const gender = U.chance(0.5) ? 'm' : 'f';
+          const p = makePerson(gender, used);
+          const arch = i < extra.length ? extra[i] : 'regular';
+          const persona = U.pick(D.PERSONAS).key;
+          s.npcs.classmates.push(Object.assign(p, { id: 'c' + i, type: 'classmate', arch, persona, arm, rel: U.randInt(30, 50), ability: NPC.baseAbility(arch, persona) }));
+          i++; have++;
+        }
+      });
+      s.npcs.classmates.forEach((c) => { if (c.key) c.arm = myArm; });
+    },
+    /* the seniors the school systems rely on (prefects, house captain…) when no key senior holds the job */
+    fillRoleSeniors(s, used = NPC.usedNames(s)) {
+      const pg = s.player.gender, other = pg === 'm' ? 'f' : 'm';
+      const defs = [['labourPrefect', pg, 6], ['diningPrefect', U.pick([pg, other]), 6], ['houseCaptain', pg, 6], ['greedy', pg, 4], ['chill', pg, 5]];
+      defs.forEach(([role, g, lvl]) => {
+        if (lvl <= s.time.year || s.npcs.seniors.some((x) => x.role === role)) return;
+        s.npcs.seniors.push(Object.assign(makePerson(g, used), { id: 's' + U.uid(), type: 'senior', role, level: 'SS' + (lvl - 3), persona: U.pick(D.PERSONAS).key, rel: U.randInt(28, 45) }));
+      });
+    },
+    /* a key character leaves school (transfer, expelled, withdrawn) — remembered for the ending */
+    leave(s, id, why) {
+      const n = NPC.get(s, id);
+      if (!n) return;
+      ['classmates', 'seniors', 'juniors'].forEach((k) => { s.npcs[k] = (s.npcs[k] || []).filter((x) => x.id !== id); });
+      s.npcs.gone = [...new Set([...(s.npcs.gone || []), id])];
+      s.npcs.left = s.npcs.left || {};
+      s.npcs.left[id] = { name: NPC.fullName(n), why, year: s.time.year, term: s.time.term, rel: n.rel, nick: n.nick };
     },
 
     baseAbility(arch, persona) {
@@ -96,7 +134,11 @@
       const graduated = [];
       s.npcs.seniors = s.npcs.seniors.filter((x) => {
         const next = lvl(x.level) + 1;
-        if (next > 6) { graduated.push(x); return false; }
+        if (next > 6) {
+          graduated.push(x);
+          if (x.key) { s.npcs.left = s.npcs.left || {}; s.npcs.left[x.id] = { name: NPC.fullName(x), why: 'graduated', graduated: true, year: s.time.year - 1, term: 3, rel: x.rel, nick: x.nick }; }
+          return false;
+        }
         x.level = 'SS' + (next - 3);
         return true;
       });
@@ -132,11 +174,13 @@
       }
       // coursemates grow up
       s.npcs.classmates.forEach((c) => { c.ability = U.clamp((c.ability || 50) + U.randInt(-3, 5)); });
+      // new faces this year (Musa in JSS2, Yinka in SS1, your school child…)
+      NPC.addCast(s, used).forEach((id) => { const n = NPC.get(s, id); if (n) BH.log(s, `🆕 ${NPC.name(n)} ${n.type === 'junior' ? 'arrives in JSS1' : 'joins your class'}.`, 'info'); });
     },
 
     all(s) { return [...s.npcs.classmates, ...s.npcs.seniors, ...s.npcs.teachers, ...(s.npcs.juniors || []), ...(s.npcs.staff || [])]; },
     students(s) { return [...s.npcs.classmates, ...s.npcs.seniors, ...(s.npcs.juniors || [])]; },
-    get(s, id) { return NPC.all(s).find((n) => n.id === id); },
+    get(s, id) { if (id && id[0] === 'x' && BH.Crowd) return BH.Crowd.get(s, id); return NPC.all(s).find((n) => n.id === id); },
     byArch(s, arch) { return s.npcs.classmates.find((c) => c.arch === arch); },
     byRole(s, role) { return s.npcs.classmates.find((c) => c.role === role) || s.npcs.seniors.find((x) => x.role === role); },
     senior(s, role) { return s.npcs.seniors.find((x) => x.role === role) || s.npcs.classmates.find((c) => c.prefect === role); },
@@ -144,6 +188,8 @@
     teacher(s, code) { return BH.School && s.school ? BH.School.teacherFor(s, 'player', code) : s.npcs.teachers.find((t) => t.subjects && t.subjects.includes(code)); },
     randomClassmate(s, exceptId) { const pool = s.npcs.classmates.filter((c) => c.id !== exceptId); return pool.length ? U.pick(pool) : null; },
     crush(s) {
+      const tams = NPC.get(s, 'k_tams');
+      if (tams) return tams;
       const fines = s.npcs.classmates.filter((c) => c.arch === 'fine');
       return fines.find((c) => c.gender !== s.player.gender) || fines[0];
     },
@@ -162,6 +208,8 @@
     },
     fullName(n) { return n.type === 'teacher' || n.type === 'staff' ? `${n.title} ${n.first ? n.first + ' ' : ''}${n.last}` : `${n.first} ${n.last}`; },
     label(n) {
+      if (n.key) { const c = NPC.castDef(n.id); if (c) return c.label + (n.type === 'senior' ? ` · ${n.level}` : ''); }
+      if (n.crowd) return n.type === 'junior' ? `Junior · ${D.LEVELS[n.level - 1]}${n.arm}` : n.type === 'senior' ? `Senior · ${n.level}${n.arm}` : `Coursemate · ${n.arm}`;
       if (n.type === 'staff') return n.label;
       if (n.type === 'classmate') {
         if (n.prefect) return `${D.SENIOR_ROLES[n.prefect].label} (coursemate)`;
@@ -175,6 +223,7 @@
       return `${subs} teacher${n.formClass ? ` · Form teacher ${n.formClass}` : ''}${n.house ? ` · ${n.house} House master` : ''}`;
     },
     emoji(n) {
+      if (n.key) { const c = NPC.castDef(n.id); if (c) return c.emoji; }
       if (n.type === 'staff') return n.emoji;
       if (n.type === 'senior') return D.SENIOR_ROLES[n.role].emoji;
       if (n.type === 'teacher') return n.gender === 'f' ? '👩🏾‍🏫' : '👨🏾‍🏫';
@@ -199,6 +248,7 @@
       const mine = BH.School && s.school ? BH.School.weekFor(s).flat().find((L) => L && L.t === n.id) : null;
       return mine ? mine.code : (n.subjects || []).find((c) => s.academics && s.academics.subjects[c]) || n.subject;
     },
+    castDef(id) { return ((BH.Content.get('cast') || { cast: [] }).cast).find((c) => c.id === id) || null; },
     remember(s, n, text) {
       if (!n) return;
       n.mem = (n.mem || []).filter((m) => m.text !== text);
@@ -212,6 +262,7 @@
       if (delta > 0) delta *= BH.Stats.mod(s, 'rel');
       const before = n.rel;
       n.rel = U.clamp(n.rel + delta);
+      if (n.crowd) { s.npcs.crowdRel = s.npcs.crowdRel || {}; s.npcs.crowdRel[n.id] = n.rel; }
       BH.fx.push('🤝', n.rel - before, NPC.name(n));
     },
 

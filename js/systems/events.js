@@ -482,6 +482,7 @@
       return BH.WorldSim.call(s, { kind: 'event', id, ctx, npc: who, text: `${e.emoji} ${e.title}`, minutes: who ? 40 : 30 });
     },
     ignore(s, id, ctx) {
+      if (EVENTS[id] && EVENTS[id].onIgnore) return EVENTS[id].onIgnore(s, ctx || {});
       const f = IGNORE[id];
       if (f) return f(s, ctx || {});
       const who = ctx && ctx.npc && npc(s, ctx.npc);
@@ -512,6 +513,7 @@
       if (!ch) return null;
       s.queue.shift();
       const text = ch.run(s, v.q.ctx);
+      BH.bus.emit('event:done', { id: v.q.id, choice: i });
       BH.log(s, `${v.e.emoji} ${v.e.title}: ${ch.label.replace(/^\S+\s/, '')}`, 'event');
       return text;
     },
@@ -522,6 +524,7 @@
       if (!ch) return null;
       BH.WorldSim.dropCall(s, call.uid);
       const text = ch.run(s, call.ctx);
+      BH.bus.emit('event:done', { id: call.id, choice: i });
       BH.log(s, `${v.e.emoji} ${v.e.title}: ${ch.label.replace(/^\S+\s/, '')}`, 'event');
       return text;
     },

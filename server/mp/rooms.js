@@ -6,6 +6,8 @@
 import { createRequire } from 'node:module';
 import { Room } from 'colyseus';
 import { Social } from './social.js';
+import { Accounts } from './accounts.js';
+import { SchoolClock } from './schoolclock.js';
 
 const require = createRequire(import.meta.url);
 const Mod = require('../../shared/moderation.js');
@@ -19,14 +21,29 @@ const idOf = (v) => str(v, 64).replace(/[^a-zA-Z0-9-]/g, '') || null;
 const EMOTES = ['wave', 'beckon', 'cheer', 'dance', 'talk', 'kneel', 'clap', 'laugh'];
 const SAFE_DISTRESS = 'What you just wrote sounds really hard, and it matters. Please talk to a trusted adult today — a parent, relative, teacher or school counsellor. If you are in danger right now, contact local emergency services.';
 
+/* who is online right now (for the lobby / invite links): pid → public profile */
+export const Online = new Map();
+const touch = (p) => { if (p && p.pid) Online.set(p.pid, { pid: p.pid, name: p.name, gender: p.gender, level: p.level, arm: p.arm, house: p.house, map: p.map, gang: p.gang, since: (Online.get(p.pid) || {}).since || Date.now() }); };
+
 /* open game tables, shared by every room in this process (shown in the campus "Games" list) */
 export const Tables = new Map();
 let tablesV = 0;
 const setTable = (id, info) => { if (info) Tables.set(id, Object.assign(Tables.get(id) || {}, info)); else Tables.delete(id); tablesV++; };
 
+/* Logged-in players only (ALLOW_GUESTS=1 lets anonymous players in for quick local tests). client.auth = the account */
+function authenticate(options = {}) {
+  const user = Accounts.verify(options.token);
+  if (user) return user;
+  if (process.env.ALLOW_GUESTS === '1') return { id: idOf(options.pid) || null, username: 'guest', guest: true };
+  throw new Error('login required');
+}
+const pidOf = (client, o = {}) => (client.auth && client.auth.id) || idOf(o.pid) || client.sessionId;
+
 /* ================= campus ================= */
 export class CampusRoom extends Room {
   maxClients = 80;
+
+  onAuth(client, options) { return authenticate(options); }
 
   onCreate(opts = {}) {
     this.seed = num(opts.seed, 1, 2 ** 31, 0) || ((Math.random() * 2 ** 31) | 0);
@@ -35,7 +52,7 @@ export class CampusRoom extends Room {
     this.schoolType = str(opts.schoolType, 20) || null;
     if (opts.seed) this.seed = num(opts.seed, 1, 2 ** 31, this.seed);
     this.P = new Map();            // sessionId → player
-    this.sclock = null;             // { abs (game minutes), rate }
+    this.rate = 1;                  // school clock speed (SchoolClock keeps the time itself, saved on disk)
     this.ff = new Map();           // sessionId → { until, rate } (everyone must agree to fast-forward)
     this.cohorts = [];             // resumption-day groups
     this.timeAcc = 0; this.locAcc = 0; this.tablesSeen = -1;
@@ -46,10 +63,12 @@ export class CampusRoom extends Room {
       const p = this.P.get(c.sessionId); if (!p || !Array.isArray(m)) return;
       p.map = str(m[0], 24); p.x = num(m[1], -500, 6000); p.y = num(m[2], -500, 6000); p.h = num(m[3], -10, 10); p.a = str(m[4], 12); p.sp = num(m[5], 0, 400);
       this.dirty.add(c.sessionId);
+      const o = Online.get(p.pid); if (o) o.map = p.map;
     });
     this.onMessage('prof', (c, m = {}) => {
       const p = this.P.get(c.sessionId); if (!p) return;
       Object.assign(p, this.cleanProfile(m, p));
+      touch(p); Social.remember(p.pid, { level: p.level, arm: p.arm, house: p.house });
       this.broadcast('prof', this.pub(p), { except: c });
     });
     this.onMessage('say', (c, m = {}) => this.say(c, m.text, !!m.shout));
@@ -98,9 +117,8 @@ export class CampusRoom extends Room {
     });
     // ---- shared clock: everyone sleeping/waiting → fast-forward ----
     this.onMessage('ff', (c, m = {}) => {
-      if (!this.sclock) return;
       if (m.cancel) this.ff.delete(c.sessionId);
-      else this.ff.set(c.sessionId, { until: this.sclock.abs + num(m.minutes, 1, 1440, 30), rate: num(m.rate, 2, 120, 40), label: str(m.label, 40) });
+      else this.ff.set(c.sessionId, { until: SchoolClock.abs + num(m.minutes, 1, 1440, 30), rate: num(m.rate, 2, 120, 40), label: str(m.label, 40) });
       this.sendTime(true);
     });
 
@@ -131,18 +149,19 @@ export class CampusRoom extends Room {
   }
 
   onJoin(client, o = {}) {
-    const pid = idOf(o.pid) || client.sessionId;
+    const pid = pidOf(client, o);
     // one session per player: a second tab replaces the first
     const dup = this.byPid(pid); if (dup) dup.client.leave(4000, 'opened elsewhere');
     const p = Object.assign({ sid: client.sessionId, pid, client, map: str(o.map, 24) || 'campus', x: num(o.x, -500, 6000, 1200), y: num(o.y, -500, 6000, 1660), h: 0, a: 'idle' }, this.cleanProfile(o));
     Social.profile(pid, p.name);
     p.gang = (Social.gangOf(pid) || {}).tag || null;
     // the first player starts the school clock from their own time of day
-    if (!this.sclock) this.sclock = { abs: num(o.dow, 0, 6, 6) * 1440 + num(o.min, 0, 1439, 840), rate: 1 };
     let cohort = null;
-    if (o.newPlayer) cohort = this.joinCohort(p, o);
+    if (o.newPlayer) cohort = this.joinCohort(p, o, idOf(o.invite));
     p.cohort = cohort;
     this.P.set(client.sessionId, p);
+    touch(p);
+    Social.remember(pid, { level: p.level, arm: p.arm, house: p.house, gender: p.gender, school: this.schoolName });
     this.broadcast('join', this.pub(p), { except: client });
   }
   /* sent once the client has its message handlers bound (so nothing is dropped) */
@@ -157,9 +176,17 @@ export class CampusRoom extends Room {
 
   /* Resumption day: new players who arrive close together share it — same class arm, same house; same-gender
      pairs become bunkmates. */
-  joinCohort(p, o) {
+  joinCohort(p, o, invitedBy) {
     const now = Date.now();
-    let c = this.cohorts.find((x) => now - x.created < 20 * 60 * 1000 && x.members.length < 30);
+    // invited: join the inviter's arrival group if there is one, else a group in the inviter's class arm + house
+    const inv = invitedBy && Social.profile(invitedBy);
+    let c = inv ? this.cohorts.find((x) => x.members.some((m) => m.pid === invitedBy)) : null;
+    if (!c && inv && inv.arm) {
+      const hi = ['Blue', 'Green', 'Red', 'Yellow', 'Purple', 'Orange'].indexOf(inv.house);
+      c = { id: `c${now.toString(36)}i`, created: now, arm: inv.arm, house: hi >= 0 ? hi : 0, members: [{ pid: invitedBy, name: inv.name, gender: inv.gender, bunkmate: null }] };
+      this.cohorts.push(c);
+    }
+    if (!c) c = this.cohorts.find((x) => now - x.created < 20 * 60 * 1000 && x.members.length < 30);
     if (!c) {
       const n = this.cohorts.length;
       c = { id: `c${now.toString(36)}`, created: now, arm: ['A', 'B', 'C'][n % 3], house: n % 6, members: [] };
@@ -178,23 +205,23 @@ export class CampusRoom extends Room {
     this.P.delete(client.sessionId);
     this.ff.delete(client.sessionId);
     this.dirty.delete(client.sessionId);
-    if (p) this.broadcast('leave', { sid: client.sessionId, pid: p.pid });
-    if (!this.P.size) this.sclock = null; // empty school: the next player starts the clock again
+    if (p) { this.broadcast('leave', { sid: client.sessionId, pid: p.pid }); Online.delete(p.pid); }
+    if (!this.P.size) SchoolClock.persist(); // empty school: time pauses here and carries on when someone comes back
   }
 
-  timeMsg() { return this.sclock ? { abs: this.sclock.abs, rate: this.sclock.rate, ff: this.ff.size, n: this.P.size } : null; }
+  timeMsg() { const t = SchoolClock.now(); return { abs: t.abs, day: t.day, min: t.min, rate: this.rate, ff: this.ff.size, n: this.P.size }; }
   sendTime(now) { if (now || this.timeAcc >= 1000) { this.timeAcc = 0; this.broadcast('time', this.timeMsg()); } }
 
   tick(dt) {
-    if (this.sclock) {
+    if (this.P.size) {
       // fast-forward only when every player asked for it (sleeping / waiting)
       const votes = [...this.ff.values()];
       const all = votes.length && votes.length >= this.P.size;
       const until = all ? Math.min(...votes.map((v) => v.until)) : 0;
-      const rate = all && until > this.sclock.abs ? Math.min(...votes.map((v) => v.rate)) : 1;
-      if (rate !== this.sclock.rate) { this.sclock.rate = rate; this.sendTime(true); }
-      this.sclock.abs += (dt / 1000) * this.sclock.rate;
-      if (all && this.sclock.abs >= until) { this.ff.clear(); this.sclock.rate = 1; this.broadcast('ffDone', {}); this.sendTime(true); }
+      const rate = all && until > SchoolClock.abs ? Math.min(...votes.map((v) => v.rate)) : 1;
+      if (rate !== this.rate) { this.rate = rate; this.sendTime(true); }
+      SchoolClock.advance((dt / 1000) * this.rate);
+      if (all && SchoolClock.abs >= until) { this.ff.clear(); this.rate = 1; this.broadcast('ffDone', {}); this.sendTime(true); }
       this.timeAcc += dt; this.sendTime(false);
     }
     // positions (10 Hz)
@@ -244,8 +271,9 @@ export class WhotRoom extends Room {
   publish() {
     setTable(this.roomId, { id: this.roomId, kind: 'whot', title: this.title, map: this.where, players: [...this.humans.values()].map((h) => h.name), seats: this.seats, playing: !!(this.game && !this.game.winner) });
   }
+  onAuth(client, options) { return authenticate(options); }
   onJoin(client, o = {}) {
-    this.humans.set(client.sessionId, { pid: idOf(o.pid) || client.sessionId, name: str(o.name, 24) || 'Player' });
+    this.humans.set(client.sessionId, { pid: pidOf(client, o), name: str(o.name, 24) || 'Player' });
     this.publish();
     this.sendViews();
   }
@@ -308,9 +336,10 @@ export class FootballRoom extends Room {
     this.setSimulationInterval((dt) => this.tick(dt), 50);
     setTable('football', { id: 'football', kind: 'football', title: 'Football on the field', map: 'campus', players: [], seats: 12, playing: true });
   }
+  onAuth(client, options) { return authenticate(options); }
   onJoin(client, o = {}) {
     const p = Football.addPlayer(this.st, client.sessionId, { name: str(o.name, 24) || 'Player', x: num(o.x, 0, 6000, null), y: num(o.y, 0, 6000, null) });
-    p.pid = idOf(o.pid);
+    p.pid = pidOf(client, o);
     Football.balance(this.st, 2);
     client.send('team', { team: p.team, field: this.field, goalW: this.st.goalW });
     this.publish();
@@ -358,7 +387,8 @@ export class BoardRoom extends Room {
     });
   }
   publish() { setTable(this.roomId, { id: this.roomId, kind: this.kind, title: this.title, map: this.where, players: [...this.humans.values()].map((h) => h.name), seats: this.seats, playing: !!(this.game && !this.game.winner) }); }
-  onJoin(client, o = {}) { this.humans.set(client.sessionId, { pid: idOf(o.pid) || client.sessionId, name: str(o.name, 24) || 'Player' }); this.publish(); this.sendViews(); }
+  onAuth(client, options) { return authenticate(options); }
+  onJoin(client, o = {}) { this.humans.set(client.sessionId, { pid: pidOf(client, o), name: str(o.name, 24) || 'Player' }); this.publish(); this.sendViews(); }
   onLeave(client) {
     const h = this.humans.get(client.sessionId); this.humans.delete(client.sessionId);
     if (this.game && h) { const pl = this.game.players.find((p) => p.id === h.pid); if (pl) { pl.bot = true; pl.name += ' (bot)'; } this.afterMove(); }

@@ -23,7 +23,7 @@
       board.kind = kind;
       if (net && net.online) {
         try {
-          board.bind(await net.client.create('board', { game: kind, pid: s.player.playerId, name: s.player.name.split(' ')[0], title: `${s.player.name.split(' ')[0]}'s ${B().ENGINES[kind].title}`, map: s.world.map, seats: kind === 'ludo' ? 4 : 2 }));
+          board.bind(await net.client.create('board', { game: kind, token: BH.Account && BH.Account.token, pid: s.player.playerId, name: s.player.name.split(' ')[0], title: `${s.player.name.split(' ')[0]}'s ${B().ENGINES[kind].title}`, map: s.world.map, seats: kind === 'ludo' ? 4 : 2 }));
           if (opts.invite) net.send('invite', { to: opts.invite, kind, roomId: board.room.roomId, title: B().ENGINES[kind].title });
           return board.open();
         } catch (e) { toast('Could not open a table online — playing a bot.', 'info'); }
@@ -32,7 +32,7 @@
     },
     async join(roomId) {
       const s = BH.Game.s;
-      try { board.bind(await N().client.joinById(roomId, { pid: s.player.playerId, name: s.player.name.split(' ')[0] })); board.open(); }
+      try { board.bind(await N().client.joinById(roomId, { token: BH.Account && BH.Account.token, pid: s.player.playerId, name: s.player.name.split(' ')[0] })); board.open(); }
       catch (e) { toast('That table is full or already playing.', 'bad'); }
     },
     bind(room) {

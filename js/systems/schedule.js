@@ -115,7 +115,7 @@
 
     /* Everyone whose place is this map right now */
     npcsIn(s, mapId) {
-      return BH.NPC.all(s).filter((n) => { const p = Schedule.where(s, n); return p.map === mapId; });
+      return [...BH.NPC.all(s), ...(BH.Crowd ? BH.Crowd.all(s) : [])].filter((n) => { const p = Schedule.where(s, n); return p.map === mapId; });
     },
     /* A named staff member's current place (for HUD/mission hints) */
     placeLabel(s, n) {

@@ -51,7 +51,7 @@
     },
     forNpc(s, n, style) {
       if (n.type === 'teacher' || n.type === 'staff') return { kind: 'adult', gender: n.gender, role: n.type === 'staff' ? n.role : null, seed: n.id, hijab: n.tribe === 'Hausa' && n.gender === 'f' };
-      const level = n.type === 'senior' ? Number(String(n.level).replace('SS', '')) + 3 : n.type === 'junior' ? n.level : s.time.year;
+      const level = n.lvl || (n.type === 'senior' ? Number(String(n.level).replace('SS', '')) + 3 : n.type === 'junior' ? n.level : s.time.year);
       const look = BH.Sprites.npcLook(s, n);
       return { kind: 'student', school: s.player.school, level, gender: n.gender, house: look.outfit.house, style: style || Outfits.styleNow(s), prefect: !!(n.prefect || ['labourPrefect', 'diningPrefect', 'headPrefect', 'houseCaptain'].includes(n.role)), hijab: look.av.hair === 'hijab', seed: n.id };
     },
