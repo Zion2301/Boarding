@@ -1,0 +1,47 @@
+{
+  "_doc": "School structure (shared world state in multiplayer). levels: the six levels and their arms; every arm is a class with its own classroom map (generated from the classroom template), form teacher, captain, timetable, register, seating and noticeboard. periods: how many periods each subject gets per week. A subject listed under 'split' is taught to groups at the same time (religion: CRS/IRS, lang: Yoruba/Igbo/Hausa, dept: SS departmental lines). SS levels have core subjects per arm plus 'lines': in a line period the whole level splits by department and each department group goes to its own room. rooms: where a split group meets (an arm's own room unless stated). The timetable for every arm is generated once per school (js/systems/school.js) so no teacher or room is booked twice.",
+  "periodsPerDay": 8,
+  "armSize": 30,
+  "levels": [
+    { "id": "JSS1", "n": 1, "stage": "JSS", "block": "juniorBlock", "arms": ["A", "B", "C"] },
+    { "id": "JSS2", "n": 2, "stage": "JSS", "block": "juniorBlock", "arms": ["A", "B", "C"] },
+    { "id": "JSS3", "n": 3, "stage": "JSS", "block": "juniorBlock", "arms": ["A", "B", "C"] },
+    { "id": "SS1", "n": 4, "stage": "SS", "block": "seniorBlock", "arms": ["A", "B", "C"] },
+    { "id": "SS2", "n": 5, "stage": "SS", "block": "seniorBlock", "arms": ["A", "B", "C"] },
+    { "id": "SS3", "n": 6, "stage": "SS", "block": "seniorBlock", "arms": ["A", "B", "C"] }
+  ],
+  "blocks": {
+    "juniorBlock": { "name": "Junior Block", "campus": "jss", "emoji": "📚" },
+    "seniorBlock": { "name": "Senior Block", "campus": "ss", "emoji": "🎓" }
+  },
+  "periods": {
+    "JSS": { "ENG": 5, "MTH": 5, "BSC": 3, "BTE": 3, "AGR": 3, "BUS": 3, "SOS": 2, "CIV": 2, "RS": 2, "HEC": 2, "CCA": 2, "PHE": 2, "ICT": 2, "FRE": 2, "NLG": 2 },
+    "SS": { "ENG": 5, "MTH": 5, "CIV": 2, "DPR": 2 }
+  },
+  "ssLines": [
+    { "periods": 5, "science": "PHY", "arts": "LIT", "commercial": "ECO" },
+    { "periods": 5, "science": "CHE", "arts": "GOV", "commercial": "ACC" },
+    { "periods": 5, "science": "BIO", "arts": "HIS", "commercial": "COM" },
+    { "periods": 4, "science": "FMA", "arts": "RS", "commercial": "OFP" },
+    { "periods": 4, "science": "AGR", "arts": "NLG", "commercial": "MKT" },
+    { "periods": 3, "science": "GEO", "arts": "FA", "commercial": "ECO" }
+  ],
+  "split": {
+    "RS": { "by": "religion", "groups": { "christian": "classroom", "muslim": "mosque" } },
+    "NLG": { "by": "lang", "groups": { "yoruba": "classroom", "igbo": "library", "hausa": "dining" } }
+  },
+  "deptRooms": { "science": "A", "arts": "B", "commercial": "C" },
+  "labSubjects": ["PHY", "CHE", "BIO"],
+  "maxTeacherLoad": 34,
+  "registerDays": 14,
+  "classNotices": [
+    "Class dues: ₦200 per head. See the class captain. 💰",
+    "Sweeping rota: Monday — Row 1, Tuesday — Row 2, Wednesday — Row 3, Thursday — Row 4. NO EXCUSE.",
+    "Anybody wey lose biro, check the lost & found under the teacher's table. 🖊️",
+    "Noisemakers' list will be submitted to the form teacher every Friday. 📝"
+  ],
+  "bots": {
+    "_doc": "Bot students fill empty desks when the dev/test setting fill_with_bot_students is on (off by default — students are meant to be real players). perArm: how many bots sit in each class arm.",
+    "perArm": 10
+  }
+}

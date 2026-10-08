@@ -96,7 +96,7 @@
    "hours": "08:00-21:30"
   },
   "jss": {
-   "name": "JSS Classroom Block",
+   "name": "Junior Block",
    "emoji": "📚",
    "kind": "b",
    "x": 700,
@@ -109,11 +109,11 @@
     "x": 880,
     "y": 898
    },
-   "interior": "jss",
+   "interior": "juniorBlock",
    "hours": "06:30-22:00"
   },
   "ss": {
-   "name": "SS Classroom Block",
+   "name": "Senior Block",
    "emoji": "🎓",
    "kind": "b",
    "x": 1300,
@@ -126,7 +126,7 @@
     "x": 1480,
     "y": 898
    },
-   "interior": "ss",
+   "interior": "seniorBlock",
    "hours": "06:30-22:00"
   },
   "lab": {

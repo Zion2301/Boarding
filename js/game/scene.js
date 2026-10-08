@@ -663,9 +663,9 @@
   BH.WorldScene = WorldScene;
   BH.World = {
     scene: null,
-    start(parent) { BH.SceneManager.start(parent); },
-    stop() { BH.SceneManager.stop(); },
-    running() { return BH.SceneManager.running(); },
+    start(parent) { if (BH.Engine3D && BH.Engine3D.wanted()) BH.Engine3D.start(parent); else BH.SceneManager.start(parent); },
+    stop() { if (BH.Engine3D) BH.Engine3D.stop(); BH.SceneManager.stop(); },
+    running() { return BH.SceneManager.running() || !!(BH.Engine3D && BH.Engine3D.running); },
     refreshPlayer() { const sc = BH.World.scene; if (sc) { BH.Sprites.texture(sc, 'pl', BH.Sprites.playerLook(sc.s)); sc.player.setTexture('pl_f'); } },
     snap(pt) { BH.World.scene && BH.World.scene.snap(pt); },
     escort(where) { BH.SceneManager.escort(where); },

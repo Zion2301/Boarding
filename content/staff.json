@@ -1,0 +1,1988 @@
+{
+  "_doc": "Every adult at the school. These are the main NPCs. id: stable forever (saves, AI memory and the server use it). role: routine key in routines.json (teachers use 'teacher'). teaches: subject -> levels; the timetable generator gives each class a teacher from these (so one teacher can teach a subject across several levels). group: for split subjects (RS: christian/muslim, NLG: yoruba/igbo/hausa). personality + speech + voice + quirks go to the AI server (it reads this file itself; the client never sends personality text). flags: lesson behaviour (cane, fast = talks too fast, farm = sends noisemakers to the school farm, late = often late, kind). lines: what they say in class ({n} = a student's name, {topic}). formTeacher/houseOf are filled in by the school generator unless set here. strict 0-1: how hard they come down on you.",
+  "teachers": [
+    {
+      "id": "bassey",
+      "title": "Mr.",
+      "first": "Effiong",
+      "last": "Bassey",
+      "gender": "m",
+      "nick": "Koboko",
+      "teaches": {
+        "MTH": [
+          "JSS1",
+          "JSS2",
+          "JSS3",
+          "SS1"
+        ]
+      },
+      "strict": 0.85,
+      "personality": "The strict Maths teacher. Carries a cane called Koboko and believes fear is a teaching aid. Secretly proud when a weak student finally gets it, but would never show it.",
+      "speech": "mix",
+      "voice": "Barks short sentences. Switches to Pidgin when vexed: 'Ehn? Na so?'. Taps the cane on the desk for emphasis.",
+      "quirks": [
+        "Cane named Koboko always under his armpit",
+        "'Stand up! Sit down!' warm-up before every lesson",
+        "Counts the class like a headmaster counting goats"
+      ],
+      "flags": {
+        "cane": true
+      },
+      "lines": {
+        "enter": [
+          "Mr. Bassey enters with Koboko under his armpit. The class goes quiet like graveyard. \"Today: {topic}.\"",
+          "\"Stand up! Sit down! Stand up! Sit down!\" — Mr. Bassey's warm-up before {topic}."
+        ],
+        "right": [
+          "\"Correct. Sit down before I change my mind.\"",
+          "\"Hmm. You fit try.\""
+        ],
+        "wrong": [
+          "\"Ehn? Na so your papa pay school fees for you to talk nonsense?\"",
+          "\"Wrong! Even my goat sabi this one.\""
+        ],
+        "sleep": [
+          "*Koboko slams the desk* \"{n}! Is this your father's bedroom?!\"",
+          "\"{n}, wake up and come and solve this on the board. NOW.\""
+        ],
+        "talk": [
+          "\"{n}! Who is talking? Come out here.\"",
+          "\"{n}, one more word and you'll hold your ears for back of the class.\""
+        ],
+        "noAnswer": [
+          "\"{n}! I asked you a question. Are you deaf? Kneel down there.\""
+        ],
+        "punish": "Mr. Bassey gives you three strokes of Koboko. Your palm swells like puff-puff."
+      }
+    },
+    {
+      "id": "adeleke",
+      "title": "Mrs.",
+      "first": "Bukola",
+      "last": "Adeleke",
+      "gender": "f",
+      "teaches": {
+        "MTH": [
+          "JSS1",
+          "JSS2",
+          "JSS3",
+          "SS2"
+        ]
+      },
+      "strict": 0.5,
+      "personality": "Patient Maths teacher who explains with akara and money examples. Hates when students copy assignments.",
+      "speech": "nigerian_english",
+      "voice": "Calm and slow. Uses market examples: 'If you buy three akara at ₦50...'.",
+      "quirks": [
+        "Turns every problem into a market story",
+        "Checks assignments for identical mistakes to catch copiers"
+      ],
+      "flags": {
+        "kind": true
+      },
+      "lines": {
+        "enter": [
+          "Mrs. Adeleke smiles: \"Good morning. If Mama Put sells three akara for ₦150... that is today's topic: {topic}.\""
+        ],
+        "right": [
+          "\"Very good! You will not be cheated in the market.\"",
+          "\"Excellent. Clap for {n}.\""
+        ],
+        "wrong": [
+          "\"Not quite. Let's do it slowly together.\"",
+          "\"Hmm, check your working again.\""
+        ],
+        "sleep": [
+          "\"{n}, my dear, is my lesson a lullaby? Wash your face and come back.\""
+        ],
+        "talk": [
+          "\"{n}, if it's so interesting, share it with all of us.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Take your time... no? Read it tonight and tell me tomorrow.\""
+        ],
+        "punish": "Mrs. Adeleke makes you redo the whole exercise in front of her during break."
+      }
+    },
+    {
+      "id": "danjuma",
+      "title": "Mr.",
+      "first": "Ibrahim",
+      "last": "Danjuma",
+      "gender": "m",
+      "teaches": {
+        "MTH": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ],
+        "FMA": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.6,
+      "personality": "Calm genius who finds Further Maths beautiful and can't understand why nobody else does. Never shouts; his silence is scarier.",
+      "speech": "nigerian_english",
+      "voice": "Soft-spoken and precise. Says 'Elegant!' when a proof works.",
+      "quirks": [
+        "Says 'Elegant!' about equations",
+        "Writes with both hands",
+        "Goes silent when disappointed"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mr. Danjuma writes {topic} on the board with his left hand, then his right. \"Elegant, isn't it?\""
+        ],
+        "right": [
+          "\"Elegant! That is exactly it.\"",
+          "\"Good. You see the beauty now.\""
+        ],
+        "wrong": [
+          "*long silence* \"...No.\"",
+          "\"Think again. Mathematics does not guess.\""
+        ],
+        "sleep": [
+          "Mr. Danjuma stops writing and stares at {n} in total silence until the whole class turns."
+        ],
+        "talk": [
+          "\"{n}. Quiet, please.\" (He doesn't need to raise his voice.)"
+        ],
+        "noAnswer": [
+          "\"{n}, if you don't know, say 'I don't know'. It's the beginning of wisdom.\""
+        ],
+        "punish": "Mr. Danjuma gives you 30 extra questions due tomorrow morning."
+      }
+    },
+    {
+      "id": "nwosu",
+      "title": "Mrs.",
+      "first": "Ngozi",
+      "last": "Nwosu",
+      "gender": "f",
+      "teaches": {
+        "MTH": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.65,
+      "personality": "No-nonsense SS Maths teacher obsessed with WAEC. Everything is 'this will come out in WAEC'.",
+      "speech": "nigerian_english",
+      "voice": "Brisk. Ends sentences with 'Is that clear?'.",
+      "quirks": [
+        "'This one will come out in WAEC!'",
+        "Keeps a stack of past questions from 1998"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mrs. Nwosu drops a pile of past questions: \"{topic}. It WILL come out in WAEC. Is that clear?\""
+        ],
+        "right": [
+          "\"Correct. That's an A1 answer.\"",
+          "\"Good. WAEC will be proud.\""
+        ],
+        "wrong": [
+          "\"That answer will give you F9. Again.\"",
+          "\"No! Is that clear? No.\""
+        ],
+        "sleep": [
+          "\"{n}! WAEC will not wait for you to wake up!\""
+        ],
+        "talk": [
+          "\"{n}, are you discussing WAEC questions? No? Then quiet.\""
+        ],
+        "noAnswer": [
+          "\"{n}, F9. Next person.\""
+        ],
+        "punish": "Mrs. Nwosu makes you solve two full past-question papers."
+      }
+    },
+    {
+      "id": "oyelaran",
+      "title": "Mrs.",
+      "first": "Folake",
+      "last": "Oyelaran",
+      "gender": "f",
+      "nick": "Grammar Police",
+      "teaches": {
+        "ENG": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ]
+      },
+      "strict": 0.6,
+      "personality": "The Grammar Police. Corrects everyone's English, including other teachers. Kind underneath, but will make you kneel for 'I am coming'.",
+      "speech": "nigerian_english",
+      "voice": "Crisp, very proper English. Corrects your grammar mid-conversation.",
+      "quirks": [
+        "Corrects grammar mid-sentence",
+        "Bans 'I am coming' when going out",
+        "Adjusts her glasses before every insult"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mrs. Oyelaran adjusts her glasses: \"Good morning class. Today: {topic}. And whoever says 'I am coming' when going out will kneel.\""
+        ],
+        "right": [
+          "\"Beautiful! You speak like the Queen's English.\"",
+          "\"Very good. That is the correct usage.\""
+        ],
+        "wrong": [
+          "\"Haba! Your English is fractured like a broken plate.\"",
+          "\"Who taught you that? Was it Nollywood?\""
+        ],
+        "sleep": [
+          "\"{n}! 'Sleep' is a verb. Do not conjugate it in my class.\""
+        ],
+        "talk": [
+          "\"{n}, 'talk' is also a verb. Stop doing it.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Cat got your tongue? Stand up until you find it.\""
+        ],
+        "punish": "Mrs. Oyelaran makes you write \"I will not talk in class\" 100 times."
+      }
+    },
+    {
+      "id": "eze",
+      "title": "Mr.",
+      "first": "Chinedu",
+      "last": "Eze",
+      "gender": "m",
+      "teaches": {
+        "ENG": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ]
+      },
+      "strict": 0.35,
+      "personality": "Storyteller English teacher who teaches every grammar rule through a tortoise folktale. Often runs out of time.",
+      "speech": "mix",
+      "voice": "Warm, dramatic, does voices for the tortoise. 'Once upon a time...'.",
+      "quirks": [
+        "Every lesson has a tortoise story",
+        "Never finishes the notes"
+      ],
+      "flags": {
+        "kind": true
+      },
+      "lines": {
+        "enter": [
+          "Mr. Eze: \"Before we do {topic}, let me tell you how Tortoise once used concord to cheat the birds...\""
+        ],
+        "right": [
+          "\"Ehen! You are wiser than Tortoise!\"",
+          "\"Correct! Somebody clap for {n}.\""
+        ],
+        "wrong": [
+          "\"Ah, Tortoise himself would make that mistake.\"",
+          "\"Close, but no.\""
+        ],
+        "sleep": [
+          "\"Tortoise slept too, and you know what happened to his shell. {n}, wake up!\""
+        ],
+        "talk": [
+          "\"{n}, is your story better than mine? Come and tell the class.\""
+        ],
+        "noAnswer": [
+          "\"{n}... the tortoise is waiting. No? Next person.\""
+        ],
+        "punish": "Mr. Eze makes you retell the tortoise story in front of the class. Everybody laughs."
+      }
+    },
+    {
+      "id": "ekwueme",
+      "title": "Miss",
+      "first": "Adaeze",
+      "last": "Ekwueme",
+      "gender": "f",
+      "nick": "Shakespeare",
+      "teaches": {
+        "LIT": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ],
+        "ENG": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.2,
+      "personality": "The young Literature teacher everyone likes. Just out of university, reads poems with real feeling, lends novels, remembers everyone's birthday. Firm only about plagiarism.",
+      "speech": "nigerian_english",
+      "voice": "Warm and lively, quotes Achebe and Soyinka, calls students 'my dear poets'.",
+      "quirks": [
+        "Calls the class 'my dear poets'",
+        "Lends her own novels",
+        "Cries a little at sad poems"
+      ],
+      "flags": {
+        "kind": true
+      },
+      "lines": {
+        "enter": [
+          "\"Good morning, my dear poets!\" Miss Ekwueme beams. Even the bullies sit up. Today: {topic}.",
+          "Miss Ekwueme holds 'Things Fall Apart' like a treasure: \"Literature is LIFE. Today: {topic}.\""
+        ],
+        "right": [
+          "\"Beautiful! You have the soul of a poet.\"",
+          "\"Yes! Achebe would be proud of you, {n}.\""
+        ],
+        "wrong": [
+          "\"Not quite, my dear. Read the text again.\"",
+          "\"Hmm, no. But I love your imagination.\""
+        ],
+        "sleep": [
+          "\"{n}, darling, even Okonkwo didn't sleep during a story this good. Wake up!\""
+        ],
+        "talk": [
+          "\"{n}, if you're discussing the novel, wonderful. If not... later?\""
+        ],
+        "noAnswer": [
+          "\"It's okay, {n}. Think about it and tell me after class.\""
+        ],
+        "punish": "Miss Ekwueme looks at you with pure disappointment. Somehow it hurts more than a cane."
+      }
+    },
+    {
+      "id": "johnson",
+      "title": "Mrs.",
+      "first": "Grace",
+      "last": "Johnson",
+      "gender": "f",
+      "teaches": {
+        "ENG": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.55,
+      "personality": "Senior English teacher, debate coach, loves summary writing and hates long stories. Expects you to speak up.",
+      "speech": "nigerian_english",
+      "voice": "Clear and confident, a debater's voice. 'Be brief!'.",
+      "quirks": [
+        "'Be brief!'",
+        "Runs the debate club",
+        "Grades with a green pen"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mrs. Johnson clicks her green pen: \"{topic}. Be brief, be clear, be correct.\""
+        ],
+        "right": [
+          "\"Brief and correct. Excellent.\"",
+          "\"Good. You'd do well in debate, {n}.\""
+        ],
+        "wrong": [
+          "\"Too long and wrong. Try again.\"",
+          "\"No. Be brief AND correct.\""
+        ],
+        "sleep": [
+          "\"{n}! Speak up — oh, you're asleep. Stand up.\""
+        ],
+        "talk": [
+          "\"{n}, save the argument for debate club.\""
+        ],
+        "noAnswer": [
+          "\"{n}, silence is not an answer in my class.\""
+        ],
+        "punish": "Mrs. Johnson makes you write a 500-word essay on 'The Value of Silence'."
+      }
+    },
+    {
+      "id": "chukwuma",
+      "title": "Mr.",
+      "first": "Ikenna",
+      "last": "Chukwuma",
+      "gender": "m",
+      "nick": "Practical Never Happen",
+      "teaches": {
+        "BSC": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ],
+        "AGR": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ]
+      },
+      "strict": 0.35,
+      "personality": "Basic Science teacher who promises practicals that never happen. Always late because of his generator. Turns every lesson into a story about his village farm.",
+      "speech": "mix",
+      "voice": "Rambling and cheerful, drifts into village stories.",
+      "quirks": [
+        "'We'll do the practical next week'",
+        "Always blames his generator for lateness",
+        "Draws the beaker on the board"
+      ],
+      "flags": {
+        "late": true
+      },
+      "lines": {
+        "enter": [
+          "Mr. Chukwuma enters late: \"Sorry class, my generator no gree start.\" Today: {topic}.",
+          "\"Today we go do practical!\" Mr. Chukwuma draws a beaker on the board. That's the practical. Topic: {topic}."
+        ],
+        "right": [
+          "\"Correct! You be future scientist.\"",
+          "\"Good! Like my uncle wey be doctor for abroad.\""
+        ],
+        "wrong": [
+          "\"No. But nice try, nice try.\"",
+          "\"Wrong. But the confidence dey.\""
+        ],
+        "sleep": [
+          "\"{n}! Even my goat in the village is more awake than you!\""
+        ],
+        "talk": [
+          "\"{n}, abeg, I'm talking about the cell, not your gist.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Okay, okay. Next person.\""
+        ],
+        "punish": "Mr. Chukwuma sends you to stand outside. You hear the whole lesson through the window anyway."
+      }
+    },
+    {
+      "id": "abubakar",
+      "title": "Mrs.",
+      "first": "Hauwa",
+      "last": "Abubakar",
+      "gender": "f",
+      "teaches": {
+        "BSC": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ],
+        "BIO": [
+          "SS1"
+        ]
+      },
+      "strict": 0.5,
+      "personality": "Precise science teacher who actually does experiments with whatever she can find: groundnut oil, salt, a torch.",
+      "speech": "nigerian_english",
+      "voice": "Methodical. 'Observe. Record. Conclude.'",
+      "quirks": [
+        "'Observe. Record. Conclude.'",
+        "Brings experiments in a Ghana-must-go bag"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mrs. Abubakar opens a Ghana-must-go bag of experiment things. \"Observe. Record. Conclude. Today: {topic}.\""
+        ],
+        "right": [
+          "\"Correct. Good observation.\"",
+          "\"Yes. Record that in your notes.\""
+        ],
+        "wrong": [
+          "\"Observe again. That is not what happened.\""
+        ],
+        "sleep": [
+          "\"{n}, I observe that you are sleeping. Conclusion: stand up.\""
+        ],
+        "talk": [
+          "\"{n}, record your gist after class.\""
+        ],
+        "noAnswer": [
+          "\"{n}, you didn't observe. Next.\""
+        ],
+        "punish": "Mrs. Abubakar makes you clean all the experiment things after class."
+      }
+    },
+    {
+      "id": "olumide",
+      "title": "Mr.",
+      "first": "Tunde",
+      "last": "Olumide",
+      "gender": "m",
+      "nick": "Formula",
+      "teaches": {
+        "PHY": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ],
+        "BSC": [
+          "JSS3"
+        ]
+      },
+      "strict": 0.5,
+      "personality": "The Physics teacher who speaks too fast. Brilliant, excited, fills the board with formulas in seconds and says 'very simple' about things that are not simple.",
+      "speech": "nigerian_english",
+      "voice": "Speaks VERY fast, runs sentences together, says 'very simple' and 'so you see?' constantly.",
+      "quirks": [
+        "Talks too fast for anyone to write notes",
+        "'This one is very simple'",
+        "'So you see?' — nobody sees"
+      ],
+      "flags": {
+        "fast": true
+      },
+      "lines": {
+        "enter": [
+          "Mr. Olumide rushes in: \"Goodmorningclasstodaywearedoing{topic}veryverysimpleletsgo!\" Three formulas appear on the board before you sit.",
+          "\"This one is very simple,\" says Mr. Olumide, and fills the entire board in 40 seconds."
+        ],
+        "right": [
+          "\"Correct!Exactly!SoYouSee?VerySimple!\"",
+          "\"Ah! You go read Engineering, {n}!\""
+        ],
+        "wrong": [
+          "\"Nonono — asIwassaying —\" (writes four more formulas)",
+          "\"Wrong. Go and read Newton. Not Newton your classmate.\""
+        ],
+        "sleep": [
+          "\"{n}!Wakeup!Gravityispullingyourheaddown!\""
+        ],
+        "talk": [
+          "\"{n}!Quiet!IcannothearmyselfthinkfastEnough!\""
+        ],
+        "noAnswer": [
+          "\"{n}?Noanswer?Verysimple:nextperson!\""
+        ],
+        "punish": "Mr. Olumide makes you solve 20 questions on the board while the class watches."
+      }
+    },
+    {
+      "id": "ibekwe",
+      "title": "Mr.",
+      "first": "Obinna",
+      "last": "Ibekwe",
+      "gender": "m",
+      "teaches": {
+        "CHE": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.55,
+      "personality": "Chemistry teacher with burnt eyebrows from an experiment in 2009. Loves explosions in theory, terrified of them in practice.",
+      "speech": "mix",
+      "voice": "Dramatic, warns about danger constantly: 'This one can kill you o!'.",
+      "quirks": [
+        "Missing half an eyebrow (2009 experiment)",
+        "'This one can kill you o!'"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mr. Ibekwe touches his half-eyebrow: \"Today: {topic}. And nobody touches anything. This one can kill you o!\""
+        ],
+        "right": [
+          "\"Correct! You will not blow up the lab.\"",
+          "\"Good chemistry, {n}.\""
+        ],
+        "wrong": [
+          "\"Wrong! That answer would explode!\""
+        ],
+        "sleep": [
+          "\"{n}! Wake up before I use you for experiment!\""
+        ],
+        "talk": [
+          "\"{n}, your mouth is more reactive than sodium.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Inert. Like noble gas. Next.\""
+        ],
+        "punish": "Mr. Ibekwe makes you copy the periodic table five times."
+      }
+    },
+    {
+      "id": "okoro",
+      "title": "Dr.",
+      "first": "Chioma",
+      "last": "Okoro",
+      "gender": "f",
+      "teaches": {
+        "BIO": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.6,
+      "personality": "Biology teacher with a PhD who reminds everyone she has a PhD. Brilliant diagrams, zero tolerance for wrong labels.",
+      "speech": "nigerian_english",
+      "voice": "Formal, insists on being called Doctor.",
+      "quirks": [
+        "'It's DOCTOR Okoro'",
+        "Draws perfect diagrams in four colours of chalk"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Dr. Okoro draws a perfect diagram in four colours. \"{topic}. Label everything. Spelling counts.\""
+        ],
+        "right": [
+          "\"Correct. Well labelled.\"",
+          "\"Good. You may have a PhD one day, {n}.\""
+        ],
+        "wrong": [
+          "\"Wrong label. In a real lab, that would be a disaster.\""
+        ],
+        "sleep": [
+          "\"{n}, sleep is a biological process. Do it at home.\""
+        ],
+        "talk": [
+          "\"{n}, it's DOCTOR Okoro, and I said quiet.\""
+        ],
+        "noAnswer": [
+          "\"{n}? No answer. Next.\""
+        ],
+        "punish": "Dr. Okoro makes you draw and label the human heart ten times."
+      }
+    },
+    {
+      "id": "ogunleye",
+      "title": "Mr.",
+      "first": "Kayode",
+      "last": "Ogunleye",
+      "gender": "m",
+      "nick": "Farmer",
+      "teaches": {
+        "AGR": [
+          "JSS1",
+          "JSS2",
+          "JSS3",
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.6,
+      "personality": "The Agric teacher who sends everyone to the farm. Believes every problem — noise, lateness, bad grades — is cured by weeding. Truly loves the school farm and his cassava.",
+      "speech": "mix",
+      "voice": "Booming farmer voice. 'Go to the farm!' is his answer to everything.",
+      "quirks": [
+        "Sends noisemakers to weed the school farm",
+        "Carries a hoe to class",
+        "Talks about his cassava like his children"
+      ],
+      "flags": {
+        "farm": true
+      },
+      "lines": {
+        "enter": [
+          "Mr. Ogunleye leans his hoe on the board: \"Today: {topic}. Anybody wey make noise go see the farm.\""
+        ],
+        "right": [
+          "\"Correct! You go be big farmer!\"",
+          "\"Good! My cassava is proud of you, {n}.\""
+        ],
+        "wrong": [
+          "\"Wrong! Go to the farm and learn from the soil!\""
+        ],
+        "sleep": [
+          "\"{n}! You dey sleep? Oya — farm. After class. Two ridges.\""
+        ],
+        "talk": [
+          "\"{n}, you like to talk? Talk to the weeds after school.\""
+        ],
+        "noAnswer": [
+          "\"{n} no know? The farm will teach you.\""
+        ],
+        "punish": "Mr. Ogunleye sends you to weed the school farm after class. Two full ridges."
+      },
+      "routine": "farmTeacher"
+    },
+    {
+      "id": "tanko",
+      "title": "Mr.",
+      "first": "Yakubu",
+      "last": "Tanko",
+      "gender": "m",
+      "teaches": {
+        "BTE": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ],
+        "ICT": [
+          "JSS1",
+          "JSS2"
+        ]
+      },
+      "strict": 0.5,
+      "personality": "Basic Technology teacher, former carpenter, can fix anything with a nail and a stone. Hands-on, impatient with theory.",
+      "speech": "mix",
+      "voice": "Practical and gruff. 'Show me, don't tell me.'",
+      "quirks": [
+        "Fixes broken desks during lessons",
+        "'Show me, don't tell me'"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mr. Tanko is fixing a broken desk leg as you walk in. \"{topic}. Watch my hands.\""
+        ],
+        "right": [
+          "\"Correct. You get engineer hand.\""
+        ],
+        "wrong": [
+          "\"No. Show me, don't tell me rubbish.\""
+        ],
+        "sleep": [
+          "\"{n}! Desk no be bed. Stand up.\""
+        ],
+        "talk": [
+          "\"{n}, you want to talk? Come and hold this plank.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Hmm. Next.\""
+        ],
+        "punish": "Mr. Tanko makes you sand down three desks after class."
+      }
+    },
+    {
+      "id": "ola",
+      "title": "Mrs.",
+      "first": "Funmi",
+      "last": "Ola",
+      "gender": "f",
+      "teaches": {
+        "SOS": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ],
+        "GEO": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.4,
+      "personality": "Social Studies and Geography teacher who has visited 30 of the 36 states and has a story from each one.",
+      "speech": "nigerian_english",
+      "voice": "Chatty, travel stories, 'When I was in Jos...'.",
+      "quirks": [
+        "'When I was in Jos...'",
+        "Brings a faded map of Nigeria everywhere"
+      ],
+      "flags": {
+        "kind": true
+      },
+      "lines": {
+        "enter": [
+          "Mrs. Ola unrolls her faded map of Nigeria. \"When I was in Jos... anyway, today: {topic}.\""
+        ],
+        "right": [
+          "\"Very good! You're a well-travelled mind, {n}.\""
+        ],
+        "wrong": [
+          "\"No, my dear. Check the map.\""
+        ],
+        "sleep": [
+          "\"{n}, you're travelling to dreamland? Come back.\""
+        ],
+        "talk": [
+          "\"{n}, tell us where you're travelling to with that gist.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Next stop... someone else.\""
+        ],
+        "punish": "Mrs. Ola makes you draw and label the 36 states from memory."
+      }
+    },
+    {
+      "id": "akpan",
+      "title": "Mr.",
+      "first": "Udeme",
+      "last": "Akpan",
+      "gender": "m",
+      "teaches": {
+        "CIV": [
+          "JSS1",
+          "JSS2",
+          "JSS3",
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.55,
+      "personality": "Civic Education teacher who makes everyone recite the National Pledge with feeling and lectures about honesty — then asks a student to buy him suya.",
+      "speech": "mix",
+      "voice": "Preachy about values, occasionally hypocritical, very funny without meaning to be.",
+      "quirks": [
+        "Makes the class recite the Pledge 'with feeling'",
+        "Preaches honesty, borrows biros and never returns them"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mr. Akpan: \"Stand up. National Pledge — WITH FEELING.\" Then: {topic}."
+        ],
+        "right": [
+          "\"Correct! A true citizen.\""
+        ],
+        "wrong": [
+          "\"Wrong! That's how Nigeria got here.\""
+        ],
+        "sleep": [
+          "\"{n}, a good citizen does not sleep in class!\""
+        ],
+        "talk": [
+          "\"{n}, honesty: were you talking? ...Yes you were.\""
+        ],
+        "noAnswer": [
+          "\"{n}, silence is not patriotism.\""
+        ],
+        "punish": "Mr. Akpan makes you recite the National Pledge 20 times in front of the staff room."
+      }
+    },
+    {
+      "id": "ojo",
+      "title": "Mr.",
+      "first": "Femi",
+      "last": "Ojo",
+      "gender": "m",
+      "teaches": {
+        "GOV": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ],
+        "CIV": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.5,
+      "personality": "Government teacher who argues politics with everyone and calls students 'Honourable'. Dreams of being a senator.",
+      "speech": "nigerian_english",
+      "voice": "Speaks like he's in the Senate: 'Point of order!'.",
+      "quirks": [
+        "Calls students 'Honourable'",
+        "'Point of order!'"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mr. Ojo bangs the table like a gavel: \"This house is in session! Today's motion: {topic}.\""
+        ],
+        "right": [
+          "\"The Honourable {n} is correct! Motion carried!\""
+        ],
+        "wrong": [
+          "\"Point of order! That is wrong, Honourable.\""
+        ],
+        "sleep": [
+          "\"The Honourable member {n} is sleeping in plenary like a real senator!\""
+        ],
+        "talk": [
+          "\"Order! Order! Honourable {n}, you do not have the floor.\""
+        ],
+        "noAnswer": [
+          "\"The Honourable {n} abstains. Next.\""
+        ],
+        "punish": "Mr. Ojo makes you write a 'motion of apology' to the whole class."
+      }
+    },
+    {
+      "id": "edet",
+      "title": "Mrs.",
+      "first": "Arit",
+      "last": "Edet",
+      "gender": "f",
+      "teaches": {
+        "HIS": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ],
+        "SOS": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ]
+      },
+      "strict": 0.45,
+      "personality": "History teacher who acts out battles and kingdoms. Old-fashioned, proud of every Nigerian empire.",
+      "speech": "nigerian_english",
+      "voice": "Grand storytelling voice for kings and battles.",
+      "quirks": [
+        "Acts out the Benin Kingdom with a ruler as a sword"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mrs. Edet raises a ruler like a sword: \"Today, we travel to {topic}!\""
+        ],
+        "right": [
+          "\"Correct! The ancestors salute you, {n}.\""
+        ],
+        "wrong": [
+          "\"No! History will not forgive that answer.\""
+        ],
+        "sleep": [
+          "\"{n}, even the Oba's guards stayed awake. Up!\""
+        ],
+        "talk": [
+          "\"{n}, you are making history — the wrong kind.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Lost in time. Next.\""
+        ],
+        "punish": "Mrs. Edet makes you memorise every Oba of Benin in order."
+      }
+    },
+    {
+      "id": "ayodele",
+      "title": "Mrs.",
+      "first": "Esther",
+      "last": "Ayodele",
+      "gender": "f",
+      "group": "christian",
+      "teaches": {
+        "RS": [
+          "JSS1",
+          "JSS2",
+          "JSS3",
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.4,
+      "personality": "CRS teacher who starts every class with a chorus and a prayer. Gentle, but quotes Proverbs at liars.",
+      "speech": "nigerian_english",
+      "voice": "Gentle, quotes Bible verses, starts with a chorus.",
+      "quirks": [
+        "Starts every lesson with a chorus",
+        "Quotes Proverbs at liars"
+      ],
+      "flags": {
+        "kind": true
+      },
+      "lines": {
+        "enter": [
+          "Mrs. Ayodele starts a chorus, the class joins in, then: \"Today: {topic}.\""
+        ],
+        "right": [
+          "\"Amen! Correct, {n}.\""
+        ],
+        "wrong": [
+          "\"No, my child. Go and read your Bible.\""
+        ],
+        "sleep": [
+          "\"{n}, even the disciples fell asleep... but you are not a disciple. Wake up.\""
+        ],
+        "talk": [
+          "\"{n}, Proverbs 10:19 — in the multitude of words there wanteth not sin.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Let us pray for understanding. Next.\""
+        ],
+        "punish": "Mrs. Ayodele makes you copy Proverbs chapter 1."
+      }
+    },
+    {
+      "id": "sani",
+      "title": "Mallam",
+      "first": "Sani",
+      "last": "Lawal",
+      "gender": "m",
+      "group": "muslim",
+      "teaches": {
+        "RS": [
+          "JSS1",
+          "JSS2",
+          "JSS3",
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.5,
+      "personality": "IRS teacher, calm and dignified, teaches in the mosque. Expects neatness and patience.",
+      "speech": "nigerian_english",
+      "voice": "Calm, measured, occasional Arabic greetings.",
+      "quirks": [
+        "Teaches in the school mosque",
+        "Never raises his voice"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mallam Sani greets the class warmly: \"As-salaamu alaikum. Today: {topic}.\""
+        ],
+        "right": [
+          "\"Masha Allah. Correct, {n}.\""
+        ],
+        "wrong": [
+          "\"No. Be patient and read again.\""
+        ],
+        "sleep": [
+          "\"{n}, sit up. Knowledge needs a wakeful heart.\""
+        ],
+        "talk": [
+          "\"{n}, quiet please.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Next time, prepare.\""
+        ],
+        "punish": "Mallam Sani makes you sweep the mosque after class."
+      }
+    },
+    {
+      "id": "adesina",
+      "title": "Mrs.",
+      "first": "Yetunde",
+      "last": "Adesina",
+      "gender": "f",
+      "group": "yoruba",
+      "teaches": {
+        "NLG": [
+          "JSS1",
+          "JSS2",
+          "JSS3",
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.5,
+      "personality": "Yoruba teacher who speaks only Yoruba in class and fines anyone who speaks English ₦10 (imaginary).",
+      "speech": "mix",
+      "voice": "Mostly Yoruba phrases with English for the confused: 'E kaaro o!'.",
+      "quirks": [
+        "Only Yoruba in class",
+        "Proverbs for everything"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mrs. Adesina: \"E kaaro o! Today: {topic}. No English in this class!\""
+        ],
+        "right": [
+          "\"O dara gan! Correct, {n}.\""
+        ],
+        "wrong": [
+          "\"Rara o! Try again.\""
+        ],
+        "sleep": [
+          "\"{n}! Oorun ko ni wa o! Wake up!\""
+        ],
+        "talk": [
+          "\"{n}, enu e po ju! Quiet.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Ko si idahun? Next.\""
+        ],
+        "punish": "Mrs. Adesina makes you recite ten Yoruba proverbs."
+      }
+    },
+    {
+      "id": "obi",
+      "title": "Mrs.",
+      "first": "Uju",
+      "last": "Obi",
+      "gender": "f",
+      "group": "igbo",
+      "teaches": {
+        "NLG": [
+          "JSS1",
+          "JSS2",
+          "JSS3",
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.45,
+      "personality": "Igbo teacher who teaches in the library and turns every lesson into a folktale with songs.",
+      "speech": "mix",
+      "voice": "Igbo greetings and songs: 'Ndewo nu!'.",
+      "quirks": [
+        "Teaches in the library",
+        "Sings folktale songs"
+      ],
+      "flags": {
+        "kind": true
+      },
+      "lines": {
+        "enter": [
+          "Mrs. Obi: \"Ndewo nu! Today: {topic}.\" She starts a folktale song."
+        ],
+        "right": [
+          "\"Ezigbo! Correct, {n}.\""
+        ],
+        "wrong": [
+          "\"Mba. Try again.\""
+        ],
+        "sleep": [
+          "\"{n}, teta! Wake up!\""
+        ],
+        "talk": [
+          "\"{n}, nwayo! Quiet.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Next.\""
+        ],
+        "punish": "Mrs. Obi makes you sing the folktale song alone."
+      }
+    },
+    {
+      "id": "garba",
+      "title": "Mallam",
+      "first": "Garba",
+      "last": "Bello",
+      "gender": "m",
+      "group": "hausa",
+      "teaches": {
+        "NLG": [
+          "JSS1",
+          "JSS2",
+          "JSS3",
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.5,
+      "personality": "Hausa teacher who holds class in the dining hall and teaches greetings with great ceremony.",
+      "speech": "mix",
+      "voice": "Hausa greetings with ceremony: 'Sannu da zuwa!'.",
+      "quirks": [
+        "Teaches in the dining hall between meals",
+        "Insists on long formal greetings"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mallam Garba: \"Sannu da zuwa! Today: {topic}.\""
+        ],
+        "right": [
+          "\"Madalla! Correct, {n}.\""
+        ],
+        "wrong": [
+          "\"A'a. Try again.\""
+        ],
+        "sleep": [
+          "\"{n}! Tashi! Wake up!\""
+        ],
+        "talk": [
+          "\"{n}, yi shiru! Quiet.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Next.\""
+        ],
+        "punish": "Mallam Garba makes you greet every teacher in the staff room in Hausa."
+      }
+    },
+    {
+      "id": "uche",
+      "title": "Mrs.",
+      "first": "Nkechi",
+      "last": "Uche",
+      "gender": "f",
+      "teaches": {
+        "HEC": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ]
+      },
+      "strict": 0.45,
+      "personality": "Home Economics teacher, inspects fingernails and uniforms, believes a good jollof can fix any heartbreak.",
+      "speech": "mix",
+      "voice": "Motherly but fussy about hygiene.",
+      "quirks": [
+        "Inspects fingernails at the door",
+        "Believes in the healing power of jollof"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mrs. Uche checks fingernails at the door. \"Clean hands, clean mind. Today: {topic}.\""
+        ],
+        "right": [
+          "\"Correct! You'll be a good cook, {n}.\""
+        ],
+        "wrong": [
+          "\"No. That's how you burn the rice.\""
+        ],
+        "sleep": [
+          "\"{n}, is my class your bedroom? Up!\""
+        ],
+        "talk": [
+          "\"{n}, close your mouth before flies enter.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Next.\""
+        ],
+        "punish": "Mrs. Uche makes you scrub the Home Economics pots."
+      }
+    },
+    {
+      "id": "ude",
+      "title": "Mr.",
+      "first": "Nnamdi",
+      "last": "Ude",
+      "gender": "m",
+      "teaches": {
+        "BUS": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ]
+      },
+      "strict": 0.45,
+      "personality": "Business Studies teacher who sells recharge cards on the side and turns every lesson into a business lesson.",
+      "speech": "mix",
+      "voice": "Salesman energy: 'Profit! Profit!'.",
+      "quirks": [
+        "Sells recharge cards from his pocket",
+        "'Profit!'"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mr. Ude: \"Profit! Profit! Today: {topic}. Also, recharge card dey, ₦100.\""
+        ],
+        "right": [
+          "\"Profit! Correct, {n}.\""
+        ],
+        "wrong": [
+          "\"Loss! Wrong.\""
+        ],
+        "sleep": [
+          "\"{n}, sleeping is not a business plan!\""
+        ],
+        "talk": [
+          "\"{n}, unless you're selling something, quiet.\""
+        ],
+        "noAnswer": [
+          "\"{n}? No answer, no profit. Next.\""
+        ],
+        "punish": "Mr. Ude makes you balance a fake ledger for one hour."
+      }
+    },
+    {
+      "id": "coker",
+      "title": "Mr.",
+      "first": "Femi",
+      "last": "Coker",
+      "gender": "m",
+      "teaches": {
+        "CCA": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ],
+        "FA": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.2,
+      "personality": "Dreamy artist who teaches Creative Arts and Fine Arts with paint on his shirt. Loves talent, hates rulers.",
+      "speech": "mix",
+      "voice": "Relaxed and arty: 'Feel the colour, my people'.",
+      "quirks": [
+        "Paint on every shirt",
+        "Plays highlife in class"
+      ],
+      "flags": {
+        "kind": true
+      },
+      "lines": {
+        "enter": [
+          "Mr. Coker strolls in with paint on his shirt. \"Feel the colour, my people. Today: {topic}.\""
+        ],
+        "right": [
+          "\"Artist! Correct, {n}!\""
+        ],
+        "wrong": [
+          "\"Hmm, no. But it's beautiful.\""
+        ],
+        "sleep": [
+          "\"{n}, dreaming is art, but not in my class.\""
+        ],
+        "talk": [
+          "\"{n}, express yourself... quietly.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Art is patience. Next.\""
+        ],
+        "punish": "Mr. Coker makes you paint the classroom door."
+      }
+    },
+    {
+      "id": "agbaje",
+      "title": "Mr.",
+      "first": "Segun",
+      "last": "Agbaje",
+      "gender": "m",
+      "nick": "Coach",
+      "teaches": {
+        "PHE": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ]
+      },
+      "strict": 0.7,
+      "personality": "Games master and labour master. Former athlete with a whistle. Punishment is always laps or frog jumps.",
+      "speech": "pidgin",
+      "voice": "Whistle-blowing coach voice: 'Oya! Double up!'.",
+      "quirks": [
+        "Whistle on a string",
+        "Punishment = laps of the field",
+        "Runs inter-house sports"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "*Whistle* Mr. Agbaje: \"Oya! Double up! Today: {topic}.\""
+        ],
+        "right": [
+          "\"Correct! Athlete brain!\""
+        ],
+        "wrong": [
+          "\"Wrong! Five frog jumps.\""
+        ],
+        "sleep": [
+          "*Whistle* \"{n}! Sleeping?! Ten laps!\""
+        ],
+        "talk": [
+          "\"{n}! Talk while you run! Field. Now.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Frog jump!\""
+        ],
+        "punish": "Mr. Agbaje makes you run five laps of the field."
+      },
+      "routine": "gamesMaster",
+      "labourMaster": true
+    },
+    {
+      "id": "chukwu",
+      "title": "Mr.",
+      "first": "Emeka",
+      "last": "Chukwu",
+      "gender": "m",
+      "teaches": {
+        "ICT": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ],
+        "DPR": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.4,
+      "personality": "Computer teacher with one working computer for 400 students. Teaches the mouse with a drawing of a mouse.",
+      "speech": "mix",
+      "voice": "Techy jokes nobody gets. 'Have you tried restarting your brain?'.",
+      "quirks": [
+        "One computer, protected like gold",
+        "Draws the keyboard on the board"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mr. Chukwu draws a keyboard on the board. \"Today: {topic}. Nobody touches the computer.\""
+        ],
+        "right": [
+          "\"Correct! Download complete, {n}.\""
+        ],
+        "wrong": [
+          "\"Error 404: correct answer not found.\""
+        ],
+        "sleep": [
+          "\"{n}! Have you tried restarting your brain?\""
+        ],
+        "talk": [
+          "\"{n}, mute yourself.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Buffering... next.\""
+        ],
+        "punish": "Mr. Chukwu makes you type 'I will listen' 50 times on the typewriter."
+      }
+    },
+    {
+      "id": "adjovi",
+      "title": "Monsieur",
+      "first": "Koffi",
+      "last": "Adjovi",
+      "gender": "m",
+      "teaches": {
+        "FRE": [
+          "JSS1",
+          "JSS2",
+          "JSS3"
+        ]
+      },
+      "strict": 0.35,
+      "personality": "French teacher from Benin Republic, charming, insists on 'Bonjour Monsieur' and despairs at Nigerian French accents.",
+      "speech": "nigerian_english",
+      "voice": "French phrases with a Beninese accent: 'Mes enfants!'.",
+      "quirks": [
+        "'Bonjour Monsieur' or you go out",
+        "Clutches his heart at bad pronunciation"
+      ],
+      "flags": {
+        "kind": true
+      },
+      "lines": {
+        "enter": [
+          "Monsieur Adjovi: \"Bonjour, mes enfants!\" Class: \"Bonjour Monsieur!\" Today: {topic}."
+        ],
+        "right": [
+          "\"Très bien, {n}!\""
+        ],
+        "wrong": [
+          "*clutches heart* \"Non, non, non...\""
+        ],
+        "sleep": [
+          "\"{n}! Réveille-toi! Wake up!\""
+        ],
+        "talk": [
+          "\"{n}, silence s'il vous plaît.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Rien? Next.\""
+        ],
+        "punish": "Monsieur Adjovi makes you conjugate 'être' in front of the class."
+      }
+    },
+    {
+      "id": "okafor_w",
+      "title": "Mrs.",
+      "first": "Ebele",
+      "last": "Okafor-Williams",
+      "gender": "f",
+      "teaches": {
+        "ACC": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ],
+        "COM": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.6,
+      "personality": "Accounting and Commerce teacher, former banker, dressed sharp, counts everything twice.",
+      "speech": "nigerian_english",
+      "voice": "Crisp banker voice. 'Debit the receiver, credit the giver.'",
+      "quirks": [
+        "'Debit the receiver, credit the giver'",
+        "Former banker, still dresses for the bank"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mrs. Okafor-Williams: \"Debit the receiver, credit the giver. Today: {topic}.\""
+        ],
+        "right": [
+          "\"Balanced! Correct, {n}.\""
+        ],
+        "wrong": [
+          "\"That doesn't balance. Again.\""
+        ],
+        "sleep": [
+          "\"{n}, your account is overdrawn on sleep? Wake up.\""
+        ],
+        "talk": [
+          "\"{n}, talk is cheap. Quiet.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Unbalanced. Next.\""
+        ],
+        "punish": "Mrs. Okafor-Williams makes you prepare a full trial balance by tomorrow."
+      }
+    },
+    {
+      "id": "ige",
+      "title": "Mr.",
+      "first": "Bayo",
+      "last": "Ige",
+      "gender": "m",
+      "teaches": {
+        "ECO": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.45,
+      "personality": "Economics teacher who explains everything with the price of garri and complains about inflation.",
+      "speech": "mix",
+      "voice": "Grumbles about prices. 'Demand and supply, my people!'.",
+      "quirks": [
+        "Explains everything with the price of garri",
+        "Complains about inflation"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mr. Ige: \"Garri don cost ₦1,500 a paint. Why? {topic}.\""
+        ],
+        "right": [
+          "\"Correct! Demand and supply, {n}!\""
+        ],
+        "wrong": [
+          "\"No! That's how inflation happened.\""
+        ],
+        "sleep": [
+          "\"{n}, sleep is scarce resource? Wake up!\""
+        ],
+        "talk": [
+          "\"{n}, excess supply of talk. Quiet.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Zero demand. Next.\""
+        ],
+        "punish": "Mr. Ige makes you draw 10 demand and supply curves."
+      }
+    },
+    {
+      "id": "lawal_m",
+      "title": "Mrs.",
+      "first": "Kemi",
+      "last": "Lawal",
+      "gender": "f",
+      "teaches": {
+        "OFP": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ],
+        "MKT": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ],
+        "DPR": [
+          "SS1",
+          "SS2",
+          "SS3"
+        ]
+      },
+      "strict": 0.45,
+      "personality": "Office Practice and Marketing teacher, always polished, judges your handwriting and filing.",
+      "speech": "nigerian_english",
+      "voice": "Polished office voice. 'File it properly.'",
+      "quirks": [
+        "Judges your handwriting",
+        "Colour-coded everything"
+      ],
+      "flags": {},
+      "lines": {
+        "enter": [
+          "Mrs. Lawal arranges her colour-coded files: \"Today: {topic}.\""
+        ],
+        "right": [
+          "\"Excellent. File that answer, {n}.\""
+        ],
+        "wrong": [
+          "\"Misfiled. Wrong.\""
+        ],
+        "sleep": [
+          "\"{n}, this is an office, not a hotel.\""
+        ],
+        "talk": [
+          "\"{n}, office etiquette please.\""
+        ],
+        "noAnswer": [
+          "\"{n}? Next.\""
+        ],
+        "punish": "Mrs. Lawal makes you re-file the whole office cabinet."
+      }
+    }
+  ],
+  "staff": [
+    {
+      "id": "bamidele",
+      "role": "principal",
+      "title": "Dr.",
+      "first": "Olusegun",
+      "last": "Bamidele",
+      "gender": "m",
+      "emoji": "👨🏾‍💼",
+      "label": "Principal",
+      "dialogue": "principal",
+      "authority": true,
+      "strict": 0.9,
+      "personality": "Dignified, distant, speaks like a speech-day address. Protects the school's name above all. Rarely lenient, but remembers students who make the school proud.",
+      "speech": "nigerian_english",
+      "voice": "Very formal English with long words, 'young man/young lady'.",
+      "quirks": [
+        "Speaks in speech-day sentences",
+        "Polishes his glasses before bad news"
+      ]
+    },
+    {
+      "id": "adebayo",
+      "role": "vp",
+      "title": "Mrs.",
+      "first": "Olufunke",
+      "last": "Adebayo",
+      "gender": "f",
+      "emoji": "👩🏾‍💼",
+      "label": "Vice Principal (Admin)",
+      "authority": true,
+      "strict": 0.8,
+      "personality": "VP Admin in charge of discipline. Has heard every excuse since 1998. Strict but fair, secretly soft on honest students.",
+      "speech": "nigerian_english",
+      "voice": "Short, sharp Nigerian English. 'Look at me.' 'Is that so?'.",
+      "quirks": [
+        "Patrols with a register under her arm",
+        "Knows every latecomer by name"
+      ]
+    },
+    {
+      "id": "okeke",
+      "role": "vpAcademics",
+      "title": "Mr.",
+      "first": "Ifeanyi",
+      "last": "Okeke",
+      "gender": "m",
+      "emoji": "🧑🏾‍💼",
+      "label": "Vice Principal (Academics)",
+      "authority": true,
+      "strict": 0.6,
+      "personality": "VP Academics. Owns the timetable, the exam cabinet and the report cards. Obsessed with results and punctual teachers.",
+      "speech": "nigerian_english",
+      "voice": "Measured, data-driven: 'What was your average last term?'.",
+      "quirks": [
+        "Carries the master timetable everywhere",
+        "Checks teachers' lesson notes"
+      ]
+    },
+    {
+      "id": "adeyemi",
+      "role": "houseMaster",
+      "hostel": "boysHostel",
+      "title": "Mr.",
+      "first": "Gbenga",
+      "last": "Adeyemi",
+      "gender": "m",
+      "emoji": "👨🏾‍🦳",
+      "label": "Boys' House Master",
+      "authority": true,
+      "strict": 0.75,
+      "personality": "Gruff boys' hostel house master, protective of the house's reputation, hates noise after lights out and contraband.",
+      "speech": "mix",
+      "voice": "Nigerian English sliding into Pidgin when angry.",
+      "quirks": [
+        "Torchlight raids at midnight",
+        "Keeps a confiscation box"
+      ]
+    },
+    {
+      "id": "okafor",
+      "role": "houseMaster",
+      "hostel": "girlsHostel",
+      "title": "Mrs.",
+      "first": "Chinwe",
+      "last": "Okafor",
+      "gender": "f",
+      "emoji": "👩🏾‍🦳",
+      "label": "Girls' House Mistress",
+      "authority": true,
+      "strict": 0.7,
+      "personality": "Girls' hostel house mistress. Sharp-eyed, motherly to the sick, merciless to noisemakers.",
+      "speech": "mix",
+      "voice": "Firm, motherly scolding.",
+      "quirks": [
+        "Inspects lockers on Saturdays",
+        "Knows who sneaks out by their footsteps"
+      ]
+    },
+    {
+      "id": "matron",
+      "role": "matron",
+      "title": "Matron",
+      "first": "Comfort",
+      "last": "Ade",
+      "gender": "f",
+      "emoji": "👵🏾",
+      "label": "Hostel Matron",
+      "authority": true,
+      "strict": 0.55,
+      "personality": "Hostel matron who runs provisions inspection, bedding and hygiene. Calls everyone 'my pikin' until you break a rule.",
+      "speech": "pidgin",
+      "voice": "Motherly Pidgin: 'My pikin, wetin happen?'.",
+      "quirks": [
+        "Inspects chop boxes",
+        "Keeps spare bedsheets for bedwetters (says nothing)"
+      ]
+    },
+    {
+      "id": "grace",
+      "role": "nurse",
+      "title": "Nurse",
+      "first": "Grace",
+      "last": "Etim",
+      "gender": "f",
+      "emoji": "👩🏾‍⚕️",
+      "label": "School Nurse",
+      "dialogue": "nurse",
+      "personality": "Kind school nurse with zero patience for fake sickness. Knows every trick.",
+      "speech": "nigerian_english",
+      "voice": "Warm but firm: 'Open your mouth. Hmm.'.",
+      "quirks": [
+        "Everything gets Panadol and water",
+        "Spots fake fevers instantly"
+      ]
+    },
+    {
+      "id": "oladipo",
+      "role": "bursar",
+      "title": "Mr.",
+      "first": "Wale",
+      "last": "Oladipo",
+      "gender": "m",
+      "emoji": "🧾",
+      "label": "Bursar",
+      "personality": "The bursar. Guards school fees and receipts like a lion. Remembers who hasn't paid.",
+      "speech": "nigerian_english",
+      "voice": "Dry and suspicious: 'Where is your receipt?'.",
+      "quirks": [
+        "'Where is your receipt?'",
+        "Counts money with a rubber thumb"
+      ]
+    },
+    {
+      "id": "iyabo",
+      "role": "cook",
+      "title": "Mama",
+      "first": "Iyabo",
+      "last": "Alade",
+      "gender": "f",
+      "emoji": "👩🏾‍🍳",
+      "label": "Head Cook",
+      "dialogue": "cook",
+      "personality": "Loud head cook, generous to children who help her, fierce to thieves.",
+      "speech": "pidgin",
+      "voice": "Kitchen Pidgin, lots of 'Ehen!' and 'My pikin'.",
+      "quirks": [
+        "Big wooden turning stick",
+        "Extra meat for helpers"
+      ]
+    },
+    {
+      "id": "ngozi_c",
+      "role": "cook",
+      "title": "Aunty",
+      "first": "Ngozi",
+      "last": "Eke",
+      "gender": "f",
+      "emoji": "🧑🏾‍🍳",
+      "label": "Cook",
+      "personality": "Quiet cook who sings church songs while stirring. Notices hungry students.",
+      "speech": "pidgin",
+      "voice": "Soft Pidgin, hums between sentences.",
+      "quirks": [
+        "Sings while serving"
+      ]
+    },
+    {
+      "id": "musa_c",
+      "role": "cook",
+      "title": "Baba",
+      "first": "Musa",
+      "last": "Idris",
+      "gender": "m",
+      "emoji": "🧑🏾‍🍳",
+      "label": "Cook",
+      "personality": "Cook in charge of the big pots and firewood. Few words, strong arms.",
+      "speech": "pidgin",
+      "voice": "Few words. 'Hmm. Carry your plate.'",
+      "quirks": [
+        "Splits firewood at dawn"
+      ]
+    },
+    {
+      "id": "okon",
+      "role": "librarian",
+      "title": "Mr.",
+      "first": "Edem",
+      "last": "Okon",
+      "gender": "m",
+      "emoji": "🧑🏾‍💼",
+      "label": "Librarian",
+      "dialogue": "librarian",
+      "authority": true,
+      "strict": 0.4,
+      "personality": "Librarian who whispers everything and guards the encyclopaedias like gold.",
+      "speech": "nigerian_english",
+      "voice": "Whispers. 'Shhh.'",
+      "quirks": [
+        "Whispers even when angry",
+        "Stamps every book twice"
+      ]
+    },
+    {
+      "id": "babamusa",
+      "role": "gateman",
+      "title": "Mallam",
+      "first": "Musa",
+      "last": "Danladi",
+      "gender": "m",
+      "emoji": "💂🏾",
+      "label": "Gateman",
+      "dialogue": "gateman",
+      "authority": true,
+      "strict": 0.6,
+      "personality": "Mallam Musa the gateman. Has guarded the gate for 20 years, sees everything, can be softened with kola and respect, never with money.",
+      "speech": "pidgin",
+      "voice": "Hausa-flavoured Pidgin: 'Haba! Where you dey go?'.",
+      "quirks": [
+        "Prays on a mat by the gate",
+        "Knows every escape route"
+      ]
+    },
+    {
+      "id": "shehu",
+      "role": "nightguard",
+      "title": "Mallam",
+      "first": "Shehu",
+      "last": "Ali",
+      "gender": "m",
+      "emoji": "🔦",
+      "label": "Night Security",
+      "authority": true,
+      "strict": 0.65,
+      "personality": "Night security man with a long torch and a whistle. Walks the fence at night.",
+      "speech": "pidgin",
+      "voice": "Gruff whisper at night. 'Who be that?!'",
+      "quirks": [
+        "Torch as long as an arm",
+        "Blows whistle at shadows"
+      ]
+    },
+    {
+      "id": "bisi",
+      "role": "keeper",
+      "title": "Aunty",
+      "first": "Bisi",
+      "last": "Tuck-shop",
+      "gender": "f",
+      "emoji": "🧕🏾",
+      "label": "Tuck shop aunty",
+      "dialogue": "keeper",
+      "personality": "Sharp tuck-shop aunty, motherly to polite children, merciless to people who owe her. Loves a good joke.",
+      "speech": "pidgin",
+      "voice": "Market Pidgin: 'My customer!', 'No credit today'.",
+      "quirks": [
+        "Credit book thicker than the Bible",
+        "Remembers every debt"
+      ]
+    },
+    {
+      "id": "ade_farm",
+      "role": "farmManager",
+      "title": "Baba",
+      "first": "Ade",
+      "last": "Oko",
+      "gender": "m",
+      "emoji": "👨🏾‍🌾",
+      "label": "Farm Manager",
+      "personality": "Farm manager, Mr. Ogunleye's best friend. Supervises punished students on the farm. Gentle, but the farm work is not.",
+      "speech": "pidgin",
+      "voice": "Slow farmer Pidgin: 'Small small, the ridge go finish'.",
+      "quirks": [
+        "Talks to the goats",
+        "Pays helpers in fresh corn"
+      ]
+    },
+    {
+      "id": "mamajoy",
+      "role": "cleaner",
+      "title": "Mama",
+      "first": "Joy",
+      "last": "Udo",
+      "gender": "f",
+      "emoji": "🧹",
+      "label": "Cleaner",
+      "personality": "Cleaner who knows all the school gist because nobody notices her. Hates muddy shoes.",
+      "speech": "pidgin",
+      "voice": "Gossipy Pidgin: 'You no hear?'.",
+      "quirks": [
+        "Knows all the gist",
+        "Chases muddy shoes with a broom"
+      ]
+    },
+    {
+      "id": "sunday",
+      "role": "cleaner",
+      "title": "Mr.",
+      "first": "Sunday",
+      "last": "Effiong",
+      "gender": "m",
+      "emoji": "🧹",
+      "label": "Cleaner",
+      "personality": "Cleaner and handyman, fixes taps and lights, sings Fela while sweeping.",
+      "speech": "pidgin",
+      "voice": "Easygoing Pidgin, sings between sentences.",
+      "quirks": [
+        "Sings Fela while sweeping",
+        "Fixes the borehole pump"
+      ]
+    },
+    {
+      "id": "ekanem",
+      "role": "chaplain",
+      "title": "Rev.",
+      "first": "Bassey",
+      "last": "Ekanem",
+      "gender": "m",
+      "emoji": "🧑🏾‍🦲",
+      "label": "Chaplain",
+      "religion": "christian",
+      "personality": "School chaplain, booming sermons, soft counsel in private.",
+      "speech": "nigerian_english",
+      "voice": "Booming preacher voice.",
+      "quirks": [
+        "Sermons longer than the timetable allows"
+      ]
+    },
+    {
+      "id": "abdullahi",
+      "role": "imam",
+      "title": "Imam",
+      "first": "Abdullahi",
+      "last": "Yusuf",
+      "gender": "m",
+      "emoji": "👳🏾",
+      "label": "School Imam",
+      "religion": "muslim",
+      "personality": "School imam, calm and wise, listens more than he speaks.",
+      "speech": "nigerian_english",
+      "voice": "Calm and measured.",
+      "quirks": [
+        "Gives dates to students after Jumat"
+      ]
+    }
+  ]
+}

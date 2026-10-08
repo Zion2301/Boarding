@@ -34,6 +34,7 @@
             <button class="round-btn" data-act="openPhone" aria-label="Phone">📱<span id="phone-badge" class="badge" hidden></span></button>
             <button class="round-btn big" data-act="openBag" aria-label="Backpack">🎒</button>
           </div>
+          <button class="round-btn snap-btn" data-act="camSnap" aria-label="Back to player" title="Back to player">🎯</button>
           <div id="joystick" class="joystick"><div class="joy-knob"></div></div>
           <div id="hud-prompt" class="hud-prompt"></div>
           <div id="hud-ff" class="hud-ff"></div>
@@ -90,7 +91,7 @@
       el.addEventListener('click', (ev) => { if (HUD.longPressed) { HUD.longPressed = false; ev.stopPropagation(); ev.preventDefault(); } }, true);
       // hold E on a keyboard → radial
       let eDown = 0;
-      document.addEventListener('keydown', (ev) => { if (ev.target && /^(INPUT|TEXTAREA)$/.test(ev.target.tagName)) return; if ((ev.key === 'e' || ev.key === 'E') && !ev.repeat) eDown = Date.now(); if ((ev.key === 'e' || ev.key === 'E') && ev.repeat && eDown && Date.now() - eDown > 450) { eDown = 0; HUD.radial(); } });
+      document.addEventListener('keydown', (ev) => { if (ev.target && /^(INPUT|TEXTAREA)$/.test(ev.target.tagName)) return; if (document.body.classList.contains('engine3d')) return; if ((ev.key === 'e' || ev.key === 'E') && !ev.repeat) eDown = Date.now(); if ((ev.key === 'e' || ev.key === 'E') && ev.repeat && eDown && Date.now() - eDown > 450) { eDown = 0; HUD.radial(); } });
     },
 
     /* ---------- rendering ---------- */
@@ -105,6 +106,7 @@
       const s = BH.Game.s;
       if (!s || !document.getElementById('hud-stats')) return;
       HUD.placePrompt(s);
+      BH.LessonUI && BH.LessonUI.update();
       const now = performance.now();
       if (!force && !HUD.dirty && now - HUD.last < 250) return;
       HUD.last = now; HUD.dirty = false;
@@ -164,7 +166,7 @@
       const acts = t ? BH.Interaction.actions(s, t).filter((a) => !a.disabled) : [];
       HUD.prompt = { target: t, actions: acts };
       if (!t || !acts.length) { HUD.set('hud-prompt', ''); return; }
-      const keys = ['E', 'F'];
+      const keys = document.body.classList.contains('engine3d') ? ['Space', 'F'] : ['E', 'F'];
       const shown = acts.slice(0, 2);
       HUD.set('hud-prompt', `<div class="prompt-card">
         <div class="prompt-title">${U.esc(BH.Interaction.title(s, t))}</div>
@@ -219,6 +221,7 @@
   Object.assign(BH.actions, {
     promptDo(i) { const p = HUD.prompt; const a = p.actions[Number(i)]; if (a) HUD.runAction(p.target, a); },
     openRadial() { HUD.radial(); },
+    camSnap() { const E = BH.Engine3D; if (E && E.rig) E.rig.snapBack(); },
     toggleMissions() { HUD.missionsOpen = !HUD.missionsOpen; HUD.sig['hud-missions'] = null; HUD.update(true); },
     stopWait() { BH.Clock.stopWait(BH.Game.s, 'moved'); HUD.update(true); },
     missionTap(id) {
@@ -293,6 +296,8 @@
             <div class="seg">${BH.Clock.SCALES.map((v) => `<button class="${v === BH.Clock.RATE ? 'on' : ''}" data-act="setScale" data-arg="${v}">${v}×</button>`).join('')}</div></div>
           <div class="setting"><b>✨ AI conversations</b><small>${BH.AI.available() ? 'On — NPCs reply to what you type' : BH.AI.online() ? 'Switched off on the server' : BH.AI.playerOn() ? 'Game server not reachable — preset replies' : 'Off — preset replies only'}</small>
             <div class="seg"><button class="${BH.AI.playerOn() ? 'on' : ''}" data-act="setAi" data-arg="1">On</button><button class="${BH.AI.playerOn() ? '' : 'on'}" data-act="setAi" data-arg="0">Off</button></div></div>
+          <div class="setting"><b>🧪 Bot students <small class="muted">(dev / testing)</small></b><small>${BH.School.botsOn(BH.Game.s) ? 'On — bots fill empty desks so the campus isn\'t empty' : 'Off — students are real players; only staff are NPCs'}</small>
+            <div class="seg"><button class="${BH.School.botsOn(BH.Game.s) ? 'on' : ''}" data-act="setBots" data-arg="1">On</button><button class="${BH.School.botsOn(BH.Game.s) ? '' : 'on'}" data-act="setBots" data-arg="0">Off</button></div></div>
           <button class="chunky" data-act="openHelp">💛 Help & support</button>
           <button class="chunky" data-act="howTo">❓ How to play</button>
           <button class="chunky" data-act="toggleSound">${BH.Sound.muted ? '🔇 Sound: off' : '🔊 Sound: on'}</button>
@@ -300,6 +305,7 @@
         </div>`, { cls: 'pop', kind: 'menu' });
       return scale;
     },
+    setBots(v) { BH.School.setBots(BH.Game.s, v === '1'); BH.Panels.refresh(); },
     setAi(v) { BH.Prefs.set('aiOn', v === '1'); BH.AI.check(true).then(() => BH.Panels.refresh()); },
     setScale(v) { BH.Prefs.set('timeScale', Number(v)); BH.Panels.refresh(); BH.UI.toast(`⏱ 1 real second = ${v} game minute${Number(v) === 1 ? '' : 's'}`, 'info'); },
     toggleSound() { BH.Sound.toggle(); BH.Panels.refresh(); },

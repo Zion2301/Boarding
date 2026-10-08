@@ -1,0 +1,41 @@
+{
+  "_doc": "Outfit rules. Uniform colours come per school (top/bottom/socks/shoes); the CUT comes from level × gender: juniors (JSS) wear short sleeves (boys: shorts; girls: knee-length pinafore), seniors (SS) long sleeves (boys: trousers; girls: longer skirt). 'styles' are worn at certain times (see 'when'). Teachers/staff pick from 'adults' by a stable hash. Colours can be '{house}' (the character's house colour).",
+  "schools": {
+    "fgc":     { "top": "#f4f2ea", "bottom": "#1f5c3a", "socks": "#f4f2ea", "shoes": "#151515", "pinafore": "#1f5c3a", "tie": "{house}" },
+    "private": { "top": "#dce7f7", "bottom": "#1b2a4a", "socks": "#1b2a4a", "shoes": "#2b1a10", "pinafore": "#1b2a4a", "tie": "#a31621" },
+    "mission": { "top": "#f7f7f7", "bottom": "#7a1f2b", "socks": "#f7f7f7", "shoes": "#151515", "pinafore": "#7a1f2b", "tie": "{house}" },
+    "state":   { "top": "#efe3c4", "bottom": "#7b5e34", "socks": "#efe3c4", "shoes": "#151515", "pinafore": "#7b5e34", "tie": null }
+  },
+  "cuts": {
+    "junior_m": { "sleeves": "short", "bottom": "shorts", "longSocks": true },
+    "senior_m": { "sleeves": "long", "bottom": "trousers" },
+    "junior_f": { "sleeves": "short", "bottom": "skirt", "skirtLen": 0.42, "pinafore": true, "longSocks": true },
+    "senior_f": { "sleeves": "long", "bottom": "skirt", "skirtLen": 0.62 }
+  },
+  "styles": {
+    "house":  { "top": "{house}", "sleeves": "short", "bottom": "shorts", "bottomColor": "#ffffff", "socks": "#ffffff", "shoes": "#eeeeee", "tie": null, "pinafore": false, "skirtLen": 0, "f": { "bottom": "shorts" } },
+    "sunday": { "top": "#ffffff", "bottomColor": "#ffffff", "socks": "#ffffff", "shoes": "#151515", "tie": null, "pinafore": false, "f": { "bottom": "gown" } },
+    "night":  { "top": "#90caf9", "sleeves": "short", "bottom": "trousers", "bottomColor": "#5c6bc0", "socks": "#5c6bc0", "shoes": "#795548", "tie": null, "pinafore": false, "f": { "top": "#f8bbd0", "bottomColor": "#ce93d8", "bottom": "gown" } },
+    "casual": { "top": ["#e53935", "#fdd835", "#43a047", "#1e88e5", "#8e24aa", "#fb8c00", "#212121"], "sleeves": "short", "bottom": "trousers", "bottomColor": ["#1565c0", "#37474f", "#4e342e", "#212121"], "socks": "#ffffff", "shoes": ["#eeeeee", "#212121", "#c62828"], "tie": null, "pinafore": false, "f": { "bottom": "skirt", "skirtLen": 0.55 } }
+  },
+  "when": {
+    "_doc": "which style is worn: by timetable block id, then by block kind; default 'uniform'",
+    "blocks": { "service": "sunday", "lightsout": "night", "rising": "night", "afternoon": "house", "labour": "house", "freetime": "casual", "sundayPm": "casual", "social": "casual", "arrival": "casual" },
+    "kinds": {}
+  },
+  "adults": [
+    { "label": "suit", "top": "#263238", "sleeves": "long", "bottom": "trousers", "bottomColor": "#263238", "socks": "#212121", "shoes": "#151515", "tie": "#b71c1c", "collar": "#ffffff" },
+    { "label": "kaftan", "top": "#eceff1", "sleeves": "long", "bottom": "trousers", "bottomColor": "#eceff1", "socks": "#eceff1", "shoes": "#5d4037" },
+    { "label": "kaftan blue", "top": "#1565c0", "sleeves": "long", "bottom": "trousers", "bottomColor": "#1565c0", "socks": "#1565c0", "shoes": "#3e2723" },
+    { "label": "shirt & tie", "top": "#bbdefb", "sleeves": "long", "bottom": "trousers", "bottomColor": "#455a64", "socks": "#212121", "shoes": "#151515", "tie": "#1b2a4a" },
+    { "label": "ankara", "top": "#e65100", "sleeves": "short", "bottom": "trousers", "bottomColor": "#e65100", "socks": "#3e2723", "shoes": "#3e2723", "f": { "bottom": "gown", "bottomColor": "#e65100", "wrapper": "#1b5e20" } },
+    { "label": "gown", "top": "#6a1b9a", "sleeves": "long", "bottom": "gown", "bottomColor": "#6a1b9a", "socks": "#3e2723", "shoes": "#3e2723", "m": { "bottom": "trousers" } },
+    { "label": "skirt suit", "top": "#00695c", "sleeves": "long", "bottom": "skirt", "skirtLen": 0.6, "bottomColor": "#004d40", "socks": "#3e2723", "shoes": "#151515", "m": { "bottom": "trousers", "bottomColor": "#004d40" } }
+  ],
+  "staff": {
+    "nurse": { "top": "#ffffff", "sleeves": "short", "bottom": "gown", "bottomColor": "#ffffff", "socks": "#ffffff", "shoes": "#ffffff" },
+    "cook": { "top": "#fafafa", "sleeves": "short", "bottom": "gown", "bottomColor": "#ef6c00", "wrapper": "#ef6c00", "socks": "#5d4037", "shoes": "#5d4037" },
+    "gateman": { "top": "#5d4037", "sleeves": "long", "bottom": "trousers", "bottomColor": "#3e2723", "socks": "#212121", "shoes": "#212121" }
+  },
+  "prefectBadge": "#ffd54f"
+}

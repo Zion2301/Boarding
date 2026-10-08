@@ -39,6 +39,31 @@
       Object.values(s.academics.subjects).forEach((x) => { x.tests = x.tests || {}; x.late = x.late || 0; x.assignments = x.assignments || 0; });
       return s; // the remaining slices are filled in by each system's onLoad
     },
+    // v5 → v6: real school structure — class arms, staff roster, per-arm timetables (8 periods + register), bot students optional
+    5: (s) => {
+      // the old generated teachers/staff are replaced by the fixed roster (BH.School.ensureStaff keeps nothing by id, so
+      // carry relationships over by subject / role)
+      const oldT = (s.npcs.teachers || []).map((t) => ({ subject: t.subject, rel: t.rel }));
+      const oldS = (s.npcs.staff || []).map((t) => ({ role: t.role, hostel: t.hostel, rel: t.rel }));
+      s.npcs.teachers = []; s.npcs.staff = [];
+      s.school = null;
+      s._carry = { oldT, oldS };
+      // keep the current block by clock (the weekday now has 8 periods and a register block)
+      if (s.time.dayType === 'weekday' && typeof s.clock === 'number' && BH.Clock) {
+        const t = BH.Clock.times(s); let i = 0;
+        while (i + 1 < t.length && t[i + 1] <= s.clock) i++;
+        s.time.block = i;
+      }
+      if (s.today) s.today.att = {};
+      s.world.seats = {};
+      s.act = null;
+      // students are real players now: bot coursemates only stay if the dev setting is on (stashed, not deleted)
+      if (!(BH.Prefs && BH.Prefs.v.fill_with_bot_students)) {
+        s.npcs._bots = { classmates: s.npcs.classmates || [], seniors: s.npcs.seniors || [], juniors: s.npcs.juniors || [] };
+        s.npcs.classmates = []; s.npcs.seniors = []; s.npcs.juniors = [];
+      }
+      return s;
+    },
     // v2 → v3: 3D avatar
     2: (s) => {
       s.player.avatar = s.player.avatar || BH.data.defaultAvatar(s.player.gender, s.player.religion);

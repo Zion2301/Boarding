@@ -1,6 +1,0 @@
-{
-  "id": "ss", "name": "SS Classroom", "emoji": "🎓", "exit": "ss",
-  "extends": "jss",
-  "floor": "tile", "palette": { "wall": "#7b3f2a", "top": "#9c5a40" },
-  "secrets": [ { "at": [3, 7], "id": "graffitiNote" }, { "at": [15, 1], "id": "markbookScribble" } ]
-}

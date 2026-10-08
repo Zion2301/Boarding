@@ -1,71 +1,408 @@
 {
-  "_doc": "Tile legend for interior maps. Each map 'layout' row is a string; every character is one tile (48px). solid: blocks movement. interact: an interactables.json kind. seat: NPCs/players can sit here. group: neighbouring identical tiles in a row become ONE object (a long table, the blackboard) whose tiles are its seats. h: drawn with height (3/4 view).",
+  "_doc": "Tile legend for interior maps. Each map 'layout' row is a string; every character is one tile (48px). solid: blocks movement. interact: an interactables.json kind. seat: NPCs/players can sit here. group: neighbouring identical tiles in a row become ONE object (a long table, the blackboard) whose tiles are its seats. h: drawn with height (3/4 view). door: a doorway into another room (hallway maps list where each door leads in 'doors').",
   "size": 48,
   "chars": {
-    "#": { "t": "wall", "color": "#6b4f3a", "top": "#8a6a50", "solid": true, "h": 1 },
-    "W": { "t": "window", "color": "#6b4f3a", "top": "#9fd3f0", "solid": true, "h": 1 },
-    ".": { "t": "floor" },
-    ",": { "t": "tiles", "floor": "#cfd8dc", "alt": "#b0bec5" },
-    "=": { "t": "rug", "floor": "#9c2f2f", "alt": "#b33939" },
-    "E": { "t": "exit", "floor": "#3e2c20", "exit": true },
-    "d": { "t": "doorway", "floor": "#8d6e63" },
-    "@": { "t": "spot", "spot": true },
-
-    "B": { "t": "bunk", "color": "#7d8a99", "top": "#e8eef5", "solid": true, "interact": "bunk", "seat": true, "h": 0.7 },
-    "M": { "t": "myBed", "color": "#2f6f9a", "top": "#ffffff", "solid": true, "interact": "myBed", "seat": true, "h": 0.7 },
-    "L": { "t": "locker", "color": "#5f7d6a", "top": "#7fa08a", "solid": true, "interact": "locker", "h": 1 },
-    "C": { "t": "chopBox", "color": "#8b5a2b", "top": "#a87444", "solid": true, "interact": "chopBox", "h": 0.5 },
-    "S": { "t": "shower", "floor": "#90caf9", "alt": "#64b5f6", "interact": "shower" },
-    "T": { "t": "toilet", "floor": "#e0e0e0", "alt": "#cfcfcf", "interact": "toilet", "hide": true },
-    "h": { "t": "houseMasterDesk", "color": "#5d4037", "top": "#795548", "solid": true, "interact": "houseMasterDesk", "h": 0.6 },
-    "w": { "t": "waterDrum", "color": "#1565c0", "top": "#42a5f5", "solid": true, "interact": "waterDrum", "h": 0.8 },
-    "k": { "t": "broom", "color": "#a1887f", "top": "#d7ccc8", "solid": true, "interact": "broom", "h": 0.4 },
-    "j": { "t": "mirror", "color": "#90a4ae", "top": "#e3f2fd", "solid": true, "interact": "mirror", "h": 1 },
-    "!": { "t": "noticeBoard", "color": "#795548", "top": "#ffe082", "solid": true, "interact": "noticeBoard", "h": 1 },
-
-    "K": { "t": "desk", "color": "#8d6e63", "top": "#bcaaa4", "solid": true, "interact": "desk", "seat": true, "h": 0.5 },
-    "Y": { "t": "myDesk", "color": "#8d6e63", "top": "#ffd54f", "solid": true, "interact": "myDesk", "seat": true, "h": 0.5 },
-    "R": { "t": "blackboard", "color": "#263238", "top": "#2e4f3a", "solid": true, "interact": "blackboard", "group": true, "h": 1 },
-    "t": { "t": "teacherTable", "color": "#5d4037", "top": "#8d6e63", "solid": true, "interact": "teacherTable", "group": true, "h": 0.6 },
-
-    "V": { "t": "servingCounter", "color": "#9e9e9e", "top": "#eeeeee", "solid": true, "interact": "servingCounter", "group": true, "h": 0.7 },
-    "b": { "t": "diningTable", "color": "#6d4c41", "top": "#a1887f", "solid": true, "interact": "diningTable", "seat": true, "group": true, "h": 0.5 },
-    "P": { "t": "prefectTable", "color": "#4e342e", "top": "#c62828", "solid": true, "interact": "prefectTable", "group": true, "h": 0.6 },
-
-    "c": { "t": "shopCounter", "color": "#f2c14e", "top": "#ffe08a", "solid": true, "interact": "shopCounter", "group": true, "h": 0.7 },
-    "s": { "t": "shelf", "color": "#5d4037", "top": "#a1887f", "solid": true, "interact": "shelf", "group": true, "h": 1 },
-    "i": { "t": "librarianDesk", "color": "#4e342e", "top": "#8d6e63", "solid": true, "interact": "librarianDesk", "h": 0.6 },
-
-    "l": { "t": "labBench", "color": "#455a64", "top": "#cfd8dc", "solid": true, "interact": "labBench", "seat": true, "group": true, "h": 0.6 },
-    "v": { "t": "chemCabinet", "color": "#37474f", "top": "#80cbc4", "solid": true, "interact": "chemCabinet", "h": 1 },
-
-    "x": { "t": "sickBed", "color": "#b0bec5", "top": "#ffffff", "solid": true, "interact": "sickBed", "seat": true, "h": 0.6 },
-    "+": { "t": "medCabinet", "color": "#eceff1", "top": "#ef5350", "solid": true, "interact": "medCabinet", "h": 1 },
-    "n": { "t": "nurseDesk", "color": "#6d4c41", "top": "#bcaaa4", "solid": true, "interact": "nurseDesk", "h": 0.6 },
-
-    "p": { "t": "pew", "color": "#5d4037", "top": "#8d6e63", "solid": true, "interact": "pew", "seat": true, "group": true, "h": 0.5 },
-    "a": { "t": "altar", "color": "#eeeeee", "top": "#ffd54f", "solid": true, "interact": "altar", "group": true, "h": 0.8 },
-    "m": { "t": "prayerMat", "floor": "#2e7d32", "alt": "#388e3c", "interact": "prayerMat", "seat": true },
-    "%": { "t": "offeringBox", "color": "#6d4c41", "top": "#ffca28", "solid": true, "interact": "offeringBox", "h": 0.6 },
-
-    "y": { "t": "principalDesk", "color": "#3e2723", "top": "#6d4c41", "solid": true, "interact": "principalDesk", "group": true, "h": 0.6 },
-    "o": { "t": "officeDesk", "color": "#4e342e", "top": "#8d6e63", "solid": true, "interact": "officeDesk", "group": true, "h": 0.6 },
-    "f": { "t": "filingCabinet", "color": "#607d8b", "top": "#90a4ae", "solid": true, "interact": "filingCabinet", "h": 1 },
-    "F": { "t": "schoolPhone", "color": "#37474f", "top": "#ffcc80", "solid": true, "interact": "schoolPhone", "h": 0.9 },
-
-    "q": { "t": "staffTable", "color": "#5d4037", "top": "#d7ccc8", "solid": true, "interact": "staffTable", "seat": true, "group": true, "h": 0.5 },
-    "e": { "t": "examCabinet", "color": "#263238", "top": "#b71c1c", "solid": true, "interact": "examCabinet", "h": 1 },
-    "r": { "t": "staffFridge", "color": "#eceff1", "top": "#ffffff", "solid": true, "interact": "staffFridge", "h": 1 },
-    "z": { "t": "sofa", "color": "#6a1b9a", "top": "#8e24aa", "solid": true, "interact": "sofa", "seat": true, "group": true, "h": 0.5 },
-
-    "g": { "t": "plant", "color": "#2e7d32", "top": "#66bb6a", "solid": true, "h": 0.8 }
+    "#": {
+      "t": "wall",
+      "color": "#6b4f3a",
+      "top": "#8a6a50",
+      "solid": true,
+      "h": 1
+    },
+    "W": {
+      "t": "window",
+      "color": "#6b4f3a",
+      "top": "#9fd3f0",
+      "solid": true,
+      "h": 1
+    },
+    ".": {
+      "t": "floor"
+    },
+    ",": {
+      "t": "tiles",
+      "floor": "#cfd8dc",
+      "alt": "#b0bec5"
+    },
+    "=": {
+      "t": "rug",
+      "floor": "#9c2f2f",
+      "alt": "#b33939"
+    },
+    "E": {
+      "t": "exit",
+      "floor": "#3e2c20",
+      "exit": true
+    },
+    "d": {
+      "t": "doorway",
+      "floor": "#8d6e63"
+    },
+    "@": {
+      "t": "spot",
+      "spot": true
+    },
+    "B": {
+      "t": "bunk",
+      "color": "#7d8a99",
+      "top": "#e8eef5",
+      "solid": true,
+      "interact": "bunk",
+      "seat": true,
+      "h": 0.7
+    },
+    "M": {
+      "t": "myBed",
+      "color": "#2f6f9a",
+      "top": "#ffffff",
+      "solid": true,
+      "interact": "myBed",
+      "seat": true,
+      "h": 0.7
+    },
+    "L": {
+      "t": "locker",
+      "color": "#5f7d6a",
+      "top": "#7fa08a",
+      "solid": true,
+      "interact": "locker",
+      "h": 1
+    },
+    "C": {
+      "t": "chopBox",
+      "color": "#8b5a2b",
+      "top": "#a87444",
+      "solid": true,
+      "interact": "chopBox",
+      "h": 0.5
+    },
+    "S": {
+      "t": "shower",
+      "floor": "#90caf9",
+      "alt": "#64b5f6",
+      "interact": "shower"
+    },
+    "T": {
+      "t": "toilet",
+      "floor": "#e0e0e0",
+      "alt": "#cfcfcf",
+      "interact": "toilet",
+      "hide": true
+    },
+    "h": {
+      "t": "houseMasterDesk",
+      "color": "#5d4037",
+      "top": "#795548",
+      "solid": true,
+      "interact": "houseMasterDesk",
+      "h": 0.6
+    },
+    "w": {
+      "t": "waterDrum",
+      "color": "#1565c0",
+      "top": "#42a5f5",
+      "solid": true,
+      "interact": "waterDrum",
+      "h": 0.8
+    },
+    "k": {
+      "t": "broom",
+      "color": "#a1887f",
+      "top": "#d7ccc8",
+      "solid": true,
+      "interact": "broom",
+      "h": 0.4
+    },
+    "j": {
+      "t": "mirror",
+      "color": "#90a4ae",
+      "top": "#e3f2fd",
+      "solid": true,
+      "interact": "mirror",
+      "h": 1
+    },
+    "!": {
+      "t": "noticeBoard",
+      "color": "#795548",
+      "top": "#ffe082",
+      "solid": true,
+      "interact": "noticeBoard",
+      "h": 1
+    },
+    "K": {
+      "t": "desk",
+      "color": "#8d6e63",
+      "top": "#bcaaa4",
+      "solid": true,
+      "interact": "desk",
+      "seat": true,
+      "h": 0.5
+    },
+    "Y": {
+      "t": "myDesk",
+      "color": "#8d6e63",
+      "top": "#ffd54f",
+      "solid": true,
+      "interact": "myDesk",
+      "seat": true,
+      "h": 0.5
+    },
+    "R": {
+      "t": "blackboard",
+      "color": "#263238",
+      "top": "#2e4f3a",
+      "solid": true,
+      "interact": "blackboard",
+      "group": true,
+      "h": 1
+    },
+    "t": {
+      "t": "teacherTable",
+      "color": "#5d4037",
+      "top": "#8d6e63",
+      "solid": true,
+      "interact": "teacherTable",
+      "group": true,
+      "h": 0.6
+    },
+    "V": {
+      "t": "servingCounter",
+      "color": "#9e9e9e",
+      "top": "#eeeeee",
+      "solid": true,
+      "interact": "servingCounter",
+      "group": true,
+      "h": 0.7
+    },
+    "b": {
+      "t": "diningTable",
+      "color": "#6d4c41",
+      "top": "#a1887f",
+      "solid": true,
+      "interact": "diningTable",
+      "seat": true,
+      "group": true,
+      "h": 0.5
+    },
+    "P": {
+      "t": "prefectTable",
+      "color": "#4e342e",
+      "top": "#c62828",
+      "solid": true,
+      "interact": "prefectTable",
+      "group": true,
+      "h": 0.6
+    },
+    "c": {
+      "t": "shopCounter",
+      "color": "#f2c14e",
+      "top": "#ffe08a",
+      "solid": true,
+      "interact": "shopCounter",
+      "group": true,
+      "h": 0.7
+    },
+    "s": {
+      "t": "shelf",
+      "color": "#5d4037",
+      "top": "#a1887f",
+      "solid": true,
+      "interact": "shelf",
+      "group": true,
+      "h": 1
+    },
+    "i": {
+      "t": "librarianDesk",
+      "color": "#4e342e",
+      "top": "#8d6e63",
+      "solid": true,
+      "interact": "librarianDesk",
+      "h": 0.6
+    },
+    "l": {
+      "t": "labBench",
+      "color": "#455a64",
+      "top": "#cfd8dc",
+      "solid": true,
+      "interact": "labBench",
+      "seat": true,
+      "group": true,
+      "h": 0.6
+    },
+    "v": {
+      "t": "chemCabinet",
+      "color": "#37474f",
+      "top": "#80cbc4",
+      "solid": true,
+      "interact": "chemCabinet",
+      "h": 1
+    },
+    "x": {
+      "t": "sickBed",
+      "color": "#b0bec5",
+      "top": "#ffffff",
+      "solid": true,
+      "interact": "sickBed",
+      "seat": true,
+      "h": 0.6
+    },
+    "+": {
+      "t": "medCabinet",
+      "color": "#eceff1",
+      "top": "#ef5350",
+      "solid": true,
+      "interact": "medCabinet",
+      "h": 1
+    },
+    "n": {
+      "t": "nurseDesk",
+      "color": "#6d4c41",
+      "top": "#bcaaa4",
+      "solid": true,
+      "interact": "nurseDesk",
+      "h": 0.6
+    },
+    "p": {
+      "t": "pew",
+      "color": "#5d4037",
+      "top": "#8d6e63",
+      "solid": true,
+      "interact": "pew",
+      "seat": true,
+      "group": true,
+      "h": 0.5
+    },
+    "a": {
+      "t": "altar",
+      "color": "#eeeeee",
+      "top": "#ffd54f",
+      "solid": true,
+      "interact": "altar",
+      "group": true,
+      "h": 0.8
+    },
+    "m": {
+      "t": "prayerMat",
+      "floor": "#2e7d32",
+      "alt": "#388e3c",
+      "interact": "prayerMat",
+      "seat": true
+    },
+    "%": {
+      "t": "offeringBox",
+      "color": "#6d4c41",
+      "top": "#ffca28",
+      "solid": true,
+      "interact": "offeringBox",
+      "h": 0.6
+    },
+    "y": {
+      "t": "principalDesk",
+      "color": "#3e2723",
+      "top": "#6d4c41",
+      "solid": true,
+      "interact": "principalDesk",
+      "group": true,
+      "h": 0.6
+    },
+    "o": {
+      "t": "officeDesk",
+      "color": "#4e342e",
+      "top": "#8d6e63",
+      "solid": true,
+      "interact": "officeDesk",
+      "group": true,
+      "h": 0.6
+    },
+    "f": {
+      "t": "filingCabinet",
+      "color": "#607d8b",
+      "top": "#90a4ae",
+      "solid": true,
+      "interact": "filingCabinet",
+      "h": 1
+    },
+    "F": {
+      "t": "schoolPhone",
+      "color": "#37474f",
+      "top": "#ffcc80",
+      "solid": true,
+      "interact": "schoolPhone",
+      "h": 0.9
+    },
+    "q": {
+      "t": "staffTable",
+      "color": "#5d4037",
+      "top": "#d7ccc8",
+      "solid": true,
+      "interact": "staffTable",
+      "seat": true,
+      "group": true,
+      "h": 0.5
+    },
+    "e": {
+      "t": "examCabinet",
+      "color": "#263238",
+      "top": "#b71c1c",
+      "solid": true,
+      "interact": "examCabinet",
+      "h": 1
+    },
+    "r": {
+      "t": "staffFridge",
+      "color": "#eceff1",
+      "top": "#ffffff",
+      "solid": true,
+      "interact": "staffFridge",
+      "h": 1
+    },
+    "z": {
+      "t": "sofa",
+      "color": "#6a1b9a",
+      "top": "#8e24aa",
+      "solid": true,
+      "interact": "sofa",
+      "seat": true,
+      "group": true,
+      "h": 0.5
+    },
+    "g": {
+      "t": "plant",
+      "color": "#2e7d32",
+      "top": "#66bb6a",
+      "solid": true,
+      "h": 0.8
+    },
+    "D": {
+      "t": "door",
+      "floor": "#5d4037",
+      "door": true
+    }
   },
   "floors": {
-    "wood": ["#b08d64", "#a3825b"],
-    "cement": ["#bdb6a6", "#b1aa9a"],
-    "tile": ["#d9d4c7", "#cbc5b6"],
-    "green": ["#c8d8c0", "#bccdb4"],
-    "marble": ["#ece7df", "#e0dbd2"],
-    "carpet": ["#7b2d2d", "#6e2828"]
+    "wood": [
+      "#b08d64",
+      "#a3825b"
+    ],
+    "cement": [
+      "#bdb6a6",
+      "#b1aa9a"
+    ],
+    "tile": [
+      "#d9d4c7",
+      "#cbc5b6"
+    ],
+    "green": [
+      "#c8d8c0",
+      "#bccdb4"
+    ],
+    "marble": [
+      "#ece7df",
+      "#e0dbd2"
+    ],
+    "carpet": [
+      "#7b2d2d",
+      "#6e2828"
+    ]
   }
 }

@@ -19,6 +19,10 @@ A mobile-first Nigerian boarding-school life sim. You start as a JSS1 student on
 - **Calls** appear at the top when someone wants you (e.g. "📢 Senior Kunle dey call you · 36m"). They walk over to find you. Talk to them, or ignore them and face the consequence when the timer runs out.
 - **👁️ Suspicion meter:** when a prefect, teacher or the house master can see you breaking a rule, it fills. When it's full, you're caught. Hide in toilets, under bunks, in the bush or behind buildings.
 
+## School structure
+
+Six levels (JSS1–SS3), each with arms A/B/C. Every class arm has its own form teacher, captain, timetable, register, seating and noticeboard. Staff (53 named adults with personalities) are the main NPCs. Students are real players, and bot students are off by default (⚙️ Menu → 🧪 Bot students, or `?bots=1`). See **[SCHOOL.md](SCHOOL.md)**.
+
 ## Architecture
 
 Plain HTML/JS with no build step, all on the global `BH` namespace. One store: `BH.Game.s`.

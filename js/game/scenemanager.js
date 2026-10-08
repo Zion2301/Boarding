@@ -62,10 +62,13 @@
       BH.bus.emit('enter', { map: id, key });
       SM.load(id, { x: cm.entry.x, y: cm.entry.y });
     },
+    /* hallway → classroom (the old 2D renderer has no hallway doors drawn; kept for parity) */
+    enterRoom(id) { const cm = BH.Content.compile(id); if (cm) SM.load(id, { x: cm.entry.x, y: cm.entry.y }); },
     /* leave an interior through its exit */
     exit() {
       const sc = BH.World.scene;
       if (!sc || sc.outdoor) return;
+      if (sc.cm.src.parent) { const pm = BH.Content.compile(sc.cm.src.parent); const d = (pm.doors || []).find((x) => x.to === sc.mapId); return SM.load(sc.cm.src.parent, d ? { x: d.x, y: d.y + pm.T * 1.1 } : pm.entry); }
       const key = sc.cm.src.exit || sc.mapId;
       SM.load('campus', SM.doorSpawn(key));
     },

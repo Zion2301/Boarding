@@ -24,12 +24,18 @@
   }
 
   const NPC = {
+    /* Students are real players. Bot students (coursemates, seniors, juniors) only exist when the dev/test setting
+       fill_with_bot_students is on — BH.School.syncBots calls makeBots then. Staff come from content/staff.json. */
     onNewGame(s) {
-      const used = new Set([s.player.name.split(' ')[0]]);
+      s.npcs = { classmates: [], seniors: [], teachers: [], juniors: [], staff: [] };
+    },
+
+    makeBots(s) {
+      const used = NPC.usedNames(s);
       const pg = s.player.gender;
       const other = pg === 'm' ? 'f' : 'm';
 
-      // ---- 30 coursemates ----
+      // ---- 30 coursemates (your set, spread across the arms of your level) ----
       const archList = [];
       Object.entries(D.ARCHETYPES).forEach(([k, a]) => { for (let i = 0; i < a.count; i++) archList.push(k); });
       const classmates = archList.map((arch, i) => {
@@ -38,7 +44,7 @@
         const p = makePerson(gender, used);
         const persona = U.pick(D.PERSONAS).key;
         return Object.assign(p, {
-          id: 'c' + i, type: 'classmate', arch, persona,
+          id: 'c' + i, type: 'classmate', bot: true, arch, persona,
           rel: U.randInt(30, 52),
           ability: NPC.baseAbility(arch, persona),
         });
@@ -50,19 +56,23 @@
       bunk.role = 'bunkmate'; bunk.rel = 55;
 
       // ---- seniors: hostel ones share your gender ----
+      const lvl = s.time.year;
       const seniorDefs = [
         ['bully', pg, 'SS2'], ['schoolParent', pg, 'SS3'], ['labourPrefect', pg, 'SS3'], ['greedy', pg, 'SS1'],
         ['chill', pg, 'SS2'], ['houseCaptain', pg, 'SS3'], ['diningPrefect', U.pick([pg, other]), 'SS3'], ['headPrefect', U.pick([pg, other]), 'SS3'],
-      ];
+      ].filter(([, , L]) => Number(L.replace('SS', '')) + 3 > lvl);
       const seniors = seniorDefs.map(([role, g, level], i) => Object.assign(makePerson(g, used), {
-        id: 's' + i, type: 'senior', role, level,
+        id: 's' + i, type: 'senior', bot: true, role, level,
         persona: U.pick(D.PERSONAS).key,
         rel: role === 'schoolParent' ? 62 : role === 'bully' ? 18 : role === 'chill' ? 50 : U.randInt(28, 45),
       }));
-
-      // ---- teachers ----
-      s.npcs = { classmates, seniors, teachers: [], juniors: [] };
-      NPC.ensureTeachers(s, D.CURRICULUM.JSS);
+      // ---- juniors (only once you're past JSS1) ----
+      const juniors = [];
+      for (let L = 1; L < lvl; L++) for (let k = 0; k < 3; k++) {
+        const g = U.chance(0.75) ? pg : other;
+        juniors.push(Object.assign(makePerson(g, used), { id: 'j' + U.uid(), type: 'junior', bot: true, level: L, persona: U.pick(D.PERSONAS).key, rel: U.randInt(35, 55) }));
+      }
+      Object.assign(s.npcs, { classmates, seniors, juniors });
     },
 
     baseAbility(arch, persona) {
@@ -72,27 +82,12 @@
 
     usedNames(s) { return new Set([s.player.name.split(' ')[0], ...NPC.all(s).map((n) => n.first)]); },
 
-    /* Create teachers for any subject that doesn't have one yet (SS subjects arrive in SS1) */
-    ensureTeachers(s, codes) {
-      const used = NPC.usedNames(s);
-      codes.forEach((code) => {
-        if (NPC.teacher(s, code)) return;
-        const id = 't' + s.npcs.teachers.length + '_' + code;
-        const fixed = D.TEACHERS[code];
-        if (fixed) {
-          s.npcs.teachers.push({ id, type: 'teacher', subject: code, title: fixed.title, last: fixed.last, nick: fixed.nick, strict: fixed.strict, style: fixed.style, rel: 40, gender: fixed.title === 'Mr.' ? 'm' : 'f' });
-          return;
-        }
-        const g = U.chance(0.5) ? 'm' : 'f';
-        const p = makePerson(g, used);
-        const gen = U.pick(D.GENERIC_TEACHER_STYLES);
-        const title = p.tribe === 'Hausa' ? (g === 'm' ? 'Mallam' : 'Malama') : (g === 'm' ? 'Mr.' : 'Mrs.');
-        s.npcs.teachers.push({ id, type: 'teacher', subject: code, title, last: p.last, strict: gen.strict, style: gen.style, rel: 40, gender: g, tribe: p.tribe });
-      });
-    },
+    /* Teachers are the fixed staff from content/staff.json (BH.School.ensureStaff); kept for old callers. */
+    ensureTeachers(s) { if (BH.School && s.school) BH.School.ensureStaff(s); },
 
     /* A new school year: seniors move up or graduate, new juniors arrive, coursemates grow */
     onNewYear(s) {
+      if (!(s.npcs.classmates.length + s.npcs.seniors.length)) return; // no bot students this school
       const pYear = s.time.year;
       const lvl = (L) => Number(L.replace('SS', '')) + 3; // 'SS2' -> 5
       const used = NPC.usedNames(s);
@@ -118,7 +113,7 @@
         const hostel = !['diningPrefect', 'headPrefect'].includes(role);
         const g = hostel ? pg : U.pick(['m', 'f']);
         const p = makePerson(g, used);
-        const n = Object.assign(p, { id: 's' + U.uid(), type: 'senior', role, level: 'SS' + (L - 3), persona: U.pick(D.PERSONAS).key, rel: role === 'bully' ? 22 : U.randInt(30, 48) });
+        const n = Object.assign(p, { id: 's' + U.uid(), type: 'senior', bot: true, role, level: 'SS' + (L - 3), persona: U.pick(D.PERSONAS).key, rel: role === 'bully' ? 22 : U.randInt(30, 48) });
         s.npcs.seniors.push(n);
         if (role === 'schoolParent') BH.log(s, `🤝 Your new school ${BH.gendered(s, 'father', 'mother')} na ${NPC.name(n)}.`, 'good');
       });
@@ -132,7 +127,7 @@
       if (pYear >= 2) {
         while (s.npcs.juniors.filter((j) => j.level === 1).length < 4) {
           const g = U.chance(0.75) ? pg : (pg === 'm' ? 'f' : 'm');
-          s.npcs.juniors.push(Object.assign(makePerson(g, used), { id: 'j' + U.uid(), type: 'junior', level: 1, persona: U.pick(D.PERSONAS).key, rel: U.randInt(35, 55) }));
+          s.npcs.juniors.push(Object.assign(makePerson(g, used), { id: 'j' + U.uid(), type: 'junior', bot: true, level: 1, persona: U.pick(D.PERSONAS).key, rel: U.randInt(35, 55) }));
         }
       }
       // coursemates grow up
@@ -145,8 +140,9 @@
     byArch(s, arch) { return s.npcs.classmates.find((c) => c.arch === arch); },
     byRole(s, role) { return s.npcs.classmates.find((c) => c.role === role) || s.npcs.seniors.find((x) => x.role === role); },
     senior(s, role) { return s.npcs.seniors.find((x) => x.role === role) || s.npcs.classmates.find((c) => c.prefect === role); },
-    teacher(s, code) { return s.npcs.teachers.find((t) => t.subject === code); },
-    randomClassmate(s, exceptId) { return U.pick(s.npcs.classmates.filter((c) => c.id !== exceptId)); },
+    /* the teacher who teaches YOU this subject (from your class timetable) */
+    teacher(s, code) { return BH.School && s.school ? BH.School.teacherFor(s, 'player', code) : s.npcs.teachers.find((t) => t.subjects && t.subjects.includes(code)); },
+    randomClassmate(s, exceptId) { const pool = s.npcs.classmates.filter((c) => c.id !== exceptId); return pool.length ? U.pick(pool) : null; },
     crush(s) {
       const fines = s.npcs.classmates.filter((c) => c.arch === 'fine');
       return fines.find((c) => c.gender !== s.player.gender) || fines[0];
@@ -161,10 +157,10 @@
     name(n) {
       if (!n) return 'Somebody';
       if (n.type === 'senior') return 'Senior ' + n.first;
-      if (n.type === 'teacher' || n.type === 'staff') return `${n.title} ${n.last}`;
+      if (n.type === 'teacher' || n.type === 'staff') return n.call || `${n.title} ${n.last}`;
       return n.first;
     },
-    fullName(n) { return n.type === 'teacher' || n.type === 'staff' ? `${n.title} ${n.last}` : `${n.first} ${n.last}`; },
+    fullName(n) { return n.type === 'teacher' || n.type === 'staff' ? `${n.title} ${n.first ? n.first + ' ' : ''}${n.last}` : `${n.first} ${n.last}`; },
     label(n) {
       if (n.type === 'staff') return n.label;
       if (n.type === 'classmate') {
@@ -175,7 +171,8 @@
       }
       if (n.type === 'senior') return `${D.SENIOR_ROLES[n.role].label} · ${n.level}`;
       if (n.type === 'junior') return `Junior · ${D.LEVELS[n.level - 1]}${n.schoolChild ? ' · your school child' : ''}`;
-      return `${D.SUBJECTS[n.subject].name} teacher`;
+      const subs = (n.subjects || [n.subject]).map((c) => (c === 'RS' ? (n.group === 'muslim' ? 'IRS' : 'CRS') : c === 'NLG' ? ({ yoruba: 'Yoruba', igbo: 'Igbo', hausa: 'Hausa' }[n.group] || 'Language') : D.SUBJECTS[c].short)).join(' & ');
+      return `${subs} teacher${n.formClass ? ` · Form teacher ${n.formClass}` : ''}${n.house ? ` · ${n.house} House master` : ''}`;
     },
     emoji(n) {
       if (n.type === 'staff') return n.emoji;
@@ -194,6 +191,21 @@
       if (n.type === 'junior') return r < 25 ? 'Fears you' : r < 45 ? 'Respects you' : r < 70 ? 'Likes you' : 'Looks up to you';
       return r < 20 ? 'Enemy' : r < 40 ? 'Coursemate' : r < 60 ? 'Padi' : r < 80 ? 'Close padi' : 'Ride or die';
     },
+
+    /* What an NPC remembers about you (shown to the AI as facts; the server keeps its own conversation memory) */
+    /* the subject this teacher teaches YOU (a teacher may teach several), else their main one */
+    subjectFor(s, n) {
+      if (!n || n.type !== 'teacher') return null;
+      const mine = BH.School && s.school ? BH.School.weekFor(s).flat().find((L) => L && L.t === n.id) : null;
+      return mine ? mine.code : (n.subjects || []).find((c) => s.academics && s.academics.subjects[c]) || n.subject;
+    },
+    remember(s, n, text) {
+      if (!n) return;
+      n.mem = (n.mem || []).filter((m) => m.text !== text);
+      n.mem.push({ d: s.time.dayCount, text });
+      if (n.mem.length > 8) n.mem.shift();
+    },
+    memories(s, n) { return (n && n.mem ? n.mem : []).map((m) => `${s.time.dayCount - m.d === 0 ? 'today' : s.time.dayCount - m.d === 1 ? 'yesterday' : `${s.time.dayCount - m.d} days ago`}: ${m.text}`); },
 
     rel(s, n, delta) {
       if (!n) return;
@@ -222,7 +234,8 @@
       return text;
     },
     gossipLine(s) {
-      const a = NPC.randomClassmate(s), b = NPC.randomClassmate(s, a.id);
+      const a = NPC.randomClassmate(s), b = a && NPC.randomClassmate(s, a.id);
+      if (!a || !b) return U.pick(['The Maths teacher and the Agric teacher dey fight over one parking space.', 'They say the bursar dey count school fees for night with torchlight.', 'Mama Joy the cleaner know everybody secret. Everybody.']);
       return U.pick([
         `${a.first} and ${b.first} dey write each other letters. Na so e dey start.`,
         `${a.first} cry for house master office because Senior collect their Milo.`,
@@ -285,7 +298,7 @@
     greetTeacher(s, n) {
       s.today.talked[n.id] = true;
       NPC.rel(s, n, 3);
-      return U.pick([`${NPC.name(n)}: "Good. Greeting is a sign of good home training."`, `${NPC.name(n)} smile: "How is your ${D.SUBJECTS[n.subject].short} going?"`]);
+      return U.pick([`${NPC.name(n)}: "Good. Greeting is a sign of good home training."`, `${NPC.name(n)} smile: "How is your ${D.SUBJECTS[NPC.subjectFor(s, n)].short} going?"`]);
     },
   };
 

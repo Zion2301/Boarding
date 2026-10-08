@@ -3,7 +3,7 @@
   const D = BH.data;
 
   D.CONFIG = {
-    SAVE_VERSION: 5,
+    SAVE_VERSION: 6,
     SLOTS: 3,
     TERM_WEEKS: 10,
     TERMS_PER_YEAR: 3,

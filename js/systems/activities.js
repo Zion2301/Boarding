@@ -16,7 +16,7 @@
   const N = () => BH.NPC;
   const toast = (t, k = 'info', c) => BH.UI && BH.UI.toast(t, k, c);
   const abs = (s) => BH.Clock.abs(s);
-  const ROLLCALL = ['class', 'assembly', 'prep', 'labour', 'worship'];
+  const ROLLCALL = ['class', 'register', 'assembly', 'prep', 'labour', 'worship'];
 
   const Activities = {
     onNewGame(s) {
@@ -35,10 +35,12 @@
     onNewDay(s) { s.today.att = {}; },
 
     /* ---------- where you should be ---------- */
-    myClassroom(s) { return s.time.year <= 3 ? 'jss' : 'ss'; },
+    myClassroom(s) { const c = BH.School.myClass(s); return c ? c.map : null; },
     expected(s) {
       const b = BH.Time.block(s);
       if (b.kind === 'free') return null;
+      // school blocks: your class arm (or your department / religion / language room for split periods)
+      if (['class', 'register', 'prep'].includes(b.kind) && BH.School) return BH.School.placeFor(s, 'player');
       const key = BH.Clock.location(s);
       const L = D.CAMPUS.LOCATIONS[key];
       if (!L) return null;
@@ -55,10 +57,9 @@
     freePeriod(s) {
       const b = BH.Time.block(s);
       if (b.kind !== 'class') return false;
-      const code = A().periodSubject(s, b.period);
-      if (!code) return true;
-      const t = N().teacher(s, code);
-      return !!(t && s.world.teacherAbsent && s.world.teacherAbsent[t.id]);
+      const L = BH.School.lessonFor(s, 'player', s.time.dow, b.period);
+      if (!L || !L.t) return true; // nobody could be timetabled for it — teacher "no come"
+      return !!(s.world.teacherAbsent && s.world.teacherAbsent[L.t]);
     },
     inMyClass(s) { return BH.Time.block(s).kind === 'class' && Activities.present(s); },
 
@@ -119,7 +120,8 @@
     latenessWatcher(s, b) {
       const here = (n) => n && BH.Schedule.where(s, n).map === (s.world.map || 'campus');
       if (b.kind === 'assembly') { const vp = BH.Schedule.staff(s, 'vp'); if (here(vp)) return vp; }
-      if (b.kind === 'class') { const t = N().teacher(s, A().periodSubject(s, b.period)); if (here(t)) return t; }
+      if (b.kind === 'class') { const L = BH.School.lessonFor(s, 'player', s.time.dow, b.period); const t = L && L.t && N().get(s, L.t); if (here(t)) return t; }
+      if (b.kind === 'register') { const c = BH.School.myClass(s); const t = c && c.form && N().get(s, c.form); if (here(t)) return t; }
       const vp = BH.Schedule.staff(s, 'vp');
       if (here(vp)) return vp;
       return [N().senior(s, 'headPrefect'), N().senior(s, 'houseCaptain')].find(here) || null;
@@ -198,12 +200,18 @@
       if (snap && BH.World.snap) BH.World.snap(snap);
       if (b.kind === 'class' && map === Activities.expected(s).map) {
         const code = A().periodSubject(s, b.period);
-        const owner = obj && obj.kind === 'desk' ? BH.Schedule.owner(s, map, obj.id) : null;
+        const ownerId = obj && obj.kind === 'desk' && !BH.School.isMyDesk(s, obj) ? BH.School.deskOwner(s, obj) : null;
+        const owner = ownerId && ownerId !== 'player' ? N().get(s, ownerId) : null;
         s.act = { type: 'lesson', code, mode: 'focus', acc: 0, obj: obj && obj.id, map };
         if (!code || Activities.freePeriod(s)) return { text: 'Free period! Teacher no come. You fit sleep, read, or gist. 😎', noTime: true };
         const info = A().teacherInfo(s, code);
         Activities.maybeTest(s);
         return { text: `**${A().name(s, code)}** with ${info.tname}. Topic: _${info.topic}_.${owner ? ` (Na ${owner.first}'s seat — they go vex.)` : ''}`, good: true, noTime: true };
+      }
+      if (b.kind === 'register' && map === Activities.expected(s).map) {
+        s.act = { type: 'seat', obj: obj && obj.id, map };
+        const c = BH.School.myClass(s);
+        return { text: `You sit for register. ${c && c.form ? N().name(N().get(s, c.form)) : 'Your form teacher'} go soon call your name — answer "Present". 📋`, noTime: true };
       }
       if (b.kind === 'prep' || (obj && ['desk', 'myDesk', 'labBench'].includes(obj.kind))) {
         s.act = { type: 'prep', code: null, acc: 0, obj: obj && obj.id, map };
@@ -246,24 +254,11 @@
         s.today.att[id] = s.today.att[id] || { at: s.clock, late: false, seated: 0 };
         s.today.att[id].seated++;
         if (!a.code || Activities.freePeriod(s)) return;
-        const t = N().teacher(s, a.code);
-        const strict = t ? t.strict : 0.5;
         if (a.mode === 'focus') Activities.accrue(s, a, 4 / 70, { silent: true });
         if (a.mode === 'doze') S().change(s, { rest: 0.2 });
         if (a.mode === 'gist') { S().change(s, { morale: 0.08 }); const sm = N().byRole(s, 'seatmate'); if (sm && s.clock % 5 === 0) N().rel(s, sm, 0.3); }
         if (a.mode === 'novel') { S().change(s, { morale: 0.08 }); Activities.accrue(s, a, 1 / 70, { silent: true }); }
-        if (a.mode !== 'focus' && s.clock % 10 === 0) {
-          const p = { doze: 0.35, gist: 0.22, novel: 0.25 }[a.mode] * strict * 2;
-          if (Math.random() < p) {
-            const name = A().name(s, a.code, true);
-            const what = { doze: `Sleeping in ${name} class`, gist: `Talking in ${name} class`, novel: `Reading a novel in ${name} class` }[a.mode];
-            if (a.mode === 'novel') BH.Inv.take(s, 'novel', 1);
-            if (t) N().rel(s, t, -3);
-            BH.Consequences.repChange(s, 'teachers', -1);
-            toast(`🚨 ${t ? N().name(t) : 'Teacher'} catch you! ${Dsc().minor(s, what)}${a.mode === 'novel' ? ' Novel: seized. 📕' : ''}`, 'bad');
-            a.mode = 'focus';
-          }
-        }
+        // the teacher noticing sleepers/talkers happens in BH.Lessons.notice (each teacher's own lines)
         return;
       }
       if (a.type === 'prep' && a.code) {

@@ -6,7 +6,10 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const readJSON = (f) => JSON.parse(fs.readFileSync(path.join(here, '..', 'content', f), 'utf8'));
 let CHAR = readJSON('characters.json');
-export const reloadContent = () => { CHAR = readJSON('characters.json'); };
+let STAFF = readJSON('staff.json');
+export const reloadContent = () => { CHAR = readJSON('characters.json'); STAFF = readJSON('staff.json'); };
+/* the staff record for an NPC id (trusted server-side content — the client never sends personality text) */
+export const staffRecord = (id) => (id && ([...STAFF.teachers, ...STAFF.staff].find((x) => x.id === id))) || null;
 export const characters = () => CHAR;
 
 export const SAFETY = `You are a character in "Boarding House", a light-hearted life-sim game set in a Nigerian boarding secondary school. The person typing is a real player, most likely a teenager (11-18).
@@ -29,9 +32,12 @@ export function sheetFor(npc = {}) {
   const S = CHAR.sheets;
   if (npc.contact && S[npc.contact]) return npc.contact;              // mummy / daddy / sibling / friendHome
   if (npc.type === 'staff') {
-    if (npc.role === 'vp') return 'vp';
-    if (npc.role === 'chaplain' || npc.role === 'imam') return 'chaplain';
-    return S[npc.role] ? npc.role : 'principal';
+    const rec = staffRecord(npc.id);
+    const role = rec ? rec.role : npc.role;
+    if (role === 'vp' || role === 'vpAcademics') return 'vp';
+    if (role === 'chaplain' || role === 'imam') return 'chaplain';
+    if (role === 'matron') return S.houseMaster ? 'houseMaster' : 'staff';
+    return S[role] ? role : 'staff';
   }
   if (npc.type === 'teacher') return 'teacher';
   if (npc.type === 'senior') {
@@ -57,15 +63,21 @@ export function buildSystem({ sheetKey, npc = {}, player = {}, situation, vars =
     archetypeDesc: npc.archDesc || 'An ordinary student with their own worries.',
     background: player.background || 'middle class',
   }, vars);
-  const speech = { pidgin: 'Speak mostly Nigerian Pidgin English.', nigerian_english: 'Speak Nigerian English (formal school register).', mix: 'Mix Nigerian English and Pidgin naturally.' }[sheet.speech];
+  // this person's own personality, voice and quirks (content/staff.json, looked up by id on the server)
+  const rec = staffRecord(npc.id);
+  if (rec) v.staffRole = rec.label || (rec.teaches ? 'Teacher' : 'Staff member');
+  const SPEECH = { pidgin: 'Speak mostly Nigerian Pidgin English.', nigerian_english: 'Speak Nigerian English (formal school register).', mix: 'Mix Nigerian English and Pidgin naturally.' };
+  const speech = SPEECH[(rec && rec.speech) || sheet.speech];
+  const recName = rec ? `${rec.title} ${rec.first} ${rec.last}` : null;
   const charBlock = [
-    `CHARACTER: ${npc.name || 'Unnamed'} — ${fill(sheet.role, v)}.`,
-    `Personality: ${fill(sheet.personality, v)}`,
-    `Voice: ${speech} ${fill(sheet.style, v)}`,
+    `CHARACTER: ${recName || npc.name || 'Unnamed'} — ${fill(sheet.role, v)}.`,
+    `Personality: ${rec && rec.personality ? rec.personality : fill(sheet.personality, v)}`,
+    `Voice: ${speech} ${rec && rec.voice ? rec.voice + ' Keep replies short (max 3-4 sentences).' : fill(sheet.style, v)}`,
+    rec && rec.quirks && rec.quirks.length ? `Quirks (use naturally, not every line): ${rec.quirks.join('; ')}.` : '',
     `You know: ${fill(sheet.knows, v)}`,
     `Your goals: ${fill(sheet.goals, v)}`,
     `Actions you may choose: ${sheet.allowed_actions.join(', ')}.${Object.keys(sheet.can_give || {}).length ? ` Items you could give: ${Object.keys(sheet.can_give).join(', ')}.` : ''}${sheet.money_cap ? ` Money you could send: at most ₦${sheet.money_cap}.` : ''}${(sheet.missions || []).length ? ` Missions you could start: ${sheet.missions.join(', ')}.` : ''}`,
-  ].join('\n');
+  ].filter(Boolean).join('\n');
   const rel = Number(npc.rel ?? 50);
   const relLabel = rel >= 80 ? 'you adore this student' : rel >= 60 ? 'you like this student' : rel >= 40 ? 'neutral' : rel >= 20 ? 'you are wary of this student' : 'you dislike this student';
   const brief = [

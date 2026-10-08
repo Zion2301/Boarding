@@ -65,8 +65,9 @@
       return r.about === 'me' ? `"Na true say… ${r.text}" 👀` : `"${r.text}"`;
     },
     filler(s) {
-      const a = BH.NPC.randomClassmate(s), b = BH.NPC.randomClassmate(s, a.id);
-      return `"${U.fill(U.pick(FILLER), { a: a.first, b: b.first })}"`;
+      const a = BH.NPC.randomClassmate(s), b = a && BH.NPC.randomClassmate(s, a.id);
+      const [t1, t2] = U.sample(s.npcs.teachers, 2).map((t) => BH.NPC.name(t));
+      return `"${U.fill(U.pick(FILLER), { a: a ? a.first : t1, b: b ? b.first : t2 })}"`;
     },
 
     /* Two NPCs gisting near you — returns a line to show in a speech bubble (or null) */

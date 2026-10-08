@@ -33,7 +33,7 @@
     return good(U.pick(c.args.text || ['Done.']), { mins: c.args.mins });
   };
   H.useItem = (s, c) => { const r = I().use(s, c.args.item); return r.bad ? bad(r.text) : good(r.text); };
-  H.enter = (s, c) => { BH.SceneManager.enter(c.target.key); return { noTime: true, cancel: true }; };
+  H.enter = (s, c) => { if (c.target.room) BH.SceneManager.enterRoom(c.target.room); else BH.SceneManager.enter(c.target.key); return { noTime: true, cancel: true }; };
 
   /* ---------- rest & hiding ---------- */
   H.sleep = (s, c) => Act().sleep(s, c.args.where || 'bed', c.obj);
@@ -104,6 +104,41 @@
     return h >= 70 ? good('You dey shine! Inspection go be easy. ✨') : h >= 45 ? 'You fit pass inspection… if the prefect no look too close.' : bad('Your collar don brown and your hair don bush. Inspection go catch you. 😬');
   };
   H.notices = (s) => {
+    const map = s.world.map || 'campus';
+    const cid = BH.School.classIdOfMap(map);
+    const cm = BH.Content.compile(map);
+    if (cid) {
+      // class noticeboard: form teacher, captains, this class's timetable, homework, class notices
+      const st = BH.School.student(s, 'player');
+      const mine = BH.School.myClass(s);
+      const pseudo = mine && mine.id === cid ? 'player' : null;
+      const P = BH.Content.get('school').periodsPerDay;
+      const row = (dow) => Array.from({ length: P }, (_, p) => {
+        const e = BH.School.entry(s, cid, dow, p);
+        const L = pseudo ? BH.School.lessonFor(s, 'player', dow, p) : e && !e.parts ? e : null;
+        if (!L) return e && e.parts ? (e.line !== null && e.line !== undefined ? 'Dept' : 'Split') : '—';
+        return `${A().name(s, L.code, true)}${L.t ? '' : '*'}`;
+      }).join(' · ');
+      const days = s.time.dow <= 4 ? [s.time.dow, (s.time.dow + 1) % 5] : [0];
+      const tt = days.map((d) => `**${D.DAYS[d]}:** ${row(d)}`).join('\n');
+      const att = pseudo ? BH.School.attendance(s, cid, 'player') : null;
+      const notes = BH.School.notices(s, cid).map((n) => `• ${n.text}`).join('\n');
+      BH.Dialogue.say({ portrait: { emoji: '📌' }, name: `${cid} noticeboard`, sub: `${st && st.dept && cid.startsWith('SS') ? D.DEPARTMENTS[st.dept].label + ' · ' : ''}${BH.Time.dateLabel(s)}`,
+        text: `${notes}\n\n**Timetable**\n${tt}${att && att.days ? `\n\n**Your register:** ${att.present} present · ${att.late} late · ${att.absent} absent` : ''}` });
+      return { noTime: true };
+    }
+    if (cm && cm.src.hallway) {
+      const rooms = (cm.doors || []).map((d) => d.to);
+      const b = BH.Time.block(s);
+      const lines = rooms.map((cid) => {
+        const c = s.school.classes[cid];
+        const e = b.kind === 'class' && s.time.dow <= 4 ? BH.School.entry(s, cid, s.time.dow, b.period) : null;
+        const now = e ? (e.parts ? 'department / split lesson' : `${A().name(s, e.code, true)}${e.t ? ' — ' + BH.NPC.name(BH.NPC.get(s, e.t)) : ' (no teacher)'}`) : '';
+        return `**${cid}** · Form: ${c.form ? BH.NPC.name(BH.NPC.get(s, c.form)) : '—'}${now ? ` · Now: ${now}` : ''}`;
+      }).join('\n');
+      BH.Dialogue.say({ portrait: { emoji: '📌' }, name: `${cm.src.name} noticeboard`, sub: BH.Time.dateLabel(s), text: lines });
+      return { noTime: true };
+    }
     const sched = BH.Time.schedule(s).map((id, i) => `${BH.Clock.timeLabel(BH.Clock.blockStart(s, i))} ${D.BLOCKS[id].emoji} ${D.BLOCKS[id].title}${D.BLOCKS[id].kind === 'class' ? ` (${A().name(s, A().periodSubject(s, D.BLOCKS[id].period) || 'ENG', true)})` : ''}`).join('\n');
     const gist = BH.Gist.known(s).slice(0, 4).map((r) => `• ${r.text}`).join('\n');
     BH.Dialogue.say({ portrait: { emoji: '📌' }, name: 'Notice board', sub: BH.Time.dateLabel(s), text: `**Today's timetable**\n${sched}${gist ? `\n\n**Scribbled gist**\n${gist}` : ''}` });
@@ -180,6 +215,13 @@
     return good(`You finish the ${A().name(s, m.vars.subject, true)} assignment${lib ? ' in the quiet library' : ''}. Handwriting rough, answers dey there. ✅`);
   };
   H.readBoard = (s) => {
+    const L = BH.Lessons && BH.Lessons.here(s);
+    if (L && L.kind === 'lesson' && L.board.length > 2) {
+      if (s.today.flags['copied_' + L.room + L.start]) return { text: 'You don copy everything wey dey the board already. ✍🏾', cancel: true };
+      s.today.flags['copied_' + L.room + L.start] = true;
+      const g = A().study(s, L.code, 2 + Math.min(3, L.board.length - 2));
+      return good(`You copy the ${A().name(s, L.code, true)} notes: “${L.board.slice(2).join(' / ').slice(0, 160)}…” (+${g} knowledge) 📝`);
+    }
     const last = s.today.flags.lastLesson;
     if (!last) return 'The board get yesterday notes wey half don clean. Nothing useful.';
     const g = A().study(s, last, 2);

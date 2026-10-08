@@ -468,6 +468,7 @@
       s.flags.recentEvents = [id, ...recent].slice(0, 5);
       let ctx = {};
       try { ctx = EVENTS[id].ctx ? EVENTS[id].ctx(s) : {}; } catch (err) { return null; }
+      if (ctx && 'npc' in ctx && !ctx.npc) return null; // nobody to play the part (e.g. bot students are off)
       return { id, ctx };
     },
 
@@ -476,6 +477,7 @@
       const e = EVENTS[id];
       if (!e) return null;
       if (!ctx) { try { ctx = e.ctx ? e.ctx(s) : {}; } catch (err) { return null; } }
+      if (ctx && 'npc' in ctx && !ctx.npc) return null;
       const who = ctx.npc || ctx.j || null;
       return BH.WorldSim.call(s, { kind: 'event', id, ctx, npc: who, text: `${e.emoji} ${e.title}`, minutes: who ? 40 : 30 });
     },

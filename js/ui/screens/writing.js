@@ -189,7 +189,7 @@
       const st = s();
       const m = W().motionOfDay(st);
       Screen.side = side || 'for';
-      const opp = BH.NPC.byArch(st, 'brilliant') || BH.NPC.randomClassmate(st);
+      const opp = BH.NPC.byArch(st, 'brilliant') || BH.NPC.randomClassmate(st) || { first: 'The debate captain' };
       P().open(() => `<h2>🎤 Debate Society</h2>
         <p><b>Motion:</b> “${U.esc(m.motion)}”</p>
         <div class="seg"><button class="${Screen.side === 'for' ? 'on' : ''}" data-act="wSide" data-arg="for">I'm FOR</button><button class="${Screen.side === 'against' ? 'on' : ''}" data-act="wSide" data-arg="against">I'm AGAINST</button></div>

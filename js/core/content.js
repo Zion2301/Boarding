@@ -35,21 +35,55 @@
       if (!data) throw new Error('No game content found. Run `node tools/build-content.js`.');
       Content.data = data;
       Object.keys(compiled).forEach((k) => delete compiled[k]);
+      Content.generateSchoolMaps(data);
       // resolve "extends" between maps (girls' hostel reuses the boys' layout, etc.)
-      Object.values(data.maps).forEach((m) => {
-        if (!m.extends) return;
-        const base = data.maps[m.extends];
-        Object.keys(base).forEach((k) => { if (m[k] === undefined && k !== 'id' && k !== '_doc') m[k] = base[k]; });
-      });
+      const resolve = (m) => {
+        if (!m.extends || m._resolved) return m;
+        const base = resolve(data.maps[m.extends]);
+        Object.keys(base).forEach((k) => { if (m[k] === undefined && !['id', '_doc', 'template', '_resolved'].includes(k)) m[k] = base[k]; });
+        m._resolved = true;
+        return m;
+      };
+      Object.values(data.maps).forEach(resolve);
       D.ITEMS = data.items.items;
       D.RECIPES = data.items.recipes;
       D.SHOP_ITEMS = data.items.shop;
       D.CAMPUS = data.maps.campus;
     },
 
+    /* Class arms (JSS1A…SS3C) are classroom-template copies; each block gets a hallway with one door per arm. */
+    generateSchoolMaps(data) {
+      const sc = data.school;
+      if (!sc) return;
+      const byBlock = {};
+      sc.levels.forEach((L) => L.arms.forEach((arm) => {
+        const id = L.id + arm;
+        (byBlock[L.block] = byBlock[L.block] || []).push(id);
+        if (!data.maps[id]) data.maps[id] = { id, name: `${id} Classroom`, emoji: L.stage === 'JSS' ? '📚' : '🎓', extends: L.stage === 'JSS' ? 'classroom' : 'classroomSS', exit: L.block, parent: L.block, classId: id };
+      }));
+      Object.entries(byBlock).forEach(([blockId, rooms]) => {
+        if (data.maps[blockId]) return;
+        const B = sc.blocks[blockId];
+        const W = rooms.length * 3 + 4;
+        const top = Array.from({ length: W }, (_, x) => (x >= 3 && (x - 3) % 3 === 0 && (x - 3) / 3 < rooms.length ? 'D' : '#')).join('');
+        const mid = Math.floor(W / 2);
+        const floor = (extra) => { const r = ('#' + '.'.repeat(W - 2) + '#').split(''); Object.entries(extra || {}).forEach(([x, ch]) => { r[x] = ch; }); return r.join(''); };
+        const bottom = Array.from({ length: W }, (_, x) => (x === mid - 1 || x === mid ? 'E' : '#')).join('');
+        data.maps[blockId] = {
+          id: blockId, name: B.name, emoji: B.emoji, exit: B.campus, floor: 'tile', palette: { wall: blockId === 'juniorBlock' ? '#a5502b' : '#7b3f2a' },
+          hallway: true,
+          layout: [top, floor(), floor({ 1: '!' }), floor(), floor({ [W - 2]: 'g' }), bottom],
+          doors: rooms.map((to, i) => ({ at: [3 + i * 3, 0], to })),
+          labels: rooms.map((to, i) => ({ text: to, x: 3 + i * 3, y: 1 })),
+          spots: { prefect: [mid, 3] },
+          patrol: [[2, 2], [W - 3, 2], [W - 3, 4], [2, 4]],
+        };
+      });
+    },
+
     get(key) { return Content.data[key]; },
     map(id) { return Content.data.maps[id] || null; },
-    mapIds() { return Object.keys(Content.data.maps); },
+    mapIds() { return Object.keys(Content.data.maps).filter((id) => !Content.data.maps[id].template); },
     isInterior(id) { return id !== 'campus' && !!Content.data.maps[id]; },
     interactable(kind) { return Content.data.interactables[kind] || null; },
 
@@ -117,13 +151,15 @@
     });
     const exits = [];
     rows.forEach((r, y) => { for (let x = 0; x < W; x++) if (def(r[x]).exit) exits.push({ x: x * T, y: y * T, w: T, h: T }); });
+    // doorways into other rooms (hallway → classroom)
+    const doors = (m.doors || []).map((d) => ({ to: d.to, x: (d.at[0] + 0.5) * T, y: (d.at[1] + 0.5) * T, w: T, h: T, tx: d.at[0], ty: d.at[1] }));
     const px = ([x, y]) => ({ x: (x + 0.5) * T, y: (y + 0.5) * T });
     const spots = {};
     Object.entries(m.spots || {}).forEach(([k, v]) => { spots[k] = px(v); });
     const walk = rows.map((r) => r.split('').map((ch) => !def(ch).solid));
     const ex = exits.length ? exits.reduce((a, e) => ({ x: a.x + e.x / exits.length, y: a.y + e.y / exits.length }), { x: 0, y: 0 }) : { x: T, y: T };
     return {
-      id: m.id, outdoor: false, T, cols: W, rows: H, W: W * T, H: H * T, grid, solids, objects, exits,
+      id: m.id, outdoor: false, T, cols: W, rows: H, W: W * T, H: H * T, grid, solids, objects, exits, doors,
       entry: { x: ex.x + T / 2, y: ex.y - T * 0.6 },
       spots, walk,
       patrol: (m.patrol || []).map(px),

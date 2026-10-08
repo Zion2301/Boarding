@@ -70,17 +70,17 @@
           },
         });
       }
-      if (n.type === 'teacher' && !inClass && s.academics.subjects[n.subject]) out.push({
-        label: `💸 Special lesson in ${Academics.name(s, n.subject, true)} (₦500)`, sub: '45 min · big knowledge boost',
+      if (n.type === 'teacher' && !inClass && s.academics.subjects[BH.NPC.subjectFor(s, n)]) out.push({
+        label: `💸 Special lesson in ${Academics.name(s, BH.NPC.subjectFor(s, n), true)} (₦500)`, sub: '45 min · big knowledge boost',
         disabled: s.money < 500 ? 'You need ₦500' : s.today.talked['lesson' + n.id] ? 'Done today' : null,
         run() {
           s.today.talked['lesson' + n.id] = true;
           BH.Stats.money(s, -500);
-          const g = Academics.study(s, n.subject, 12);
+          const g = Academics.study(s, BH.NPC.subjectFor(s, n), 12);
           BH.NPC.rel(s, n, 5); BH.Consequences.repChange(s, 'teachers', 1);
           BH.Activities.busy(s, 45, `👩🏾‍🏫 Special lesson…`);
           BH.Paths.add(s, 'scholar', 2);
-          return `${BH.NPC.name(n)} take you through ${Academics.name(s, n.subject, true)} one-on-one in the staff room. (+${g} knowledge) "Don't tell the others." 🤫`;
+          return `${BH.NPC.name(n)} take you through ${Academics.name(s, BH.NPC.subjectFor(s, n), true)} one-on-one in the staff room. (+${g} knowledge) "Don't tell the others." 🤫`;
         },
       });
       return out;
@@ -140,36 +140,11 @@
     emoji(code) { return D.SUBJECTS[code].emoji; },
 
     /* ---------- timetables ---------- */
+    /* what YOU have this period (your class arm's timetable, resolved for your department / religion / language) */
     periodSubject(s, period) {
-      const tt = s.academics.timetable || D.TIMETABLE.JSS;
-      const day = tt[s.time.dow];
-      if (!day) return null;
-      const slot = day[period];
-      return Array.isArray(slot) ? slot[s.time.week % slot.length] : slot;
+      const L = BH.School.lessonFor(s, 'player', s.time.dow, period);
+      return L ? L.code : null;
     },
-    /* 5 days × 4 periods. English & Maths 3×, other core 1×, department subjects 2× each */
-    buildTimetable(codes) {
-      const core = ['ENG', 'ENG', 'ENG', 'MTH', 'MTH', 'MTH', 'CIV', 'DPR'];
-      const dept = codes.filter((c) => !D.SS_CORE.includes(c));
-      const slots = [...core];
-      dept.forEach((c) => slots.push(c, c));
-      for (let i = 0; slots.length < 20; i++) slots.push(dept[i % dept.length]);
-      slots.length = 20;
-      const days = [[], [], [], [], []];
-      // most frequent subjects first, each to the emptiest day that doesn't have it yet
-      const counts = {};
-      slots.forEach((c) => { counts[c] = (counts[c] || 0) + 1; });
-      slots.sort((a, b) => counts[b] - counts[a]);
-      slots.forEach((c) => {
-        const open = days.filter((d) => d.length < 4);
-        const fresh = open.filter((d) => !d.includes(c));
-        const pool = fresh.length ? fresh : open;
-        pool.sort((a, b) => a.length - b.length);
-        pool[0].push(c);
-      });
-      return days.map((d) => U.shuffle(d));
-    },
-
     /* ---------- SS1 department ---------- */
     recommend(s) {
       const k = (c) => (s.academics.subjects[c] ? s.academics.subjects[c].knowledge : 0);
@@ -189,8 +164,8 @@
       s.academics.subjects = subjects;
       s.academics.dept = dept;
       s.academics.stage = 'SS';
-      s.academics.timetable = Academics.buildTimetable(codes);
-      BH.NPC.ensureTeachers(s, codes);
+      s.academics.timetable = null; // your department decides which room you go to in SS "line" periods (BH.School)
+      BH.School.setDept(s, 'player', dept);
       BH.log(s, `${D.DEPARTMENTS[dept].emoji} You joined the ${D.DEPARTMENTS[dept].label} class`, 'good');
     },
 
@@ -266,22 +241,19 @@
       return v.reduce((a, b) => a + b, 0) / v.length;
     },
 
-    /* Teacher flavour lines */
+    /* Teacher flavour lines — every teacher has their own voice in content/staff.json */
     teacherInfo(s, code) {
-      const t = BH.NPC.teacher(s, code) || BH.NPC.ensureTeachers(s, [code]) || BH.NPC.teacher(s, code);
-      const fixed = D.TEACHERS[code];
+      const t = BH.NPC.teacher(s, code);
+      const def = (t && BH.School.staffDef(t.id)) || { lines: {} };
+      const L = def.lines || {};
       const topic = U.seedPick(D.TOPICS[code] || ['Revision'], s.time.dayCount + code);
-      const tname = BH.NPC.name(t);
-      if (fixed) {
-        return { t, tname, topic, strict: t.strict, enter: U.fill(U.seedPick(fixed.enter, s.time.dayCount + code), { topic }), right: fixed.right, wrong: fixed.wrong, punish: fixed.punish };
-      }
-      const gen = D.GENERIC_TEACHER_STYLES.find((g) => g.style === t.style) || D.GENERIC_TEACHER_STYLES[0];
+      const tname = t ? BH.NPC.name(t) : 'The teacher';
+      const fill = (x) => U.fill(x, { topic, t: tname, n: s.player.name.split(' ')[0] });
       return {
-        t, tname, topic, strict: t.strict,
-        enter: U.fill(U.seedPick(gen.enter, s.time.dayCount + code), { t: tname, topic }),
-        right: ['"Correct!"', '"Very good."', '"Well done, sit down."'],
-        wrong: ['"No. Pay attention."', '"Wrong. Read your note."'],
-        punish: U.fill(gen.punish, { t: tname }),
+        t, tname, topic, strict: t ? t.strict : 0.5, def,
+        enter: fill(U.seedPick(L.enter || ['{t} begins the lesson on {topic}.'], s.time.dayCount + code)),
+        right: (L.right || ['"Correct!"']).map(fill), wrong: (L.wrong || ['"No. Pay attention."']).map(fill),
+        punish: fill(L.punish || '{t} sends you out of class.'),
       };
     },
   };

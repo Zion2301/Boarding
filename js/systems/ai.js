@@ -46,7 +46,7 @@
       if (!n) return {};
       if (n.contact) return { id: n.contact, contact: n.contact, name: n.name, rel: n.rel ?? 60 };
       const f = { id: n.id, type: n.type, role: n.role || null, name: BH.NPC.name(n), gender: n.gender, rel: Math.round(n.rel ?? 50) };
-      if (n.type === 'teacher') Object.assign(f, { subjectName: BH.Academics.name(s, n.subject), style: n.style || (n.strict >= 0.7 ? 'strict' : n.strict <= 0.4 ? 'kind' : 'default') });
+      if (n.type === 'teacher') Object.assign(f, { subjectName: (n.subjects || [n.subject]).map((c) => BH.Academics.name(s, c)).join(' and '), style: n.style || (n.strict >= 0.7 ? 'strict' : n.strict <= 0.4 ? 'kind' : 'default'), formClass: n.formClass || null });
       if (n.type === 'senior') Object.assign(f, { level: String(n.level).replace('SS', ''), roleLabel: D.SENIOR_ROLES[n.role] && D.SENIOR_ROLES[n.role].label });
       if (n.type === 'classmate') { const a = D.ARCHETYPES[n.arch]; Object.assign(f, { archLabel: BH.NPC.label(n), archDesc: a ? a.desc : '', prefect: n.prefect || null }); }
       if (n.type === 'junior') f.level = n.level;
@@ -70,7 +70,7 @@
       if (mod.verdict === 'blocked') return { blocked: true, explain: M().explain(mod.reasons) };
       if (AI.available()) {
         const r = await AI.request('/api/npc/chat', {
-          playerId: s.player.playerId, npc: AI.npcFacts(s, npc), player: AI.playerFacts(s, factsExtra), situation, vars, ctx,
+          playerId: s.player.playerId, npc: AI.npcFacts(s, npc), player: AI.playerFacts(s, [factsExtra, BH.NPC.memories && npc && npc.id ? BH.NPC.memories(s, npc).slice(-4).map((m) => `You remember (${m}).`).join(' ') : ''].filter(Boolean).join(' ')), situation, vars, ctx,
           history: history.map((h) => ({ role: h.who === 'me' ? 'user' : 'npc', text: h.text })), text: mod.text,
         });
         if (r && !r.fallback) return Object.assign(r, { source: r.cached ? 'cache' : 'ai' });
@@ -117,7 +117,7 @@
       Object.entries(fx.items || {}).forEach(([id, n]) => { if (D.ITEMS[id]) { BH.Inv.add(s, id, n); notes.push(`+${n} ${D.ITEMS[id].emoji}`); } });
       if (fx.discountPct) { s.today.flags.discount = { pct: fx.discountPct, uses: 3 }; notes.push(`🏷️ ${fx.discountPct}% off your next buys`); }
       if (fx.mission) { const m = BH.Missions.assign(s, fx.mission, { vars: { giver: npc && npc.id } }); if (m) notes.push(`📜 ${m.title}`); }
-      if (fx.knowledge && npc && npc.subject) { BH.Academics.study(s, npc.subject, fx.knowledge * 2, true); notes.push(`📖 +knowledge`); }
+      if (fx.knowledge && npc && npc.subject) { BH.Academics.study(s, BH.NPC.subjectFor(s, npc), fx.knowledge * 2, true); notes.push(`📖 +knowledge`); }
       return notes;
     },
 

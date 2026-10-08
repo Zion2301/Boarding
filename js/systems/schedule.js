@@ -13,23 +13,11 @@
   const cache = { key: null, places: {} };
 
   const Schedule = {
-    onNewGame(s) { Schedule.ensureStaff(s); s.world = s.world || {}; s.world.overrides = {}; },
-    onLoad(s) { Schedule.ensureStaff(s); s.world.overrides = s.world.overrides || {}; },
+    onNewGame(s) { s.world = s.world || {}; s.world.overrides = {}; },
+    onLoad(s) { s.world.overrides = s.world.overrides || {}; },
     onBlockStart() { cache.key = null; },
 
-    /* Staff NPCs (house master, nurse, tuck-shop owner, principal, gateman…) from routines.json */
-    ensureStaff(s) {
-      s.npcs.staff = s.npcs.staff || [];
-      const have = new Set(s.npcs.staff.map((x) => `${x.role}|${x.hostel || ''}`));
-      C().get('routines').staff.forEach((st, i) => { if (!have.has(`${st.role}|${st.hostel || ''}`)) s.npcs.staff.push(Schedule.makeStaff(st, i)); });
-    },
-    makeStaff(st, i) {
-      return ({
-        id: 'st' + i + '_' + st.role, type: 'staff', role: st.role, title: st.title, last: st.last, first: st.last,
-        gender: st.gender, emoji: st.emoji, label: st.label, dialogue: st.dialogue || null, authority: !!st.authority,
-        strict: st.strict || 0.5, hostel: st.hostel || null, religion: st.religion || null, rel: 45,
-      });
-    },
+    /* Staff (house masters, nurse, tuck-shop aunty, principal, gateman…) live in s.npcs.staff, built from content/staff.json by BH.School */
     staff(s, role, hostel) {
       const list = (s.npcs.staff || []).filter((x) => x.role === role);
       if (hostel) return list.find((x) => x.hostel === hostel) || list[0] || null;
@@ -39,15 +27,12 @@
 
     hostelOf(gender) { return gender === 'f' ? 'girlsHostel' : 'boysHostel'; },
     myHostel(s) { return Schedule.hostelOf(s.player.gender); },
-    classroomOf(s, n) {
-      if (n.type === 'senior') return 'ss';
-      if (n.type === 'junior') return 'jss';
-      return BH.Clock.location(s); // classmates follow your class (jss/ss/lab)
-    },
+    /* a student's class arm room (or their split-group room this period) */
+    classroomOf(s, n) { return BH.School.placeFor(s, n.id); },
 
     /* Which routine an NPC follows */
     routineKey(n) {
-      if (n.type === 'teacher') return 'teacher';
+      if (n.type === 'teacher') return n.routine || 'teacher';
       if (n.type === 'staff') return n.role;
       const role = n.role || n.prefect;
       if (role === 'labourPrefect') return 'labourPrefect';
@@ -97,9 +82,11 @@
         const p = skip[n.arch] !== undefined ? skip[n.arch] : skip.default;
         if ((h % 1000) / 1000 < p) token = ['field', 'hostel', 'tuckshop', 'backFence'][h % 4];
       }
-      if (token === '$teaching') {
-        const teaching = b.kind === 'class' && BH.Academics.periodSubject(s, b.period) === n.subject;
-        token = teaching && !(s.world.teacherAbsent && s.world.teacherAbsent[n.id]) ? 'classroom' : 'staff';
+      if (token === '$teaching' || token === '$form') {
+        // the timetable says which room (class arm, lab, mosque…) — or the staff room when they're free
+        const pl = BH.School.teacherPlace(s, n, blockId);
+        if (pl && !(s.world.teacherAbsent && s.world.teacherAbsent[n.id])) return { key: pl.key, map: pl.map, teaching: true };
+        token = 'staff';
       }
       if (n.type === 'teacher' && s.world.teacherAbsent && s.world.teacherAbsent[n.id]) token = 'home';
       return Schedule.resolve(s, n, token);
@@ -118,10 +105,9 @@
         return pts ? { key: 'patrol', map: 'campus', patrol: route } : Schedule.resolve(s, n, route);
       }
       let key = token;
+      if (token === 'classroom') { const pl = Schedule.classroomOf(s, n); return { key: pl.key, map: pl.map }; }
       if (token === 'hostel') key = n.hostel || Schedule.hostelOf(n.gender);
-      else if (token === 'classroom') key = Schedule.classroomOf(s, n);
       else if (token === 'worship') key = (n.religion || (n.tribe === 'Hausa' ? 'muslim' : 'christian')) === 'muslim' ? 'mosque' : 'chapel';
-      if (n.type === 'teacher' && token === 'classroom') key = BH.Clock.location(s);
       const L = LOC[key];
       if (!L) return { key: 'home', map: null };
       return { key, map: L.kind === 'b' ? (L.interior || key) : 'campus' };
@@ -145,11 +131,19 @@
     seatMap(s, mapId) {
       s.world.seats = s.world.seats || {};
       const tag = `${mapId}|${s.time.year}`;
-      if (s.world.seats[tag]) return s.world.seats[tag];
+      if (s.world.seats[tag] && !s.world.seats[tag].live) return s.world.seats[tag];
       const cm = C().compile(mapId);
       const out = {}; // npcId -> { obj, i } ; and owners: objId -> npcId
       const owners = {};
       if (!cm || cm.outdoor) return (s.world.seats[tag] = { seat: out, owners });
+      if (cm.src.classId) {
+        // a class arm: seats come from the class seating arrangement
+        const cid = cm.src.classId;
+        const desks = BH.School.deskSeats(mapId);
+        const seating = s.school.classes[cid].seating;
+        Object.entries(seating).forEach(([sid, i]) => { if (sid === 'player' || !desks[i]) return; out[sid] = { obj: desks[i].id, i: 0 }; owners[desks[i].id] = sid; });
+        return { seat: out, owners, live: true };
+      }
       const kinds = cm.src.npcSeats || [];
       const seats = [];
       cm.objects.filter((o) => kinds.includes(o.kind)).forEach((o) => o.seats.forEach((p, i) => seats.push({ obj: o.id, i, x: p.x, y: p.y, kind: o.kind })));
@@ -185,8 +179,8 @@
     residents(s, mapId) {
       const all = BH.NPC.students(s);
       if (mapId === 'boysHostel' || mapId === 'girlsHostel') return all.filter((n) => Schedule.hostelOf(n.gender) === mapId);
-      if (mapId === 'jss') return all.filter((n) => n.type === 'junior' || (n.type === 'classmate' && s.time.year <= 3));
-      if (mapId === 'ss' || mapId === 'lab') return all.filter((n) => n.type === 'senior' || (n.type === 'classmate' && s.time.year >= 4));
+      const cm = C().compile(mapId);
+      if (cm && cm.src.classId) return BH.School.members(s, cm.src.classId).filter((m) => m.kind === 'bot').map((m) => BH.NPC.get(s, m.id));
       return all;
     },
     seatOf(s, n, mapId) {

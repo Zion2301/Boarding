@@ -153,13 +153,14 @@
         if (!s.arcs.thief && s.time.dayCount >= 2) { s.arcs.thief = 'started'; BH.Missions.assign(s, 'thiefArc1'); }
         return;
       }
-      const victim = U.pick(BH.NPC.students(s));
+      const victim = BH.NPC.students(s).length ? U.pick(BH.NPC.students(s)) : null;
+      if (!victim) return;
       const thief = BH.NPC.byArch(s, 'thief');
       if (thief) s.world.witnessed.push({ npc: thief.id, what: 'stealing provisions', at: abs(s) });
       BH.Gist.add(s, `Somebody thief ${victim.first}'s provisions. ${victim.first} dey cry for corridor 😢`, { about: victim.id, spread: 0.15, tags: ['theft'] });
     },
     teacherAbsent(s, e) {
-      const todays = [0, 1, 2, 3].map((p) => BH.Academics.periodSubject(s, p)).filter(Boolean);
+      const todays = Array.from({ length: BH.Content.get('school').periodsPerDay }, (_, p) => BH.Academics.periodSubject(s, p)).filter(Boolean);
       const code = U.pick(todays);
       const t = code && BH.NPC.teacher(s, code);
       if (!t || s.world.teacherAbsent[t.id]) return;
@@ -200,7 +201,7 @@
     },
     gist(s) {
       const a = BH.NPC.randomClassmate(s);
-      BH.Gist.add(s, BH.Gist.filler(s).replace(/^"|"$/g, ''), { about: a.id, spread: 0.1 });
+      BH.Gist.add(s, BH.Gist.filler(s).replace(/^"|"$/g, ''), { about: a ? a.id : null, spread: 0.1 });
     },
     call(s) {
       const w = s.world;

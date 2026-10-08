@@ -1,0 +1,22 @@
+{
+  "id": "classroom", "name": "Classroom", "emoji": "📚", "template": true,
+  "floor": "cement", "palette": { "wall": "#a5502b", "top": "#c96d43" },
+  "layout": [
+    "########################",
+    "#!..RRRRRRRR...tt......#",
+    "#......................#",
+    "#..KK..KK..KK..KK....g.#",
+    "#......................#",
+    "#..KK..KK..KK..KK......#",
+    "#......................#",
+    "#..KK..KK..KK..KK......#",
+    "#......................#",
+    "#..KK..KK..KK..KK......#",
+    "#......................#",
+    "###EE###################"
+  ],
+  "npcSeats": ["desk"],
+  "spots": { "teacher": [12, 2] },
+  "classroom": true,
+  "secrets": [ { "at": [16, 3], "id": "oldNotes" }, { "at": [15, 1], "id": "markbookScribble" } ]
+}

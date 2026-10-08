@@ -1,0 +1,185 @@
+{
+  "_doc": "Classroom lessons for subjects without a question bank (js/data/questions/*). notes: what the teacher writes on the board (a few lines per lesson are picked). questions: multiple choice {q, o[4], a = index of the right option, e = explanation the teacher gives}; anyone in class can answer by typing the letter or the answer. Subjects WITH a question bank use the bank's questions and its explanations as board notes. RS and NLG are keyed by group (RS:christian, RS:muslim, NLG:yoruba…).",
+  "subjects": {
+    "BTE": {
+      "notes": ["Safety: never use a tool you have not been taught to use.", "Wear protective clothing: apron, goggles, gloves.", "Simple machines: lever, pulley, wheel and axle, inclined plane, wedge, screw.", "A lever has three parts: effort, load and fulcrum.", "Drawing instruments: T-square, set square, compass, divider, protractor.", "Wood is classified into hardwood (e.g. iroko, mahogany) and softwood (e.g. pine)."],
+      "questions": [
+        { "q": "Which of these is a simple machine?", "o": ["Pulley", "Television", "Generator", "Radio"], "a": 0, "e": "A pulley is one of the six simple machines." },
+        { "q": "The three parts of a lever are effort, load and…", "o": ["Fulcrum", "Handle", "Spring", "Gear"], "a": 0, "e": "The fulcrum is the pivot point of a lever." },
+        { "q": "Which drawing instrument is used to draw horizontal lines?", "o": ["T-square", "Compass", "Divider", "Eraser"], "a": 0, "e": "The T-square slides along the drawing board to give horizontal lines." },
+        { "q": "Iroko is an example of…", "o": ["Hardwood", "Softwood", "Metal", "Plastic"], "a": 0, "e": "Iroko and mahogany are Nigerian hardwoods." }
+      ]
+    },
+    "SOS": {
+      "notes": ["Social Studies is the study of man and his environment.", "The family is the smallest unit of society.", "Types of family: nuclear (parents + children) and extended (includes relatives).", "Culture is the total way of life of a people: food, dress, language, religion.", "Types of marriage in Nigeria: Christian, Islamic, traditional and court (registry).", "Our physical environment includes land, water, air, plants and animals."],
+      "questions": [
+        { "q": "The smallest unit of society is the…", "o": ["Family", "Village", "State", "School"], "a": 0, "e": "Society is built from families." },
+        { "q": "A family of father, mother and children only is a…", "o": ["Nuclear family", "Extended family", "Polygamous family", "Clan"], "a": 0, "e": "The nuclear family is parents and their children." },
+        { "q": "The total way of life of a people is their…", "o": ["Culture", "Government", "Economy", "Climate"], "a": 0, "e": "Culture covers food, dress, language, religion and more." },
+        { "q": "Which is NOT a type of marriage in Nigeria?", "o": ["Market marriage", "Islamic marriage", "Traditional marriage", "Court marriage"], "a": 0, "e": "Nigeria recognises religious, traditional and court marriages." }
+      ]
+    },
+    "CIV": {
+      "notes": ["Civic Education teaches us our rights and duties as citizens.", "National values: honesty, discipline, integrity, respect, cooperation.", "A citizen is a legal member of a country.", "The Nigerian flag: green-white-green. Green = agriculture, white = peace and unity.", "Rights come with duties: obey the law, pay tax, vote, respect the flag.", "The National Pledge is recited with the right hand raised."],
+      "questions": [
+        { "q": "The white in the Nigerian flag stands for…", "o": ["Peace and unity", "Agriculture", "Oil", "Rain"], "a": 0, "e": "Green is agriculture; white is peace and unity." },
+        { "q": "Which of these is a duty of a citizen?", "o": ["Obeying the law", "Skipping tax", "Burning the flag", "Rigging elections"], "a": 0, "e": "Obeying the law is a basic civic duty." },
+        { "q": "A legal member of a country is called a…", "o": ["Citizen", "Tourist", "Visitor", "Refugee"], "a": 0, "e": "Citizens have full rights and duties in their country." },
+        { "q": "Honesty and discipline are examples of…", "o": ["National values", "Taxes", "Laws of motion", "Crops"], "a": 0, "e": "They are among Nigeria's national values." }
+      ]
+    },
+    "RS:christian": {
+      "notes": ["God created the world in six days and rested on the seventh (Genesis 1–2).", "Obedience: Abraham obeyed God and left his father's house.", "The Ten Commandments were given to Moses on Mount Sinai.", "Jesus taught in parables: the Good Samaritan teaches love for our neighbour.", "Honour your father and your mother (Exodus 20:12)."],
+      "questions": [
+        { "q": "On which day did God rest after creation?", "o": ["The seventh day", "The first day", "The third day", "He never rested"], "a": 0, "e": "Genesis 2:2 — God rested on the seventh day." },
+        { "q": "Who received the Ten Commandments?", "o": ["Moses", "David", "Peter", "Noah"], "a": 0, "e": "Moses received them on Mount Sinai." },
+        { "q": "The Good Samaritan parable teaches us to…", "o": ["Love our neighbour", "Avoid strangers", "Save money", "Build houses"], "a": 0, "e": "Love your neighbour as yourself." }
+      ]
+    },
+    "RS:muslim": {
+      "notes": ["The Five Pillars of Islam: Shahadah, Salat, Zakat, Sawm, Hajj.", "Salat is performed five times a day.", "The Glorious Qur'an was revealed to Prophet Muhammad (SAW) through Angel Jibril.", "Sawm is fasting in the month of Ramadan.", "Islam teaches honesty, kindness to parents and respect for neighbours."],
+      "questions": [
+        { "q": "How many times a day is Salat performed?", "o": ["Five", "Three", "Two", "Seven"], "a": 0, "e": "Muslims pray five times daily." },
+        { "q": "Fasting in Ramadan is called…", "o": ["Sawm", "Zakat", "Hajj", "Salat"], "a": 0, "e": "Sawm is the pillar of fasting." },
+        { "q": "Through which angel was the Qur'an revealed?", "o": ["Jibril", "Mikail", "Israfil", "Malik"], "a": 0, "e": "Angel Jibril brought the revelation." }
+      ]
+    },
+    "AGR": {
+      "notes": ["Agriculture is the cultivation of crops and rearing of animals for man's use.", "Farm tools: hoe, cutlass, rake, shovel, watering can, wheelbarrow.", "Crops are classified by use: cereals (maize, rice), legumes (beans, groundnut), tubers (yam, cassava).", "Soil types: sandy, clay and loamy. Loamy soil is best for crops.", "Weeding removes unwanted plants that compete with crops."],
+      "questions": [
+        { "q": "Which soil is best for growing crops?", "o": ["Loamy soil", "Sandy soil", "Clay soil", "Rocky soil"], "a": 0, "e": "Loamy soil holds water and nutrients well." },
+        { "q": "Yam and cassava are examples of…", "o": ["Tubers", "Cereals", "Legumes", "Fruits"], "a": 0, "e": "Root and stem tubers store food underground." },
+        { "q": "Which tool is used for weeding?", "o": ["Hoe", "Watering can", "Wheelbarrow", "Thermometer"], "a": 0, "e": "The hoe is the farmer's weeding tool." },
+        { "q": "Maize and rice are…", "o": ["Cereals", "Tubers", "Legumes", "Vegetables"], "a": 0, "e": "Cereals are grain crops." }
+      ]
+    },
+    "HEC": {
+      "notes": ["Personal hygiene: bath daily, brush twice, keep nails short and clean.", "Kitchen equipment: pots, knives, chopping board, sieve, grater.", "The six classes of food: carbohydrates, proteins, fats and oils, vitamins, minerals, water.", "A balanced diet contains all classes of food in the right amounts.", "Sewing tools: needle, thread, thimble, tape measure, scissors."],
+      "questions": [
+        { "q": "Beans and fish are rich in…", "o": ["Protein", "Carbohydrate", "Fat", "Water"], "a": 0, "e": "Protein builds and repairs the body." },
+        { "q": "A diet with all food classes in the right amounts is a…", "o": ["Balanced diet", "Junk diet", "Fast", "Snack"], "a": 0, "e": "That's the definition of a balanced diet." },
+        { "q": "Which tool protects your finger when sewing?", "o": ["Thimble", "Grater", "Sieve", "Tape measure"], "a": 0, "e": "The thimble shields the finger pushing the needle." }
+      ]
+    },
+    "BUS": {
+      "notes": ["Business Studies covers commerce, bookkeeping, office practice and keyboarding.", "Office equipment: typewriter, computer, photocopier, stapler, filing cabinet.", "Bookkeeping is the recording of business transactions.", "A receipt is evidence of payment.", "Consumers have the right to safe goods and correct information."],
+      "questions": [
+        { "q": "Evidence that you have paid for goods is a…", "o": ["Receipt", "Invoice", "Letter", "Ledger"], "a": 0, "e": "A receipt shows payment was made." },
+        { "q": "Recording business transactions is called…", "o": ["Bookkeeping", "Marketing", "Banking", "Typing"], "a": 0, "e": "Bookkeeping keeps the records of a business." },
+        { "q": "Which is office equipment?", "o": ["Photocopier", "Hoe", "Cutlass", "Bucket"], "a": 0, "e": "Photocopiers are used in offices." }
+      ]
+    },
+    "CCA": {
+      "notes": ["Primary colours: red, yellow, blue.", "Secondary colours come from mixing two primary colours: red + yellow = orange.", "Nigerian traditional dances: Atilogwu (Igbo), Bata (Yoruba), Koroso (Hausa).", "A still life is a drawing of non-living objects arranged together.", "In drama, 'downstage' is the part of the stage nearest the audience."],
+      "questions": [
+        { "q": "Red + yellow gives…", "o": ["Orange", "Green", "Purple", "Brown"], "a": 0, "e": "Orange is a secondary colour from red and yellow." },
+        { "q": "Which is a primary colour?", "o": ["Blue", "Green", "Orange", "Purple"], "a": 0, "e": "Red, yellow and blue are primary." },
+        { "q": "Atilogwu is a traditional dance of the…", "o": ["Igbo", "Yoruba", "Hausa", "Tiv"], "a": 0, "e": "Atilogwu is an acrobatic Igbo dance." }
+      ]
+    },
+    "PHE": {
+      "notes": ["Physical education develops the body through exercise and sport.", "Track events: 100m, 200m, 400m, relays, hurdles.", "Field events: long jump, high jump, shot put, javelin.", "First aid is the first help given to an injured person before a doctor arrives.", "A football team has 11 players on the field."],
+      "questions": [
+        { "q": "How many players does a football team have on the field?", "o": ["11", "9", "7", "15"], "a": 0, "e": "Eleven players per side." },
+        { "q": "Long jump is a…", "o": ["Field event", "Track event", "Swimming event", "Board game"], "a": 0, "e": "Jumps and throws are field events." },
+        { "q": "The first help given to an injured person is…", "o": ["First aid", "Surgery", "Physiotherapy", "Medicine"], "a": 0, "e": "First aid comes before professional care." }
+      ]
+    },
+    "ICT": {
+      "notes": ["A computer is an electronic machine that accepts data, processes it and gives information.", "Input devices: keyboard, mouse, scanner, microphone.", "Output devices: monitor, printer, speaker.", "The CPU is the 'brain' of the computer.", "Charles Babbage is called the father of the computer."],
+      "questions": [
+        { "q": "Which is an input device?", "o": ["Keyboard", "Printer", "Monitor", "Speaker"], "a": 0, "e": "The keyboard puts data into the computer." },
+        { "q": "The brain of the computer is the…", "o": ["CPU", "Mouse", "Monitor", "Cable"], "a": 0, "e": "The Central Processing Unit does the processing." },
+        { "q": "Who is called the father of the computer?", "o": ["Charles Babbage", "Bill Gates", "Isaac Newton", "Thomas Edison"], "a": 0, "e": "Babbage designed the Analytical Engine." }
+      ]
+    },
+    "DPR": {
+      "notes": ["Data is raw facts; information is processed data.", "A spreadsheet arranges data in rows and columns of cells (e.g. Excel).", "A database is an organised collection of related data.", "A field is a single piece of data; a record is a group of related fields.", "Always back up your files."],
+      "questions": [
+        { "q": "Processed data is called…", "o": ["Information", "Hardware", "A virus", "A cable"], "a": 0, "e": "Information is data that has been processed." },
+        { "q": "Excel is an example of a…", "o": ["Spreadsheet", "Browser", "Game", "Printer"], "a": 0, "e": "Excel arranges data in cells." },
+        { "q": "A group of related fields is a…", "o": ["Record", "Byte", "Pixel", "Folder"], "a": 0, "e": "Fields make up a record in a database." }
+      ]
+    },
+    "FRE": {
+      "notes": ["Bonjour = Good morning / Hello.", "Bonsoir = Good evening. Au revoir = Goodbye.", "Comment tu t'appelles ? = What is your name? — Je m'appelle …", "Les nombres: un, deux, trois, quatre, cinq.", "La famille: le père (father), la mère (mother), le frère (brother), la sœur (sister)."],
+      "questions": [
+        { "q": "'Au revoir' means…", "o": ["Goodbye", "Good morning", "Thank you", "Please"], "a": 0, "e": "Au revoir = goodbye." },
+        { "q": "'La mère' means…", "o": ["Mother", "Father", "Sister", "Sea"], "a": 0, "e": "La mère is mother (la mer is the sea!)." },
+        { "q": "'Trois' is the number…", "o": ["3", "2", "4", "13"], "a": 0, "e": "Un, deux, TROIS." }
+      ]
+    },
+    "NLG:yoruba": {
+      "notes": ["E kaaro = Good morning. E kaasan = Good afternoon. E kaale = Good evening.", "Yoruba has three tones: do (low), re (mid), mi (high).", "Owe (proverb): 'Agba kii wa loja, ki ori omo tuntun wo.'", "Baba = father, Iya = mother, Egbon = elder sibling, Aburo = younger sibling."],
+      "questions": [
+        { "q": "'E kaaro' means…", "o": ["Good morning", "Good night", "Thank you", "Welcome"], "a": 0, "e": "E kaaro is the morning greeting." },
+        { "q": "In Yoruba, 'Iya' means…", "o": ["Mother", "Father", "Uncle", "Teacher"], "a": 0, "e": "Iya = mother." },
+        { "q": "How many tones does Yoruba have?", "o": ["Three", "Two", "Five", "One"], "a": 0, "e": "Low, mid and high." }
+      ]
+    },
+    "NLG:igbo": {
+      "notes": ["Ndewo = Hello. Ututu oma = Good morning. Ka chi fo = Good night.", "Igbo has high and low tones (and downstep).", "Nna = father, Nne = mother, Nwanne = sibling.", "Ilu (proverb): 'Onye wetara oji, wetara ndu.' — He who brings kola brings life."],
+      "questions": [
+        { "q": "'Ututu oma' means…", "o": ["Good morning", "Goodbye", "Well done", "Sorry"], "a": 0, "e": "Ututu oma is the morning greeting." },
+        { "q": "In Igbo, 'Nne' means…", "o": ["Mother", "Father", "Child", "Friend"], "a": 0, "e": "Nne = mother." },
+        { "q": "'Ndewo' is used to…", "o": ["Greet someone", "Say sorry", "Ask for food", "Count"], "a": 0, "e": "Ndewo = hello." }
+      ]
+    },
+    "NLG:hausa": {
+      "notes": ["Sannu = Hello. Ina kwana? = Good morning (how was the night?). Lafiya lau = Fine.", "Hausa has high, low and falling tones.", "Baba = father, Uwa = mother, Yaro = boy, Yarinya = girl.", "Karin magana (proverb): 'Sannu sannu, bata hana zuwa.' — Slowly, slowly does not stop arrival."],
+      "questions": [
+        { "q": "'Ina kwana?' is a…", "o": ["Morning greeting", "Farewell", "Insult", "Question about food"], "a": 0, "e": "It asks how the night was." },
+        { "q": "In Hausa, 'Yarinya' means…", "o": ["Girl", "Boy", "Mother", "Teacher"], "a": 0, "e": "Yarinya = girl, yaro = boy." },
+        { "q": "'Lafiya lau' means…", "o": ["I'm fine", "Go away", "Thank you", "Good evening"], "a": 0, "e": "Lafiya lau = fine, healthy." }
+      ]
+    },
+    "FMA": {
+      "notes": ["A set is a well-defined collection of objects.", "A ∪ B (union): elements in A or B. A ∩ B (intersection): elements in both.", "Indices: aᵐ × aⁿ = aᵐ⁺ⁿ; a⁰ = 1.", "A matrix is a rectangular array of numbers in rows and columns.", "A binary operation combines two elements to give one: a * b."],
+      "questions": [
+        { "q": "a⁰ equals…", "o": ["1", "0", "a", "Undefined"], "a": 0, "e": "Any non-zero number to the power 0 is 1." },
+        { "q": "Elements common to A and B form…", "o": ["A ∩ B", "A ∪ B", "A'", "A − B"], "a": 0, "e": "Intersection = common elements." },
+        { "q": "2³ × 2² equals…", "o": ["32", "64", "10", "12"], "a": 0, "e": "2⁵ = 32." }
+      ]
+    },
+    "GEO": {
+      "notes": ["The solar system has eight planets orbiting the sun.", "Rocks: igneous (from magma), sedimentary (layers), metamorphic (changed by heat/pressure).", "Weather is the daily condition of the atmosphere; climate is the average over 30+ years.", "Nigeria has two main seasons: rainy and dry (with harmattan).", "Latitude lines run east–west; longitude lines run north–south."],
+      "questions": [
+        { "q": "Rocks formed from cooled magma are…", "o": ["Igneous", "Sedimentary", "Metamorphic", "Plastic"], "a": 0, "e": "Igneous rocks form from magma or lava." },
+        { "q": "The average weather over 30+ years is…", "o": ["Climate", "Weather", "Season", "Rainfall"], "a": 0, "e": "Climate is long-term weather." },
+        { "q": "How many planets are in the solar system?", "o": ["Eight", "Nine", "Seven", "Ten"], "a": 0, "e": "Pluto was reclassified in 2006, leaving eight." }
+      ]
+    },
+    "HIS": {
+      "notes": ["The Nok culture (c. 500 BC) is famous for its terracotta heads.", "The Sokoto Caliphate was founded by Usman dan Fodio in 1809.", "The Benin Kingdom is famous for its bronze works.", "Lord Lugard amalgamated Northern and Southern Nigeria in 1914.", "Nigeria became independent on 1 October 1960."],
+      "questions": [
+        { "q": "Who founded the Sokoto Caliphate?", "o": ["Usman dan Fodio", "Lord Lugard", "Oba Ewuare", "Herbert Macaulay"], "a": 0, "e": "Usman dan Fodio led the jihad of 1804." },
+        { "q": "In which year was Nigeria amalgamated?", "o": ["1914", "1960", "1900", "1963"], "a": 0, "e": "Lugard amalgamated North and South in 1914." },
+        { "q": "The Nok culture is famous for its…", "o": ["Terracotta heads", "Bronze heads", "Pyramids", "Mosques"], "a": 0, "e": "Nok terracottas are among Africa's oldest sculptures." }
+      ]
+    },
+    "FA": {
+      "notes": ["The elements of art: line, shape, colour, texture, form, space.", "Shading creates the illusion of light and shadow.", "Nigerian art traditions: Nok terracotta, Ife bronze, Benin bronze, Igbo-Ukwu.", "Sculpture is three-dimensional art: carving, modelling, casting."],
+      "questions": [
+        { "q": "Which is an element of art?", "o": ["Texture", "Gravity", "Inflation", "Grammar"], "a": 0, "e": "Line, shape, colour, texture, form and space." },
+        { "q": "Three-dimensional art is called…", "o": ["Sculpture", "Painting", "Drawing", "Printing"], "a": 0, "e": "Sculpture has height, width and depth." },
+        { "q": "Igbo-Ukwu is famous for…", "o": ["Bronze works", "Textiles", "Pottery wheels", "Paper"], "a": 0, "e": "Igbo-Ukwu bronzes date to the 9th century." }
+      ]
+    },
+    "OFP": {
+      "notes": ["An office is a place where clerical work is done.", "Filing systems: alphabetical, numerical, geographical, subject, chronological.", "Incoming mail is opened, stamped with date and recorded in the mail register.", "Office machines: photocopier, shredder, franking machine, computer."],
+      "questions": [
+        { "q": "Arranging files by date is…", "o": ["Chronological filing", "Alphabetical filing", "Geographical filing", "Random filing"], "a": 0, "e": "Chronological = by time." },
+        { "q": "A machine that destroys documents is a…", "o": ["Shredder", "Franking machine", "Printer", "Scanner"], "a": 0, "e": "Shredders cut paper into strips." },
+        { "q": "Incoming mail is recorded in the…", "o": ["Mail register", "Cash book", "Ledger", "Diary"], "a": 0, "e": "The mail register logs mail in and out." }
+      ]
+    },
+    "MKT": {
+      "notes": ["Marketing is getting the right product to the right customer at the right price.", "The marketing mix (4Ps): Product, Price, Place, Promotion.", "Advertising is a paid form of promotion.", "Consumer behaviour is how people decide what to buy."],
+      "questions": [
+        { "q": "Which is one of the 4Ps of marketing?", "o": ["Promotion", "Protein", "Pressure", "Parliament"], "a": 0, "e": "Product, Price, Place, Promotion." },
+        { "q": "A paid form of promotion is…", "o": ["Advertising", "Gossip", "Bartering", "Saving"], "a": 0, "e": "Adverts are paid promotion." },
+        { "q": "How customers decide what to buy is…", "o": ["Consumer behaviour", "Inflation", "Taxation", "Production"], "a": 0, "e": "That's the study of consumer behaviour." }
+      ]
+    }
+  }
+}

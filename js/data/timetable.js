@@ -9,16 +9,21 @@
     arrival:   { time: '14:00', dur: 2,    title: 'Resumption Day',          loc: 'School Gate',        emoji: '🚌', kind: 'story' },
     settling:  { time: '16:30', dur: 2,    title: 'Settling In',             loc: 'Hostel',             emoji: '🛏️', kind: 'story' },
     rising:    { time: '05:00', dur: 0.5,  title: 'Rising Bell',             loc: 'Dormitory',          emoji: '🔔', kind: 'hostel' },
-    duty:      { time: '05:30', dur: 0.75, title: 'Morning Duty',            loc: 'Hostel Compound',    emoji: '🧹', kind: 'labour' },
-    bath:      { time: '06:15', dur: 0.75, title: 'Bath Time',               loc: 'Bathroom & Tap',     emoji: '🚿', kind: 'hostel' },
-    breakfast: { time: '07:00', dur: 0.75, title: 'Breakfast',               loc: 'Dining Hall',        emoji: '🍞', kind: 'meal', meal: 'breakfast' },
-    assembly:  { time: '07:45', dur: 0.25, title: 'Assembly & Inspection',   loc: 'Assembly Ground',    emoji: '📢', kind: 'assembly', noEat: true },
-    p1:        { time: '08:00', dur: 1.33, title: 'Period 1',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 0, noEat: true },
-    p2:        { time: '09:20', dur: 1.33, title: 'Period 2',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 1, noEat: true },
+    duty:      { time: '05:30', dur: 0.67, title: 'Morning Duty',            loc: 'Hostel Compound',    emoji: '🧹', kind: 'labour' },
+    bath:      { time: '06:10', dur: 0.67, title: 'Bath Time',               loc: 'Bathroom & Tap',     emoji: '🚿', kind: 'hostel' },
+    breakfast: { time: '06:50', dur: 0.67, title: 'Breakfast',               loc: 'Dining Hall',        emoji: '🍞', kind: 'meal', meal: 'breakfast' },
+    assembly:  { time: '07:30', dur: 0.33, title: 'Assembly & Inspection',   loc: 'Assembly Ground',    emoji: '📢', kind: 'assembly', noEat: true },
+    register:  { time: '07:50', dur: 0.17, title: 'Form Class Register',     loc: 'Your Form Class',    emoji: '📋', kind: 'register', noEat: true },
+    p1:        { time: '08:00', dur: 0.67, title: 'Period 1',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 0, noEat: true },
+    p2:        { time: '08:40', dur: 0.67, title: 'Period 2',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 1, noEat: true },
+    p3:        { time: '09:20', dur: 0.67, title: 'Period 3',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 2, noEat: true },
+    p4:        { time: '10:00', dur: 0.67, title: 'Period 4',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 3, noEat: true },
     break:     { time: '10:40', dur: 0.33, title: 'Short Break',             loc: 'Tuck Shop & Field',  emoji: '🥤', kind: 'free', shop: true },
-    p3:        { time: '11:00', dur: 1.33, title: 'Period 3',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 2, noEat: true },
-    p4:        { time: '12:20', dur: 1.66, title: 'Period 4',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 3, noEat: true },
-    lunch:     { time: '14:00', dur: 0.75, title: 'Lunch',                   loc: 'Dining Hall',        emoji: '🍛', kind: 'meal', meal: 'lunch' },
+    p5:        { time: '11:00', dur: 0.67, title: 'Period 5',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 4, noEat: true },
+    p6:        { time: '11:40', dur: 0.67, title: 'Period 6',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 5, noEat: true },
+    p7:        { time: '12:20', dur: 0.67, title: 'Period 7',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 6, noEat: true },
+    p8:        { time: '13:00', dur: 0.67, title: 'Period 8',                loc: 'Classroom',          emoji: '📚', kind: 'class', period: 7, noEat: true },
+    lunch:     { time: '13:40', dur: 1.08, title: 'Lunch',                   loc: 'Dining Hall',        emoji: '🍛', kind: 'meal', meal: 'lunch' },
     siesta:    { time: '14:45', dur: 1.25, title: 'Siesta',                  loc: 'Dormitory',          emoji: '💤', kind: 'hostel' },
     afternoon: { time: '16:00', dur: 2.5,  title: 'Afternoon Activities',    loc: 'Field / Clubs',      emoji: '⚽', kind: 'free', shop: true },
     dinner:    { time: '18:30', dur: 1,    title: 'Dinner',                  loc: 'Dining Hall',        emoji: '🍲', kind: 'meal', meal: 'dinner' },
@@ -35,7 +40,7 @@
 
   D.SCHEDULES = {
     resumption: ['arrival', 'settling', 'dinner', 'lightsout'],
-    weekday: ['rising', 'duty', 'bath', 'breakfast', 'assembly', 'p1', 'p2', 'break', 'p3', 'p4', 'lunch', 'siesta', 'afternoon', 'dinner', 'prep', 'lightsout'],
+    weekday: ['rising', 'duty', 'bath', 'breakfast', 'assembly', 'register', 'p1', 'p2', 'p3', 'p4', 'break', 'p5', 'p6', 'p7', 'p8', 'lunch', 'siesta', 'afternoon', 'dinner', 'prep', 'lightsout'],
     saturday: ['rising', 'labour', 'bath', 'breakfast', 'freetime', 'lunch', 'siesta', 'afternoon', 'dinner', 'social', 'lightsout'],
     sunday: ['rising', 'bath', 'breakfast', 'service', 'lunch', 'siesta', 'sundayPm', 'dinner', 'prep', 'lightsout'],
   };
@@ -89,22 +94,11 @@
   D.SS_FEEDS = { PHY: 'BSC', CHE: 'BSC', BIO: 'BSC', FMA: 'MTH', GEO: 'SOS', LIT: 'ENG', GOV: 'CIV', HIS: 'SOS', FA: 'CCA',
     ACC: 'BUS', COM: 'BUS', ECO: 'SOS', OFP: 'BUS', MKT: 'BUS', DPR: 'ICT' };
 
-  /* Which subjects each level offers (SS departments come in a later update) */
+  /* Which subjects each level offers (period counts per week live in content/school.json) */
   D.CURRICULUM = {
     JSS: ['ENG', 'MTH', 'BSC', 'BTE', 'SOS', 'CIV', 'RS', 'AGR', 'HEC', 'BUS', 'CCA', 'PHE', 'ICT', 'FRE', 'NLG'],
   };
-
-  /* JSS weekly class timetable — 4 periods/day Mon–Fri.
-     An array in a slot alternates by week number. */
-  D.TIMETABLE = {
-    JSS: [
-      ['MTH', 'BTE', 'ENG', 'SOS'],
-      ['BSC', 'CIV', 'MTH', 'AGR'],
-      ['ENG', 'RS', 'BSC', 'NLG'],
-      ['MTH', 'FRE', 'ENG', ['CCA', 'ICT']],
-      ['BSC', 'BUS', 'HEC', 'PHE'],
-    ],
-  };
+  /* Class timetables are generated per class arm by js/systems/school.js (no teacher or room double-booked). */
 
   /* What teachers "teach" in a lesson — flavour for the class scene */
   D.TOPICS = {

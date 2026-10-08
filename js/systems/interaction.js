@@ -75,16 +75,19 @@
         return bed && Math.hypot(bed.x - obj.x, bed.y - obj.y) < 100;
       }
       if (obj.kind === 'myDesk') return BH.Activities.myClassroom(s) === obj.map;
+      if (obj.kind === 'desk') return BH.School.isMyDesk(s, obj); // your seat in your class arm
       return false;
     },
     defFor(s, obj) {
       let kind = obj.kind;
+      if (kind === 'desk' && Interaction.mine(s, obj)) kind = 'myDesk';
       if (kind === 'myDesk' && !Interaction.mine(s, obj)) kind = 'desk';
       if (kind === 'myBed' && !Interaction.mine(s, obj)) kind = 'bunk';
       return C().interactable(kind);
     },
     title(s, target) {
       if (target.type === 'npc') return `${BH.NPC.emoji(target.npc)} ${BH.NPC.name(target.npc)}`;
+      if (target.type === 'door' && target.room) { const m = C().map(target.room); return `🚪 ${m ? m.name : target.room}${target.room === BH.Activities.myClassroom(s) ? ' (your class)' : ''}`; }
       if (target.type === 'door') { const L = D.CAMPUS.LOCATIONS[target.key]; return `${L.emoji} ${L.name}`; }
       if (target.type === 'self') return Interaction.selfTitle(s);
       const def = Interaction.defFor(s, target.obj);

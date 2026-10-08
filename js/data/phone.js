@@ -109,7 +109,7 @@
       ignore: { rel: -2 } },
 
     /* ---------- Group chat ---------- */
-    { id: 'gcRumor', from: 'gc', weight: 1.5, text: (s) => `${BH.NPC.randomClassmate(s).first}: Dem say ${BH.NPC.randomClassmate(s).first} write love letter to Senior ${BH.U.pick(['Tunde', 'Amaka', 'Musa', 'Chioma'])} 😱😱`,
+    { id: 'gcRumor', from: 'gc', weight: 1.5, text: (s) => `${(BH.NPC.randomClassmate(s) || { first: 'Chidi' }).first}: Dem say ${(BH.NPC.randomClassmate(s) || { first: 'Amaka' }).first} write love letter to Senior ${BH.U.pick(['Tunde', 'Amaka', 'Musa', 'Chioma'])} 😱😱`,
       replies: [
         { label: '😂😂😂 Na wa', reply: '(12 people reacted 😂)', fx: { morale: 4 } },
         { label: 'Una leave person matter jare', reply: '(Somebody replied: "Holy Mary/Saint Abdul 😒")', fx: { morale: 1 } },

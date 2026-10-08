@@ -11,9 +11,8 @@
       case 'settling': case 'rising': case 'duty': case 'bath': case 'siesta': case 'lightsout': return hostel;
       case 'breakfast': case 'lunch': case 'dinner': return 'dining';
       case 'assembly': case 'social': return 'assembly';
-      case 'p1': case 'p2': case 'p3': case 'p4': case 'prep':
-        if (code && ['PHY', 'CHE', 'BIO'].includes(code)) return 'lab';
-        return s.time.year <= 3 ? 'jss' : 'ss';
+      case 'register': case 'p1': case 'p2': case 'p3': case 'p4': case 'p5': case 'p6': case 'p7': case 'p8': case 'prep':
+        return BH.School ? BH.School.placeFor(s, 'player', blockId).key : (s.time.year <= 3 ? 'jss' : 'ss');
       case 'break': return 'tuckshop';
       case 'afternoon': case 'freetime': case 'labour': return 'field';
       case 'service': return s.player.religion === 'muslim' ? 'mosque' : 'chapel';
