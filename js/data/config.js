@@ -3,7 +3,7 @@
   const D = BH.data;
 
   D.CONFIG = {
-    SAVE_VERSION: 7,
+    SAVE_VERSION: 8,
     SLOTS: 5,
     TERM_WEEKS: 10,
     TERMS_PER_YEAR: 3,
@@ -40,13 +40,13 @@
     },
     middle: {
       label: 'Middle class', emoji: '🏠', money: 5000,
-      desc: 'Daddy na civil servant, Mummy get shop. Your chop box decent — Milo dey, Cornflakes dey.',
+      desc: 'Daddy na civil servant, Mummy get shop. Your chop box decent — Strongman dey, Cornflakes dey.',
       provisions: { garri: 10, sugar: 8, milk: 8, milo: 6, cornflakes: 5, indomie: 6, biscuits: 6, sardine: 2, groundnut: 5, soap: 15, detergent: 8, cream: 1, torch: 1, pureWater: 6 },
       parentLine: 'Daddy hand you {money}: "This na your pocket money for the term. If I hear say you waste am ehn..."',
     },
     bigman: {
       label: 'Big Man pikin', emoji: '💎', money: 20000,
-      desc: 'Daddy na Honourable. Your chop box need two people to carry. Seniors don already smell your Milo from gate.',
+      desc: 'Daddy na Honourable. Your chop box need two people to carry. Seniors don already smell your Strongman from gate.',
       provisions: { garri: 6, sugar: 10, milk: 12, milo: 12, cornflakes: 8, indomie: 12, biscuits: 10, sardine: 6, cornedBeef: 4, gala: 6, chinchin: 6, plantainChips: 6, groundnut: 4, soap: 20, detergent: 10, cream: 2, torch: 1, flask: 1, pureWater: 10, bottledWater: 6, pringles: 2 },
       parentLine: 'The driver bring out envelope: {money}. "Oga say make you call am if anybody disturb you."',
     },
@@ -57,25 +57,25 @@
     fgc: {
       label: 'Federal Government College', short: 'FGC', emoji: '🇳🇬',
       desc: 'Unity School. Students from every state. Food “manageable”, seniors no dey play.',
-      names: ['Federal Government College, Odogbolu', 'Federal Government College, Kano', 'Federal Government College, Enugu', 'Federal Government College, Warri'],
+      names: ['Federal Government College, Oke-Ayo', 'Federal Government College, Kafin-Dawa', 'Federal Government College, Umu-Ndili', 'Federal Government College, Ebenmi'],
       food: 2, water: 2, strict: 0.55, seniorHarsh: 0.7, motto: 'Pro Unitate',
     },
     private: {
       label: 'Private elite school', short: 'Private', emoji: '🏰',
       desc: 'Air-condition hostel, chef dey cook. But dem go call your papa for every small thing.',
-      names: ['Greenfield International College', 'Royal Crest Academy', 'Corona Heights College', 'Lekki Lighthouse Academy'],
+      names: ['Greenfield International College', 'Royal Crest Academy', 'Coral Heights College', 'Lekki Lighthouse Academy'],
       food: 5, water: 5, strict: 0.5, seniorHarsh: 0.25, motto: 'Excellence in All Things',
     },
     mission: {
       label: 'Missionary school', short: 'Mission', emoji: '⛪',
       desc: 'Rev. Father/Sister dey run am. Discipline na 100%. Morning devotion compulsory, even for your enemy.',
-      names: ["St. Gregory's College", "Queen of Apostles College", "St. Finbarr's College", "Holy Child College"],
+      names: ["St. Benedict's Hill College", "Our Lady of the Valley College", "St. Aidan's Ridge College", "Holy Lantern College"],
       food: 3, water: 3, strict: 0.8, seniorHarsh: 0.5, motto: 'Lux et Veritas',
     },
     state: {
       label: 'State boarding school', short: 'State', emoji: '🏫',
       desc: 'Fees cheap, water scarce, beans get “protein”. Seniors here na real government.',
-      names: ['Government Secondary School, Ikot Ekpene', 'Community Grammar School, Ilesa', 'Government College, Umuahia', 'Government Girls/Boys Secondary School, Zaria'],
+      names: ['Government Secondary School, Ikot-Usen', 'Community Grammar School, Ilu-Aro', 'Government College, Umu-Oji', 'Government Girls/Boys Secondary School, Gidan-Kara'],
       food: 1, water: 1, strict: 0.4, seniorHarsh: 0.9, motto: 'Knowledge is Power',
     },
   };

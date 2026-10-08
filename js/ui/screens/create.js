@@ -7,7 +7,7 @@
 
   const FAMILY_FLAVOUR = {
     struggling: ['Mummy sell pepper for market, Daddy dey drive okada. Money no dey, but love full ground.', 'Your parents don borrow money from three church members to pay your fees. No disgrace them o.'],
-    middle: ['Daddy na civil servant, Mummy get small provision shop. Milo dey, but na measured Milo.', 'Your parents na teachers. Expectations: very high. Pocket money: average.'],
+    middle: ['Daddy na civil servant, Mummy get small provision shop. Strongman dey, but na measured Strongman.', 'Your parents na teachers. Expectations: very high. Pocket money: average.'],
     bigman: ['Daddy na Honourable. Una get generator wey dey on by itself. Seniors go love your chop box.', 'Your Mummy na big businesswoman for Lekki. The driver go drop you for school.'],
   };
 

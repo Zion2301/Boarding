@@ -111,7 +111,7 @@
       // ordinary days still have life in them
       const gist = BH.Gist && BH.Gist.filler ? BH.Gist.filler(s).replace(/^"|"$/g, '') : '';
       if (gist && U.chance(0.6)) lines.push(`🗞️ ${gist}`);
-      if (friend && U.chance(0.5)) lines.push(`🤝 ${friend.first} ${U.pick(['saved you a seat at dinner', 'shared their Milo', 'beat you at Whot (again)', 'told you the gist about the house master', 'walked back from prep with you'])}`);
+      if (friend && U.chance(0.5)) lines.push(`🤝 ${friend.first} ${U.pick(['saved you a seat at dinner', 'shared their Strongman', 'beat you at Last Card (again)', 'told you the gist about the house master', 'walked back from prep with you'])}`);
       // meals and sleep happened; you're fine-ish
       Object.assign(s.stats, { hunger: Math.max(s.stats.hunger, 60), thirst: Math.max(s.stats.thirst, 60), rest: Math.max(s.stats.rest, 55), hygiene: Math.max(s.stats.hygiene, 55) });
       return { date, term: `${D.LEVELS[s.time.year - 1]} T${s.time.term}`, plan, lines };

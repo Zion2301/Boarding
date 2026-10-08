@@ -40,7 +40,7 @@
           toast(`🎁 ${m.name} shared ${m.n} ${it.name} with you! ${it.emoji || ''}`, 'good');
           break;
         }
-        case 'invite': Social.chip(`🎲 ${m.name} invites you to play ${({ whot: 'Whot!', ayo: 'Ayo', draughts: 'Draughts', ludo: 'Ludo', football: 'football' })[m.kind] || m.kind} — tap to join`, 'inviteJoin', JSON.stringify(m), 90); break;
+        case 'invite': Social.chip(`🎲 ${m.name} invites you to play ${({ whot: 'Last Card', ayo: 'Ayo', draughts: 'Draughts', ludo: 'Ludo', football: 'football' })[m.kind] || m.kind} — tap to join`, 'inviteJoin', JSON.stringify(m), 90); break;
         case 'sitWith': Social.chip(`🪑 ${m.name} wants to sit with you`, 'callGo', m.from, 60); break;
         case 'cover': toast(`💛 You covered for ${m.name}${m.what ? ` (${m.what})` : ''}. Real padi.`, 'good'); break;
         case 'gangInvite': Social.chip(`🏴 ${m.name} invites you to join [${m.gang.tag}] ${m.gang.name}`, 'gangJoin', m.gang.id, 180); break;
@@ -155,7 +155,7 @@
             ${b('call', '📣 Call')} ${b('shout', '🗣️ Shout their name')}
             ${b('wave', '👋🏾 Wave')} ${b('beckon', '🫴🏾 Beckon')}
             ${b('follow', '👣 Walk together')} ${b('sit', '🪑 Sit together')}
-            ${b('share', '🎁 Share food')} ${b('whot', '🃏 Play Whot!')}
+            ${b('share', '🎁 Share food')} ${b('whot', '🃏 Play Last Card')}
             ${b('ayo', '🌰 Play Ayo')} ${b('draughts', '⚫ Play Draughts')}
             ${b('joinClass', '🏫 Join their class')}
             ${Social.state.gang ? b('gangInvite', `🏴 Invite to [${U.esc(Social.state.gang.tag)}]`) : ''}

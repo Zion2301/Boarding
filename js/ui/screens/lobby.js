@@ -63,7 +63,7 @@
   Object.assign(BH.actions, {
     openLobby() { if (BH.UI.screen === 'game') { BH.Panels.open(() => `<h2>🌐 Play with friends</h2>${Lobby.html(true)}`, { cls: 'sheet', kind: 'lobby' }); Lobby.start(); } else { timer = null; BH.UI.go('lobby'); } },
     lobbyBack() { clearInterval(timer); timer = null; BH.UI.go('title'); },
-    async lobbyCopy(text) { try { await navigator.clipboard.writeText(text); toast('📋 Link copied — paste it in WhatsApp!', 'good'); } catch (e) { prompt('Copy this link:', text); } },
+    async lobbyCopy(text) { try { await navigator.clipboard.writeText(text); toast('📋 Link copied — paste it in your group chat!', 'good'); } catch (e) { prompt('Copy this link:', text); } },
     async lobbyShare(text) { try { await navigator.share({ title: 'Boarding House', text: 'Come and resume with me at Boarding House 🏫', url: text }); } catch (e) { /* cancelled */ } },
   });
 

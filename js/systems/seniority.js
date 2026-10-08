@@ -151,7 +151,7 @@
     weight: 2, emoji: '🫗', title: 'Junior Chop Box Full',
     when: (s, b) => hasJuniors(s) && ['hostel', 'sleep', 'free'].includes(kind(b)),
     ctx: (s) => ({ j: N().randomJunior(s).id }),
-    text: (s, c) => `${jn(s, c).first}'s chop box open: Milo, Peak, Cornflakes, even Pringles. Mummy pack am like Shoprite. Other seniors don dey circle like vulture...`,
+    text: (s, c) => `${jn(s, c).first}'s chop box open: Strongman, Sunrise milk, Cornflakes, even Crunchos. Mummy pack am like supermarket. Other seniors don dey circle like vulture...`,
     choices: (s, c) => [
       { label: '😈 Collect "senior tax"', sub: 'Wicked +2 · free provisions · risky', run(s) {
         Seniority.adjust(s, 2); N().rel(s, jn(s, c), -12);

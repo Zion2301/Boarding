@@ -75,7 +75,7 @@
     BH.bus.emit('action', { tag: 'contactHome' });
     S().change(s, { morale: 7 });
     if (s.family) { if (s.family.letterDue === null) s.family.letterDue = s.time.dayCount + 7; s.family.mummy = U.clamp(s.family.mummy + 2); }
-    return good('"Dear Mummy, I am fine. The food is good. (It is not.) Please send Milo and money." ✉️');
+    return good('"Dear Mummy, I am fine. The food is good. (It is not.) Please send Strongman and money." ✉️');
   };
   H.openBag = (s, c) => { BH.actions.openBag(c.args.tab); return { noTime: true }; };
   H.lockLocker = (s) => { s.flags.padlocked = true; return good('Click! Your locker don lock. Thieves go cry today. 🔒'); };
@@ -180,7 +180,7 @@
   H.laundry = (s) => {
     if (s.today.flags.laundry) return { text: 'Your clothes don dey line already.', cancel: true };
     s.today.flags.laundry = true;
-    if (I().has(s, 'detergent')) { I().take(s, 'detergent', 1); S().change(s, { hygiene: 14, morale: 3, rest: -5 }); return good('Uniform and socks don wash with Ariel. Pray say nobody "mistakenly" carry am. 🧺'); }
+    if (I().has(s, 'detergent')) { I().take(s, 'detergent', 1); S().change(s, { hygiene: 14, morale: 3, rest: -5 }); return good('Uniform and socks don wash with Washwell. Pray say nobody "mistakenly" carry am. 🧺'); }
     S().change(s, { hygiene: 5, rest: -5 }); return 'No detergent — water alone. The collar still brown. 😬';
   };
 
@@ -322,7 +322,7 @@
     if (s.stats.health < 70 || s.stats.rest < 20) {
       S().change(s, { health: 14, rest: 6 });
       s.today.flags.excused = abs(s) + 120;
-      return good('Matron check your temperature, give you Panadol and ORS: "Lie down for that bed. I go write you excuse for class." 💊 (Excused for 2 hours)');
+      return good('Matron check your temperature, give you paracetamol and ORS: "Lie down for that bed. I go write you excuse for class." 💊 (Excused for 2 hours)');
     }
     return bad('Matron look you up and down: "You no sick. Go back to where you suppose dey!" 😒');
   };
@@ -344,7 +344,7 @@
     if (U.chance(0.35 + S().mod(s, 'luck'))) {
       const amt = { struggling: 500, middle: 2000, bigman: 5000 }[s.player.background];
       S().money(s, amt);
-      return good(`Mummy: "Are you eating well? Did you finish the Milo already?!" …She send ${U.money(amt)} through the Bursar. 💸`, { mins: 10 });
+      return good(`Mummy: "Are you eating well? Did you finish the Strongman already?!" …She send ${U.money(amt)} through the Bursar. 💸`, { mins: 10 });
     }
     return good('Mummy: "Are you reading your books? Your cousin Chidinma come first for her class o." The call end before you fit defend yourself. 📞', { mins: 10 });
   };
@@ -365,7 +365,7 @@
   H.outsideTrip = (s, intro) => {
     S().change(s, { hunger: 40, thirst: 15, morale: 15 }); S().rep(s, 3); BH.Paths.add(s, 'trouble', 2); BH.Paths.add(s, 'popular', 1);
     BH.Gist.add(s, `${first(s)} go outside school and come back with suya smell 😮`, { about: 'me', valence: 0.4 });
-    return good(`${intro} Suya, cold Coke and freedom for one hour. You sneak back before anybody notice. 🍢`, { mins: 60 });
+    return good(`${intro} Suya, cold mineral and freedom for one hour. You sneak back before anybody notice. 🍢`, { mins: 60 });
   };
 
   /* ---------- worship ---------- */

@@ -75,7 +75,7 @@
       const risk = Inv.eatingRisk(s);
       r.needs.forEach((n) => Inv.take(s, Inv.pickNeed(s, n), 1));
       // illegal cooking leaves a smell anyone passing can follow
-      if (r.illegal) { s.world.smell = { map: s.world.map || 'campus', until: BH.Clock.abs(s) + 25 }; BH.Gist.add(s, 'Somebody dey cook Indomie for the hostel. The smell dey everywhere 🍜', { spread: 0.15 }); }
+      if (r.illegal) { s.world.smell = { map: s.world.map || 'campus', until: BH.Clock.abs(s) + 25 }; BH.Gist.add(s, 'Somebody dey cook Kwik Noodles for the hostel. The smell dey everywhere 🍜', { spread: 0.15 }); }
       const bonuses = r.bonus.filter((id) => Inv.has(s, id));
       bonuses.forEach((id) => Inv.take(s, id, 1));
       if (risk && BH.Discipline.caught(s, risk + 0.15)) {
@@ -134,7 +134,7 @@
       BH.Stats.money(s, price);
       s.today.earnings += price;
       BH.bus.emit('hustle:sale', { id, price });
-      return { ok: true, sold: true, text: U.pick([`Sold ${it.name} for ${U.money(price)}! Business is booming. 📈`, `"Abeg give me one ${it.name}" — cash in hand: ${U.money(price)}. Dangote, see your mate.`]) };
+      return { ok: true, sold: true, text: U.pick([`Sold ${it.name} for ${U.money(price)}! Business is booming. 📈`, `"Abeg give me one ${it.name}" — cash in hand: ${U.money(price)}. Big man, see your mate.`]) };
     },
 
     /* Seniors borrowing / thieves stealing: remove n random valuables, returns names */

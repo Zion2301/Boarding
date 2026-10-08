@@ -269,8 +269,8 @@
    "type": "errand",
    "offer": "call",
    "emoji": "🌭",
-   "title": "Gala for {giver}",
-   "desc": "{giver} want Gala. \"I go pay you back.\" We shall see.",
+   "title": "Jolly Roll for {giver}",
+   "desc": "{giver} want Jolly Roll. \"I go pay you back.\" We shall see.",
    "days": [
     "weekday",
     "saturday",
@@ -291,7 +291,7 @@
      "type": "give",
      "item": "gala",
      "to": "$giver",
-     "label": "Give {giver} 1 Gala"
+     "label": "Give {giver} 1 Jolly Roll"
     }
    ],
    "reward": {
@@ -632,7 +632,7 @@
    "offer": "talk",
    "emoji": "🍪",
    "title": "Delivery for {target}",
-   "desc": "Mama Tuck-shop give you 2 Cabin biscuits to deliver to {target}. ₦150 when you finish.",
+   "desc": "Mama Tuck-shop give you 2 cream crackers to deliver to {target}. ₦150 when you finish.",
    "talkLabel": "📦 \"I fit do delivery.\"",
    "days": [
     "weekday",

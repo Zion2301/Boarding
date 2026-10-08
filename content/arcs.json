@@ -65,9 +65,9 @@
   {
    "id": "dami_whot",
    "char": "k_dami",
-   "title": "Whot Under the Bunk",
+   "title": "Last Card Under the Bunk",
    "emoji": "🃏",
-   "text": "{name} waves a battered pack of Whot cards: \"Make we start our own tournament. Loser washes the winner's plate for one week.\"",
+   "text": "{name} waves a battered pack of shape cards: \"Make we start our own tournament. Loser washes the winner's plate for one week.\"",
    "choices": [
     {
      "label": "🃏 \"Deal me in!\"",
@@ -658,9 +658,9 @@
   {
    "id": "jide_bucket",
    "char": "k_jide",
-   "title": "\"Your Bucket. Your Milo.\"",
+   "title": "\"Your Bucket. Your Strongman.\"",
    "emoji": "😤",
-   "text": "{nick} blocks the corridor, arms folded: \"New student. Your bucket, your Milo. Now.\"",
+   "text": "{nick} blocks the corridor, arms folded: \"New student. Your bucket, your Strongman. Now.\"",
    "choices": [
     {
      "label": "✊ \"No. Go and fetch your own.\"",
@@ -714,7 +714,7 @@
      },
      "respect": -5
     },
-    "text": "You avoided {nick} — so they helped themselves to your Milo."
+    "text": "You avoided {nick} — so they helped themselves to your Strongman."
    },
    "how": "call"
   },
@@ -1420,7 +1420,7 @@
    "char": "k_osas",
    "title": "The Provision Business",
    "emoji": "🧺",
-   "text": "{nick}: \"Mama Bisi raised her prices. We sell Gala and pure water in the hostel at night. Put in ₦300, you double am by Friday.\"",
+   "text": "{nick}: \"Mama Bisi raised her prices. We sell Jolly Roll and pure water in the hostel at night. Put in ₦300, you double am by Friday.\"",
    "choices": [
     {
      "label": "🤝 Invest ₦300",
@@ -1823,7 +1823,7 @@
      "fx": {
       "rel": 5
      },
-     "reply": "Pringles. Imported Milo. She gives you one Pringle. Generous, by her standards."
+     "reply": "Crunchos. Imported cocoa. She gives you one Cruncho. Generous, by her standards."
     }
    ],
    "year": 1,
@@ -1988,7 +1988,7 @@
    "text": "{name} stands near the tuck shop every break, watching. He never joins the queue.",
    "choices": [
     {
-     "label": "🍪 Buy two Gala and \"accidentally\" have one extra",
+     "label": "🍪 Buy two Jolly Roll and \"accidentally\" have one extra",
      "fx": {
       "rel": 8,
       "trust": 8,
@@ -1997,7 +1997,7 @@
        "shared_food"
       ]
      },
-     "reply": "\"You buy two? Okay… I go help you finish am.\" He grins. No pity, just Gala."
+     "reply": "\"You buy two? Okay… I go help you finish am.\" He grins. No pity, just Jolly Roll."
     },
     {
      "label": "❓ Ask why he never buys anything",
@@ -2110,7 +2110,7 @@
        "scholar": 2
       }
      },
-     "reply": "You both finish top five. He buys you a Gala with his own money. First time."
+     "reply": "You both finish top five. He buys you a Jolly Roll with his own money. First time."
     },
     {
      "label": "😅 \"You go manage\"",

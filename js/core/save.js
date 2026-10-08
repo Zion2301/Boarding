@@ -70,6 +70,12 @@
       s.world.seats = {};
       return s;
     },
+    // v7 → v8: real school names replaced with fictional ones (no real schools, brands or celebrities in the game)
+    7: (s) => {
+      const RENAME = { 'Federal Government College, Odogbolu': 'Federal Government College, Oke-Ayo', 'Federal Government College, Kano': 'Federal Government College, Kafin-Dawa', 'Federal Government College, Enugu': 'Federal Government College, Umu-Ndili', 'Federal Government College, Warri': 'Federal Government College, Ebenmi', 'Corona Heights College': 'Coral Heights College', "St. Gregory's College": "St. Benedict's Hill College", 'Queen of Apostles College': 'Our Lady of the Valley College', "St. Finbarr's College": "St. Aidan's Ridge College", 'Holy Child College': 'Holy Lantern College', 'Government Secondary School, Ikot Ekpene': 'Government Secondary School, Ikot-Usen', 'Community Grammar School, Ilesa': 'Community Grammar School, Ilu-Aro', 'Government College, Umuahia': 'Government College, Umu-Oji', 'Government Girls/Boys Secondary School, Zaria': 'Government Girls/Boys Secondary School, Gidan-Kara' };
+      if (s.player && RENAME[s.player.schoolName]) s.player.schoolName = RENAME[s.player.schoolName];
+      return s;
+    },
     // v2 → v3: 3D avatar
     2: (s) => {
       s.player.avatar = s.player.avatar || BH.data.defaultAvatar(s.player.gender, s.player.religion);

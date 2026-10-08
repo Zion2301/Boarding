@@ -24,7 +24,7 @@ Status: **approved and implemented** (populated school, key cast, time control &
 
 1. **People first.** Your classmates are the heart of the game. You should miss them when they leave and remember the bully's name ten years later.
 2. **Your story, your pace.** No fixed path, no forced menus. Arcs grow from what you do, and time moves when you want it to.
-3. **Fun from minute one.** Resumption day is loud, funny and full of characters. There's always something to do: Whot under the bunk, football at 4 PM, gist under the mango tree.
+3. **Fun from minute one.** Resumption day is loud, funny and full of characters. There's always something to do: Last Card under the bunk, football at 4 PM, gist under the mango tree.
 4. **Every choice echoes.** Snitch in JSS2 and someone brings it up in SS3. Help a struggling friend pay fees and they're at your graduation.
 5. **Real Nigerian boarding school.** Garri, cutlasses at labour, the Maths teacher's cane, Visiting Day jollof, NEPA, Sunday white, the send-forth party. Warm, specific, funny and honest.
 
@@ -99,7 +99,7 @@ See **CHARACTERS.md** for the cast. The rules:
   1. **The story ledger:** structured facts the game records, e.g. `snitched_on:jide@JSS2T1`, `shared_food_with:dami ×14`, `defended:uche_fees`. These drive arcs and callbacks, so they work offline too.
   2. **Conversation memory:** short notes per character from AI chats ("You promised to teach me fractions"). These are sent with each chat.
 - **Relationships have more than one dimension:** `friendship` (−100…100), `trust`, `rivalry`, `respect` and `romance` (PG crush meter, never sexual), plus flags like `bestFriend` and `squad`. They change through actions, choices, gifts, time spent together and neglect (friendships slowly cool if ignored).
-- **Doing things with NPCs:** call a classmate over, pin a best friend (their location shows on the map), form a squad (a name and tag), sit together, walk together, share food, play Whot, Ludo, Ayo or football with them, invite them to the gist circle.
+- **Doing things with NPCs:** call a classmate over, pin a best friend (their location shows on the map), form a squad (a name and tag), sit together, walk together, share food, play Last Card, Ludo, Ayo or football with them, invite them to the gist circle.
 - **Offline fallback:** with AI off, every key character still has rich preset dialogue for each arc beat.
 
 ---
@@ -171,7 +171,7 @@ Expulsion or dropping out are real, early endings, each with its own epilogue.
 3. **Register** at Admin: your house and class. **Emeka** gets the VP to laugh and gets sent out.
 4. **Carry your chop box to the hostel:** **Jide** "accidentally" bumps you; **Zara**'s driver carries her three boxes.
 5. **Choose a bunk.** Dami is on the top bunk. **Senior Commander** does a "provision inspection" (comedy).
-6. **Free time:** **Osas** tries to sell you your own bucket. A Whot game starts under the bunk. You can join.
+6. **Free time:** **Osas** tries to sell you your own bucket. A Last Card game starts under the bunk. You can join.
 7. **First dinner:** the beans have weevils, and Emeka does a stand-up show about it.
 8. **Lights out:** the ghost story. Esther starts praying loudly. Somebody screams.
 
@@ -195,12 +195,12 @@ Expulsion or dropping out are real, early endings, each with its own epilogue.
 - **State lives apart from rendering:** game state is plain JSON (`BH.Game.s`, `s.school`, `BH.Actors`), and the renderer only reads it.
 - **All player input goes through intents/actions** (`BH.Intents`, `BH.Actions`), so it can later be sent to a server unchanged.
 - **Characters are data:** characters (NPC or player) have the same student record shape (`s.school.students` and NPC records), so a slot can switch between "npc" and "remote player".
-- **Rules engines are shared:** Whot, football and board games use one engine (`shared/*`) for both the local bots and the server rooms.
+- **Rules engines are shared:** Last Card (the Whot-style card game), football and board games use one engine (`shared/*`) for both the local bots and the server rooms.
 - **Time has one interface:** the clock goes through `BH.Clock` with a local driver (story mode) and a network driver (private school).
 
 ## 12. What's kept from the current build
 
-The 3D campus and interiors, Sims-style camera, schedules, class arms, timetables, lessons (typed answers), registers, staff NPCs, resumption-day onboarding, Whot, football, Ayo, Draughts, Ludo, race, dance, ten-ten, suwe, table tennis, volleyball, the social layer (rebuilt around NPCs), the event director and calendar, procedural music, the AI server with moderation and safety, writing (notes, letters, slam books, graffiti, shirts).
+The 3D campus and interiors, Sims-style camera, schedules, class arms, timetables, lessons (typed answers), registers, staff NPCs, resumption-day onboarding, Last Card, football, Ayo, Draughts, Ludo, race, dance, ten-ten, suwe, table tennis, volleyball, the social layer (rebuilt around NPCs), the event director and calendar, procedural music, the AI server with moderation and safety, writing (notes, letters, slam books, graffiti, shirts).
 
 ## 13. Build order (after approval)
 

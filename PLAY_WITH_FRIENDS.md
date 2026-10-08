@@ -171,7 +171,7 @@ Background music plays automatically after your first tap: afrobeat by day, calm
 ## What to try together
 
 1. **Resumption day:** watch the gate scene, register at Admin, carry your box to the hostel, choose bunks, and meet your bunkmate (say hi with **C**).
-2. **🎲 Games:** Whot! (open a table or tap your friend → 🃏), football on the field (Space = pass, F = shoot), Ayo, Draughts, Ludo, races, dance battles, ten-ten, suwe, table tennis, volleyball.
+2. **🎲 Games:** Last Card (open a table or tap your friend → 🃏), football on the field (Space = pass, F = shoot), Ayo, Draughts, Ludo, races, dance battles, ten-ten, suwe, table tennis, volleyball.
 3. **👥 Social:**
    - Tap a yellow name tag to add a friend, pin a 💛 best friend, 📣 call them (they get an arrow to you), walk or sit together, share food, or invite them to your gang.
    - Press **C** to chat; people near you see a bubble, and 📢 shouts to the whole map.

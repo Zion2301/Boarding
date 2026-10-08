@@ -113,8 +113,8 @@
         run() { s.story.squad.members.push(n.id); Story.note(s, 'squad', n.id); Story.bond(s, n, { rel: 4 }); return `${n.first}: "[${s.story.squad.tag}]? I dey! Who else dey inside?" 🏴`; },
       });
       if (!BH.Lessons || !BH.Lessons.here(s)) out.push({
-        label: '🃏 "Make we play Whot"', sub: 'Quick game — friendship +',
-        run() { setTimeout(() => BH.Games.whot.startOffline(2, [n]), 50); return `${n.first} pulls out a squeezed pack of Whot cards: "Oya, I go show you pepper." 🃏`; },
+        label: '🃏 "Make we play Last Card"', sub: 'Quick game — friendship +',
+        run() { setTimeout(() => BH.Games.whot.startOffline(2, [n]), 50); return `${n.first} pulls out a squeezed pack of shape cards: "Oya, I go show you pepper." 🃏`; },
       });
       out.push({
         label: '🪑 "Come sit with me"', sub: 'They come and sit beside you',

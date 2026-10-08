@@ -127,7 +127,7 @@
           fr ? { id: 'follow', label: 'Walk together', emoji: '👣', do: 'socialDo', args: { op: 'follow' }, prio: 1 } : { id: 'friend', label: 'Add friend', emoji: '🤝', do: 'socialDo', args: { op: 'friend' }, prio: 1 },
           { id: 'wave', label: 'Wave', emoji: '👋🏾', do: 'socialDo', args: { op: 'wave' }, prio: 2 },
           { id: 'share', label: 'Share food', emoji: '🎁', do: 'socialDo', args: { op: 'share' }, prio: 3 },
-          { id: 'whot', label: 'Play Whot!', emoji: '🃏', do: 'socialDo', args: { op: 'whot' }, prio: 4 },
+          { id: 'whot', label: 'Play Last Card', emoji: '🃏', do: 'socialDo', args: { op: 'whot' }, prio: 4 },
           { id: 'sit', label: 'Sit together', emoji: '🪑', do: 'socialDo', args: { op: 'sit' }, prio: 5 },
         ];
       }

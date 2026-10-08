@@ -1,6 +1,6 @@
 /* Offline cache. Bump CACHE when files change so players get the update.
    FILES = index.html scripts + content/manifest.json entries (regenerate when adding files). */
-const CACHE = 'boarding-house-v12';
+const CACHE = 'boarding-house-v13';
 const FILES = [
   './',
   'index.html',

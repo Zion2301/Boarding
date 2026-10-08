@@ -22,7 +22,7 @@ A mobile-first Nigerian boarding-school life sim. You start as a JSS1 student on
 ## Story mode (the main game)
 
 - **A full school:** about 500 students across JSS1–SS3 (three arms each). Your set of about 30 includes **20 key characters** (`content/cast.json`) who remember you, can be talked to freely (AI) and grow up: some leave, others arrive (Musa in JSS2, Yinka in SS1, your school child in SS1). Everyone else uses preset lines.
-- **Your people:** 👥 opens your best friend, squad, closest friends and who to watch out for. You can call someone over, sit together, share food or play Whot with them. Key characters bring up the past ("Remember when you snitched on me in JSS2?") from the **story ledger**.
+- **Your people:** 👥 opens your best friend, squad, closest friends and who to watch out for. You can call someone over, sit together, share food or play Last Card with them. Key characters bring up the past ("Remember when you snitched on me in JSS2?") from the **story ledger**.
 - **Story arcs** (`content/arcs.json`, 81 beats): characters come and find you when something happens in their life (Uche sent home for fees, Dera's BECE expo, Halima's withdrawal letter…). What you choose, and what you ignore, changes bonds, arc states and their endings.
 - **Time control:** ⏸ / 1× 2× 4× / ⏭ next bell / ⏭⏭ next event (top right; **P** pauses). JSS1 Term 1 plays **Live**; after that the game switches to **Highlights**: ordinary days are simulated using your week plan and shown as day cards, and it stops for key days. 🎬 changes the mode (Live / Highlights / Montage).
 - **Milestones:** letterboxed cards for resumption, first punishment, first visiting day, first report card, BECE, becoming a senior, department, school child, prefect selection, WAEC, send-forth, sign-out day and graduation. Each one autosaves.
@@ -37,7 +37,7 @@ Everyone logs in with their own account (saved on the server). The whole school 
 
 Play with friends from the first minute: run **`npm run play`** (same Wi-Fi) or **`npm run tunnel`** (anywhere) and send the link it prints:
 - **Resumption day:** a cutscene, then the story-tutorial; players who arrive together share a class arm, house and bunks.
-- **Games:** Whot!, football on the field, Ayo, Draughts, Ludo, races, dance battles, ten-ten, suwe, table tennis and volleyball.
+- **Games:** Last Card, football on the field, Ayo, Draughts, Ludo, races, dance battles, ten-ten, suwe, table tennis and volleyball.
 - **Social:** friends, best friend, calls, chat bubbles, gangs.
 - **Events:** a living calendar plus random events.
 
@@ -130,7 +130,7 @@ The quickest method is the browser console (`F12`) while a game is running. Run 
 | **ConsequenceSystem & reputation** | 👤 → Reputation shows Teachers, Seniors, Juniors, Coursemates and your House. Snitch through a teacher or house master ("Report something"): Teachers go up, Coursemates go down, and a 🐀 rumour starts. |
 | **Gist / rumours** | Talk to classmates and pick "Any gist?". Stand close to two idle students to overhear (speech bubble). `s.rumours` holds the list; 👤 shows what people say about you. |
 | **WorldSim** | Weather is rolled per day by term (🌧️ rain makes the field muddy and labour harder, 🌫️ harmattan dries your skin, 🔥 heat makes you thirstier). NEPA cuts power in the evenings. Fights, thefts, absent teachers and raids happen on their own. Force one with `BH.WorldSim.H.fight(s, {text:'{a} vs {b} at {place}'})` or `BH.WorldSim.H.raid(s, {text:'Raid!'})`. |
-| **Crafting & items** | 🎒 → Cook/combine: soaked garri needs garri + water (fetch water at the tap with your starter bucket). Buy a heater from Mama Tuck-shop's whisper option to make cooked Indomie, which is illegal: the smell lingers and prefects catch it. Hide your phone in your mattress against raids. |
+| **Crafting & items** | 🎒 → Cook/combine: soaked garri needs garri + water (fetch water at the tap with your starter bucket). Buy a heater from Mama Tuck-shop's whisper option to make cooked Kwik Noodles, which is illegal: the smell lingers and prefects catch it. Hide your phone in your mattress against raids. |
 | **Sleep anywhere** | Sleep in your bed at night for full rest; a mosquito net helps. Nap on a desk, pew or sick-bay bed. Push rest to 0 and you pass out where you stand. ⏳ at night → "Sleep right here". |
 | **Paths** | 👤 → Your paths. Study, train on the field, hustle, dance, lead or cause trouble to earn titles. Your top path becomes your graduation legacy. |
 | **Story arcs** | `BH.Arcs.start(s, BH.Content.get('arcs').beats.find(b => b.id === 'emeka_board')); BH.Dialogue.event()` plays a beat right away. `s.story.ledger` holds the memories, `s.story.arcs` the arc states and endings. |

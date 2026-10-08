@@ -1,4 +1,4 @@
-/* Whot! — the Nigerian card game. Pure rules engine shared by the game server (multiplayer tables) and the
+/* Last Card — the Nigerian card game. Pure rules engine shared by the game server (multiplayer tables) and the
    browser (offline table vs bots). No I/O; state is plain JSON.
    Deck (54): circle & triangle 1-5,7,8,10-14 · cross & square 1,2,3,5,7,10,11,13,14 · star 1-5,7,8 · 5× WHOT 20.
    Play a card that matches the top card's shape or number (WHOT 20 goes on anything and requests a shape).
@@ -29,8 +29,8 @@
     return d;
   }
   const shuffle = (a, r) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-  const label = (c) => (c.s === 'whot' ? 'WHOT 20' : `${ICON[c.s]} ${c.n}`);
-  const SPECIAL = { 1: 'Hold on!', 2: 'Pick two!', 5: 'Pick three!', 8: 'Suspension!', 14: 'General market!', 20: 'WHOT!' };
+  const label = (c) => (c.s === 'whot' ? 'WILD 20' : `${ICON[c.s]} ${c.n}`);
+  const SPECIAL = { 1: 'Hold on!', 2: 'Pick two!', 5: 'Pick three!', 8: 'Suspension!', 14: 'General market!', 20: 'WILD!' };
 
   /* players: [{ id, name, bot }] */
   function create(players, seed = Date.now()) {

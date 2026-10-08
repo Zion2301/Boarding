@@ -16,10 +16,10 @@
 
   BH.data.MESSAGES = [
     /* ---------- Mummy ---------- */
-    { id: 'mumMilo', from: 'mummy', weight: 3, text: 'Are you eating well? Did you finish the Milo already?? 🥺',
+    { id: 'mumMilo', from: 'mummy', weight: 3, text: 'Are you eating well? Did you finish the Strongman already?? 🥺',
       replies: [
         { label: 'Yes ma, I dey chop well 🙏', reply: 'Good. God bless you my child. Read your books!', fam: 4, fx: { morale: 3 } },
-        { label: 'Mummy the Milo don finish 😭 abeg send more', reply: 'Ehn?! Already?! Okay o, I will send through your uncle this weekend.', fam: 1, parcel: { milo: 3, milk: 2 } },
+        { label: 'Mummy the Strongman don finish 😭 abeg send more', reply: 'Ehn?! Already?! Okay o, I will send through your uncle this weekend.', fam: 1, parcel: { milo: 3, milk: 2 } },
         { label: 'Senior collect am 😤', reply: 'WHAT?! Which senior?! I am calling your house master RIGHT NOW!', fam: 2, effect: 'mumComplain' },
       ],
       ignore: { fam: -6, fx: { morale: -2 }, effect: 'mumCalls' } },

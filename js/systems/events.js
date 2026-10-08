@@ -19,7 +19,7 @@
     /* ===================== FORCED ===================== */
     sickbay: {
       forced: true, emoji: '🏥', title: 'Sick Bay',
-      text: () => 'Your body don give up. Everything dey spin and you collapse for corridor. Dem carry you go sick bay. Matron look you over her glasses: "Na malaria. Or hunger. Or both. Take this Chloroquine and Panadol."',
+      text: () => 'Your body don give up. Everything dey spin and you collapse for corridor. Dem carry you go sick bay. Matron look you over her glasses: "Na malaria. Or hunger. Or both. Take this Chloroquine and paracetamol."',
       choices: () => [{
         label: '🛏️ Rest in sick bay', sub: 'You miss the next two blocks',
         run(s) {
@@ -397,7 +397,7 @@
         { label: BH.gendered(s, '😎 "Bye bye" — act like big boy', '😎 "Bye bye" — act like big girl'), sub: '+ Clout', run(s) { BH.Stats.rep(s, 3); BH.Stats.change(s, { morale: -2 }); return 'You wave like person wey don dey boarding school since 1999. Inside, you dey cry small.'; } },
       ];
       if (!s.phone.has) out.push({ label: '📱 Hide a phone inside the garri bag', sub: 'Contraband — the gateman might search', run(s) {
-        const model = { struggling: "your uncle's old Nokia", middle: 'a small Android', bigman: 'a brand-new iPhone' }[s.player.background];
+        const model = { struggling: "your uncle's old brick phone", middle: 'a small smartphone', bigman: 'a brand-new big-screen phone' }[s.player.background];
         if (BH.Discipline.caught(s, BH.Discipline.strict(s) * 0.55)) return `Baba Musa search your box and bring out ${model}. "PHONE?! On resumption day?!" Seized. ` + BH.Discipline.minor(s, 'Phone found at the gate');
         BH.Phone.give(s, 90);
         return `You hide ${model} inside the garri. The gateman search everything… except the garri. 📱`;
@@ -412,7 +412,7 @@
     choices: (s, c) => [
       { label: '📦 Open your chop box', sub: 'Lose some provisions, gain favour', run(s) { const lost = BH.Inv.loseRandom(s, 2); BH.bus.emit('provisions:lost', { items: lost }); BH.Stats.favour(s, 5); N().rel(s, npc(s, c.npc), 10); return `They "inspect" and confiscate ${lost.join(' and ') || 'nothing'}. "You go enjoy this school." 🙃`; } },
       { label: '🤥 "Senior, na only garri dey inside"', sub: 'Lie — 50/50', run(s) {
-        if (U.chance(0.45 + BH.Stats.mod(s, 'dodge') + BH.Stats.mod(s, 'luck'))) return `${nm(s, c.npc)} look your face… "Garri pikin. Comot." Your Milo dey safe. 😮‍💨`;
+        if (U.chance(0.45 + BH.Stats.mod(s, 'dodge') + BH.Stats.mod(s, 'luck'))) return `${nm(s, c.npc)} look your face… "Garri pikin. Comot." Your Strongman dey safe. 😮‍💨`;
         const lost = BH.Inv.loseRandom(s, 3); BH.bus.emit('provisions:lost', { items: lost }); N().rel(s, npc(s, c.npc), -8);
         return `They open am by force. "Garri abi?!" They carry ${lost.join(', ')}. You don enter their book. 📕`;
       } },

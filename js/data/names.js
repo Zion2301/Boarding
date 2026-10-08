@@ -51,7 +51,7 @@
   /* Classmate archetypes. count = how many in the class. */
   BH.data.ARCHETYPES = {
     captain:   { label: 'Class Captain', emoji: '📋', count: 1, desc: 'Writes "Noisemakers" list with the seriousness of INEC.' },
-    hustler:   { label: 'Tuck-shop Hustler', emoji: '💸', count: 1, desc: 'Sells everything: biro, Milo, exam "expo", your own slippers back to you.' },
+    hustler:   { label: 'Tuck-shop Hustler', emoji: '💸', count: 1, desc: 'Sells everything: biro, Strongman, exam "expo", your own slippers back to you.' },
     thief:     { label: 'Sneaky One', emoji: '🐀', count: 1, desc: 'Always near your locker. Always "just passing".' },
     fine:      { label: 'Fine Girl/Boy', emoji: '✨', count: 2, desc: 'Everybody dey form when this one waka pass.' },
     brilliant: { label: 'Brilliant Quiet One', emoji: '🧠', count: 1, desc: 'Never talks. Always first in class. Possibly a robot.' },
@@ -74,7 +74,7 @@
     { key: 'dramatic', label: 'Dramatic', gist: ['{n}: "I am suffering in this school! Mummy, come and carry me!"', '{n} dey act Nollywood scene about the dining hall beans.'] },
     { key: 'streetwise', label: 'Street-smart', gist: ['{n} show you the corner wey prefect no dey check.', '{n}: "Rule number one: never show senior your full chop box."'] },
     { key: 'bookish', label: 'Bookish', gist: ['{n} explain fractions to you with chin-chin. Now you understand.', '{n} recommend one Pacesetters novel. "Mark of the Cobra". E sweet.'] },
-    { key: 'churchy', label: 'Prayerful', gist: ['{n} say make you no worry, God go provide Milo.', '{n} share one testimony about how dem escape cane last term.'] },
+    { key: 'churchy', label: 'Prayerful', gist: ['{n} say make you no worry, God go provide Strongman.', '{n} share one testimony about how dem escape cane last term.'] },
   ];
 
   /* Senior roles */

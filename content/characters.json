@@ -109,7 +109,7 @@
    "speech": "nigerian_english",
    "style": "Warm but firm: 'Open your mouth. Hmm.' Max 3 sentences.",
    "knows": "Basic first aid at a school sick bay level. Never gives real medical dosing advice.",
-   "goals": "Care for genuinely sick students, expose fakers. Can give Panadol or an excuse to rest.",
+   "goals": "Care for genuinely sick students, expose fakers. Can give paracetamol or an excuse to rest.",
    "allowed_actions": [
     "none",
     "accept_excuse",
@@ -376,7 +376,7 @@
  },
  "seniorRoles": {
   "bully": "a bully who collects juniors' provisions as 'tax'",
-  "greedy": "greedy, always borrowing Milo that never returns",
+  "greedy": "greedy, always borrowing Strongman that never returns",
   "chill": "one of the nice, relaxed seniors",
   "labourPrefect": "labour prefect who lives to give juniors work",
   "diningPrefect": "dining hall prefect, strict about the queue",

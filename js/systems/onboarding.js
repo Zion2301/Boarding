@@ -16,7 +16,7 @@
     bunk: { text: 'Choose your bunk', hint: 'Walk up to any free bunk and press Space (or tap the button).', hostel: true, obj: ['bunk', 'myBed'] },
     mate: { text: 'Meet your bunkmate', hint: 'Say hi! Press C (or 💬) to talk, or wave with an emote.' },
     senior: { text: 'Uh-oh… a senior is coming' },
-    free: { text: 'Free time until dinner — explore, or play Whot with your bunkmate (🎲)' },
+    free: { text: 'Free time until dinner — explore, or play Last Card with your bunkmate (🎲)' },
     dinner: { text: 'First dinner in the dining hall', hint: 'Collect your plate at the counter, then eat at your house table.', key: 'dining', map: 'dining' },
     night: { text: 'Lights out — get into your bunk', hint: 'Go to your hostel and sleep in your bunk before 10:15 PM.', hostel: true },
   };
@@ -160,11 +160,11 @@
     text(s) {
       const bully = BH.NPC.senior(s, 'bully');
       const who = bully ? BH.NPC.name(bully) : 'Senior Bobo (SS3)';
-      return `${who} strolls into the dormitory with two friends, hands behind back like a customs officer.\n\n"New students! Line up beside your chop box. This is the **Provisions Inspection Committee**. Some items are… illegal for juniors."\n\nHe picks up your tin of Milo and squints at it. "Hmm. Milo. Very dangerous substance. Too sweet for JSS1."`;
+      return `${who} strolls into the dormitory with two friends, hands behind back like a customs officer.\n\n"New students! Line up beside your chop box. This is the **Provisions Inspection Committee**. Some items are… illegal for juniors."\n\nHe picks up your tin of Strongman and squints at it. "Hmm. Strongman. Very dangerous substance. Too sweet for JSS1."`;
     },
     choices: () => [
-      { label: '🥛 "Senior, please collect one Milo"', sub: 'Lose a little, gain favour', run(s) { BH.Inv.take(s, 'milk', 1) || BH.Inv.loseRandom(s, 1); BH.Stats.favour(s, 6); return '"Good junior. You have passed inspection." He walks off shaking the Milo like maracas. Your bunkmate whispers: "Na so e dey do everybody." 😂'; } },
-      { label: '😇 "Na my mummy pack am, she said na for medicine"', sub: 'Funny excuse — 50/50', run(s) { if (U.chance(0.5)) { BH.Stats.rep(s, 3); return 'The seniors burst into laughter. "Medicine?! This one get sense." They move to the next bed. You keep your Milo. Legend. 😎'; } BH.Inv.loseRandom(s, 2); return '"Medicine abi? Then I go take am for my headache." He takes the Milo AND your Peak milk. 💀'; } },
+      { label: '🥛 "Senior, please collect one Strongman"', sub: 'Lose a little, gain favour', run(s) { BH.Inv.take(s, 'milk', 1) || BH.Inv.loseRandom(s, 1); BH.Stats.favour(s, 6); return '"Good junior. You have passed inspection." He walks off shaking the Strongman like maracas. Your bunkmate whispers: "Na so e dey do everybody." 😂'; } },
+      { label: '😇 "Na my mummy pack am, she said na for medicine"', sub: 'Funny excuse — 50/50', run(s) { if (U.chance(0.5)) { BH.Stats.rep(s, 3); return 'The seniors burst into laughter. "Medicine?! This one get sense." They move to the next bed. You keep your Strongman. Legend. 😎'; } BH.Inv.loseRandom(s, 2); return '"Medicine abi? Then I go take am for my headache." He takes the Strongman AND your Sunrise milk. 💀'; } },
       { label: '🙈 Pretend you\'re asleep', sub: 'Cheeky', run(s) { BH.Stats.change(s, { morale: 2 }); BH.Inv.loseRandom(s, 1); return 'You snore loudly at 4 PM. Everyone laughs. The senior takes a sachet of something "for the road" and leaves you alone. 😴'; } },
     ],
   };

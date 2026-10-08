@@ -1,7 +1,7 @@
 // Multiplayer rooms (Colyseus). Message-based (no Schema state) so the browser client stays a plain script.
 //   campus   — one per school: presence (who's where), the shared school clock, proximity chat, emotes, calls,
 //              friends / best friend / gangs, invites, resumption-day cohorts, lesson answers relayed to the room.
-//   whot     — a Whot! table (2–4 seats, bots fill empty seats). Rules: shared/whot.js
+//   whot     — a Last Card table (2–4 seats, bots fill empty seats). Rules: shared/whot.js
 //   football — the match on the school field (bots balance the teams). Physics: shared/football.js
 import { createRequire } from 'node:module';
 import { Room } from 'colyseus';
@@ -241,14 +241,14 @@ export class CampusRoom extends Room {
   }
 }
 
-/* ================= Whot! table ================= */
+/* ================= Last Card table ================= */
 export class WhotRoom extends Room {
   maxClients = 4;
 
   onCreate(opts = {}) {
     this.seats = num(opts.seats, 2, 4, 4);
     this.maxClients = this.seats;
-    this.title = str(opts.title, 40) || 'Whot! table';
+    this.title = str(opts.title, 40) || 'Last Card table';
     this.where = str(opts.map, 24) || 'campus';
     this.humans = new Map(); // sid → { pid, name }
     this.game = null;

@@ -5,10 +5,10 @@
       "start": { "text": ["Matron Grace look you over her glasses: \"Yes? Wetin dey do you?\"", "Matron: \"Another one. Sit down. Talk.\""], "options": [
         { "label": "🤒 \"Matron, I no well\"", "do": "nurseTreat" },
         { "label": "🤥 Fake malaria (skip class)", "do": "fakeSick" },
-        { "label": "💊 \"Abeg, small Panadol\"", "goto": "panadol" },
+        { "label": "💊 \"Abeg, small paracetamol\"", "goto": "panadol" },
         { "label": "😴 \"Can I rest here small?\"", "do": "say", "args": { "text": ["\"Use the bed by the window. If I catch you pretending ehn…\""] } }
       ]},
-      "panadol": { "text": ["\"Panadol for wetin? Headache? Malaria? Heartbreak?\""], "options": [
+      "panadol": { "text": ["\"Paracetamol for wetin? Headache? Malaria? Heartbreak?\""], "options": [
         { "label": "🤕 \"Headache, Ma\"", "do": "giveItem", "args": { "item": "panadol", "n": 1, "once": "nursePanadol", "text": "Matron give you one tablet: \"Drink plenty water.\" 💊" } },
         { "label": "💔 \"Heartbreak\"", "cons": { "stats": { "morale": 3 } }, "text": "Matron laugh: \"Ehn ehn. Go and read your book, that one go heal am.\" 😂" }
       ]}
@@ -54,7 +54,7 @@
       ]}
     },
     "houseMaster": {
-      "start": { "text": ["The House Master: \"What is it? Make it quick.\"", "\"If this is about your Milo, I don't want to hear it.\""], "options": [
+      "start": { "text": ["The House Master: \"What is it? Make it quick.\"", "\"If this is about your Strongman, I don't want to hear it.\""], "options": [
         { "label": "📱 Beg for your seized phone", "do": "begPhone", "when": "phoneSeized" },
         { "label": "🗣️ Report something", "do": "snitchMenu" },
         { "label": "🤒 \"Sir, I no well\"", "do": "say", "args": { "text": ["\"Then go to the sick bay! Am I a doctor?\""] } }

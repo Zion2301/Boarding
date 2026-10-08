@@ -210,7 +210,7 @@
       "hygiene": -6,
       "rest": -5
      },
-     "text": "You scrub the toilet with broom and Hypo till e shine. Your nose go need therapy. 🧽"
+     "text": "You scrub the toilet with broom and bleach till e shine. Your nose go need therapy. 🧽"
     },
     "when": "mission:cleanToilet",
     "mins": 20,
@@ -549,7 +549,7 @@
     "do": "say",
     "args": {
      "text": [
-      "Cook fill your flask from the big pot. Hot Milo dey come tonight. 🫖"
+      "Cook fill your flask from the big pot. Hot cocoa dey come tonight. 🫖"
      ],
      "flag": "hotWater"
     },
@@ -766,18 +766,18 @@
   ]
  },
  "medCabinet": {
-  "name": "Panadol cabinet",
+  "name": "Paracetamol cabinet",
   "emoji": "💊",
   "actions": [
    {
     "id": "steal",
-    "label": "Take Panadol 👀",
+    "label": "Take paracetamol 👀",
     "emoji": "💊",
     "do": "steal",
     "args": {
      "item": "panadol",
      "n": 2,
-     "text": "Two Panadol strips enter your pocket. For emergency. 💊"
+     "text": "Two paracetamol strips enter your pocket. For emergency. 💊"
     },
     "crime": "stealing",
     "prio": 1

@@ -230,7 +230,7 @@
   addEventListener('keydown', (e) => { if (play.st && play.st.kind === 'rally' && !play.st.over && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); e.stopPropagation(); play.swing(); } }, true);
 
   /* ================= hangouts: gist circle, hostel radio, night storytelling ================= */
-  const SONGS = ['Wizkid — Ojuelegba', 'Burna Boy — Ye', 'Asake — Lonely At The Top', 'Tems — Free Mind', 'Rema — Calm Down', 'Davido — Fall', 'Ayra Starr — Rush', 'P-Square — No One Like You', '2Baba — African Queen'];
+  const SONGS = ['Lagos Lights — Danfo Dreams', 'Kezi — Mama No Worry', 'Tunde Wave — Owambe Season', 'Amara Sky — Slow Wine', 'Bodi B — Garri & Gold', 'DJ Ladi — Rising Bell Riddim', 'Ife Ruby — Sweet Mother 2.0', 'Twin Kings — Na You I Choose', 'Old Skool Ayo — Highlife Forever'];
   const hang = {
     gist() {
       const s = BH.Game.s;

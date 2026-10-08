@@ -289,7 +289,7 @@
       if (!a || !b) return U.pick(['The Maths teacher and the Agric teacher dey fight over one parking space.', 'They say the bursar dey count school fees for night with torchlight.', 'Mama Joy the cleaner know everybody secret. Everybody.']);
       return U.pick([
         `${a.first} and ${b.first} dey write each other letters. Na so e dey start.`,
-        `${a.first} cry for house master office because Senior collect their Milo.`,
+        `${a.first} cry for house master office because Senior collect their Strongman.`,
         `They say ${a.first} papa na Senator. I no believe.`,
         `${a.first} see ghost for toilet last night. Na wetin dem dey talk o.`,
         `The Maths teacher and the Agric teacher dey fight over one parking space.`,

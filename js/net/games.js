@@ -1,5 +1,5 @@
 /* Free-time minigames you can join from anywhere (🎲 button, or a friend's invite):
-   · Whot! — 2–4 players at a table; bots fill empty seats. Online: Colyseus 'whot' room (server deals, hands
+   · Last Card — 2–4 players at a table; bots fill empty seats. Online: Colyseus 'whot' room (server deals, hands
      stay private). Offline: the same rules engine (shared/whot.js) runs here against bots.
    · Football — the match on the school field. Walk onto the field, run into the ball to dribble, ⚽ pass / 🥅 shoot
      (Space / F). Online: Colyseus 'football' room (server physics, bots balance teams). Offline: shared/football.js.
@@ -12,7 +12,7 @@
   const toast = (t, k = 'info') => BH.UI && BH.UI.toast(t, k);
   const SHAPE_NAME = { circle: 'Circle', triangle: 'Triangle', cross: 'Cross', square: 'Square', star: 'Star' };
 
-  /* ================= Whot! ================= */
+  /* ================= Last Card ================= */
   const whot = {
     room: null, offline: null, view: null, info: null, pendingWhot: null,
 
@@ -58,7 +58,7 @@
       for (let i = players.length; i < n; i++) players.push({ id: 'bot' + i, name: ['Chioma', 'Musa', 'Tunde'][i % 3], bot: true });
       whot.with = pool.slice(0, n - 1).map((x) => x.id);
       whot.offline = W().create(players, Date.now());
-      whot.info = { title: `Whot! with ${players.slice(1).map((p) => p.name).join(' & ')}`, humans: [players[0].name], seats: n, you: 'me' };
+      whot.info = { title: `Last Card with ${players.slice(1).map((p) => p.name).join(' & ')}`, humans: [players[0].name], seats: n, you: 'me' };
       whot.sync();
       whot.open();
     },
@@ -83,7 +83,7 @@
       const s = BH.Game.s;
       const won = winner === whot.myId();
       const others = whot.view ? whot.view.players.filter((p) => !p.bot).length : 1;
-      if (won) { const prize = 60 + 40 * Math.max(0, others - 1); BH.Stats.money(s, prize); BH.Stats.change(s, { morale: 8 }); BH.Stats.rep(s, 2); toast(`🏆 CHECK UP! You win the Whot game! +${U.money(prize)} · morale ↑ · clout ↑`, 'good'); }
+      if (won) { const prize = 60 + 40 * Math.max(0, others - 1); BH.Stats.money(s, prize); BH.Stats.change(s, { morale: 8 }); BH.Stats.rep(s, 2); toast(`🏆 CHECK UP! You win the Last Card game! +${U.money(prize)} · morale ↑ · clout ↑`, 'good'); }
       else { BH.Stats.change(s, { morale: 3 }); toast(`🃏 ${name} won this round. Rematch?`, 'info'); }
       BH.bus.emit('minigame', { kind: 'whot', won, with: whot.offline ? whot.with || [] : [] });
       BH.Paths && BH.Paths.add(s, 'popular', 1);
@@ -95,16 +95,16 @@
       if (!silent) BH.Panels.closeKind('whot', true);
     },
     card(c, i, playable) {
-      const sym = c.s === 'whot' ? 'WHOT' : W().ICON[c.s];
+      const sym = c.s === 'whot' ? 'WILD' : W().ICON[c.s];
       return `<button class="wcard ${c.s} ${playable ? 'ok' : ''}" ${i !== null ? `data-act="whotPlay" data-arg="${i}"` : 'disabled'}><i>${c.n}</i><b>${sym}</b><i class="br">${c.n}</i></button>`;
     },
     open() {
       BH.Panels.open(() => {
         const v = whot.view, info = whot.info || {};
         if (!v) {
-          return `<h2>🃏 ${U.esc(info.title || 'Whot!')}</h2>
+          return `<h2>🃏 ${U.esc(info.title || 'Last Card')}</h2>
             <p>At the table: ${(info.humans || []).map(U.esc).join(', ') || '—'} <small class="muted">(${info.seats || 4} seats — bots fill the rest)</small></p>
-            <p class="muted">Rules: match the shape or number. 1 Hold on · 2 Pick two · 5 Pick three · 8 Suspension · 14 General market · 20 WHOT (choose a shape). Say “Last card!” or pick two.</p>
+            <p class="muted">Rules: match the shape or number. 1 Hold on · 2 Pick two · 5 Pick three · 8 Suspension · 14 General market · 20 WILD (choose a shape). Say “Last card!” or pick two.</p>
             <div class="grid-btns"><button class="chunky primary" data-act="whotStart">▶ Deal cards</button><button class="chunky" data-act="whotInvite">📣 Invite a friend</button><button class="chunky ghost" data-act="whotLeave">Leave table</button></div>`;
         }
         const me = whot.myId();
@@ -410,7 +410,7 @@
         const fb = online && net.tables.find((t) => t.kind === 'football');
         return `<h2>🎲 Free-time games</h2>
           <p class="muted">Quick games with your padi (2–5 min). Win money, morale and clout.${online ? '' : ' <b>Offline</b> — you play against bots.'}</p>
-          <div class="card"><h3>🃏 Whot!</h3>
+          <div class="card"><h3>🃏 Last Card</h3>
             ${tables.map((t) => `<div class="person"><span class="p-text"><b>${U.esc(t.title)}</b><small>${U.esc(BH.School.place(t.map).name)} · ${t.players.length}/${t.seats} ${t.playing ? '· playing' : '· waiting'}</small></span>${t.playing || t.players.length >= t.seats ? '' : `<button class="chunky small primary" data-act="whotJoin" data-arg="${t.id}">Join</button>`}</div>`).join('')}
             <div class="grid-btns"><button class="chunky primary" data-act="whotNew">${online ? '➕ Open a table' : '▶ Play vs bots'}</button>${online ? '<button class="chunky" data-act="whotBots">🤖 Quick game vs bots</button>' : ''}</div></div>
           <div class="card"><h3>⚽ Football on the field</h3>
@@ -434,7 +434,7 @@
     whotJoin(id) { BH.Panels.closeKind('games', true); whot.join(id); },
     whotStart() { if (whot.room) whot.room.send('start'); else whot.startOffline((whot.info && whot.info.seats) || 3); },
     whotLeave() { whot.leave(); },
-    whotInvite() { BH.Social.openPanel('friends'); toast('Tap a friend → 🃏 Play Whot! to invite them to a new table.', 'info'); },
+    whotInvite() { BH.Social.openPanel('friends'); toast('Tap a friend → 🃏 Play Last Card to invite them to a new table.', 'info'); },
     whotPlay(i) {
       const v = whot.view; if (!v) return;
       const c = v.hand[Number(i)];

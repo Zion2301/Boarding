@@ -22,10 +22,10 @@
     "hunger": 2,
     "morale": 2
    },
-   "desc": "St. Louis cubes. You fit lick am raw if wahala too much."
+   "desc": "Sugar cubes. You fit lick am raw if wahala too much."
   },
   "milk": {
-   "name": "Peak Milk (powder)",
+   "name": "Sunrise Milk (powder)",
    "emoji": "🥛",
    "unit": "sachet",
    "cat": "food",
@@ -38,7 +38,7 @@
    "desc": "Lick am straight from sachet — the forbidden joy."
   },
   "milo": {
-   "name": "Milo",
+   "name": "Strongman Cocoa",
    "emoji": "🍫",
    "unit": "sachet",
    "cat": "food",
@@ -90,7 +90,7 @@
    "desc": "Dry chop or with milk. Either way, e sweet."
   },
   "indomie": {
-   "name": "Indomie",
+   "name": "Kwik Noodles",
    "emoji": "🍜",
    "unit": "pack",
    "cat": "food",
@@ -103,7 +103,7 @@
    "desc": "Crunch am raw like biscuit or soak am if you get flask."
   },
   "biscuits": {
-   "name": "Cabin Biscuit",
+   "name": "Cream Crackers",
    "emoji": "🍪",
    "unit": "pack",
    "cat": "food",
@@ -117,7 +117,7 @@
    "desc": "Dry. Very dry. Dey drink water follow."
   },
   "gala": {
-   "name": "Gala",
+   "name": "Jolly Roll",
    "emoji": "🌭",
    "unit": "pack",
    "cat": "food",
@@ -127,7 +127,7 @@
     "hunger": 10,
     "morale": 5
    },
-   "desc": "Gala and La Casera — but there is no La Casera here."
+   "desc": "Sausage roll and soft drink — but there is no soft drink here."
   },
   "chinchin": {
    "name": "Chin chin",
@@ -195,7 +195,7 @@
    "desc": "Big man protein. If senior see am, e don go."
   },
   "pringles": {
-   "name": "Pringles",
+   "name": "Crunchos",
    "emoji": "🥔",
    "unit": "can",
    "cat": "food",
@@ -257,7 +257,7 @@
    "desc": "One bar = 5 baths. Used automatically when you baff."
   },
   "detergent": {
-   "name": "Detergent (Ariel)",
+   "name": "Detergent (Washwell)",
    "emoji": "🫧",
    "unit": "use",
    "cat": "toiletry",
@@ -278,7 +278,7 @@
     "hygiene": 6,
     "morale": 3
    },
-   "desc": "Robb, Vaseline or Ori — make your skin shine for inspection."
+   "desc": "Menthol rub, petroleum jelly or shea butter — make your skin shine for inspection."
   },
   "torch": {
    "name": "Torchlight",
@@ -300,7 +300,7 @@
    "shop": false,
    "use": null,
    "tool": true,
-   "desc": "Fill am at the kitchen. Hot Milo at night = luxury."
+   "desc": "Fill am at the kitchen. Hot cocoa at night = luxury."
   },
   "padlock": {
    "name": "Padlock",
@@ -437,7 +437,7 @@
    "desc": "A blank signed exeat. Show the gateman to jump the fence without wahala once."
   },
   "panadol": {
-   "name": "Panadol",
+   "name": "Paracetamol",
    "emoji": "💊",
    "unit": "tablet",
    "cat": "food",
@@ -531,7 +531,7 @@
    "shop": false,
    "use": null,
    "quest": true,
-   "desc": "Sealed with Vaseline and hope."
+   "desc": "Sealed with petroleum jelly and hope."
   },
   "evidence": {
    "name": "Stolen wrappers",
@@ -542,7 +542,7 @@
    "shop": false,
    "use": null,
    "quest": true,
-   "desc": "Empty Milo sachets with other people's names. Proof."
+   "desc": "Empty Strongman sachets with other people's names. Proof."
   },
   "foundPhone": {
    "name": "Somebody's phone",
@@ -623,7 +623,7 @@
    ]
   },
   "hotMilo": {
-   "name": "Hot Milo",
+   "name": "Hot cocoa",
    "emoji": "☕",
    "needs": [
     "milo"
@@ -642,9 +642,9 @@
    "perBonus": {
     "morale": 3
    },
-   "desc": "Milo + hot water from flask (+ milk, sugar). Pure therapy.",
+   "desc": "Cocoa powder + hot water from flask (+ milk, sugar). Pure therapy.",
    "line": [
-    "You make thick Milo, the kind wey spoon fit stand inside. ☕",
+    "You make thick cocoa, the kind wey spoon fit stand inside. ☕",
     "The aroma reach the next corner. Two people suddenly become your friend."
    ]
   },
@@ -667,7 +667,7 @@
    ]
   },
   "softIndomie": {
-   "name": "Soaked Indomie",
+   "name": "Soaked noodles",
    "emoji": "🍜",
    "needs": [
     "indomie"
@@ -680,13 +680,13 @@
     "thirst": -2
    },
    "perBonus": {},
-   "desc": "Indomie soaked in flask water. No be cooking, na survival.",
+   "desc": "Kwik Noodles soaked in flask water. No be cooking, na survival.",
    "line": [
     "You cover am with exercise book for 3 minutes. E soft. E sweet. 🍜"
    ]
   },
   "noodles": {
-   "name": "Cooked Indomie",
+   "name": "Cooked noodles",
    "emoji": "🍜",
    "needs": [
     "indomie",
@@ -708,10 +708,10 @@
     "hunger": 6,
     "morale": 4
    },
-   "desc": "Indomie + water + heater. Proper cooked noodles. ILLEGAL — the smell go travel.",
+   "desc": "Kwik Noodles + water + heater. Proper cooked noodles. ILLEGAL — the smell go travel.",
    "line": [
-    "The heater hum, the Indomie dance for cup. Seasoning smell reach the next hostel. 🍜",
-    "Cooked Indomie for boarding house. You be king tonight. 🍜"
+    "The heater hum, the noodles dance for cup. Seasoning smell reach the next hostel. 🍜",
+    "Cooked noodles for boarding house. You be king tonight. 🍜"
    ]
   },
   "heaterTea": {
@@ -739,7 +739,7 @@
     "morale": 3,
     "hunger": 3
    },
-   "desc": "Heater + water (+ Milo, milk, sugar). Illegal but heavenly.",
+   "desc": "Heater + water (+ Strongman, milk, sugar). Illegal but heavenly.",
    "line": [
     "You boil water with heater and make tea like Oga for office. ☕"
    ]

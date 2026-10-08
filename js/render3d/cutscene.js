@@ -60,7 +60,7 @@
       const bg = D.BACKGROUNDS[s.player.background];
       Cutscene.cues = [
         [0, () => { Cutscene.caption(`${s.player.schoolName}`, 'Resumption Day · Sunday, 2 PM'); Cutscene.cam({ x: 520, y: 1868 }, -1.15, 0.32, 13); walk('dad1', [[1050, 1840], [1150, 1815]]); walk('mum1', [[1350, 1845], [1250, 1818]]); walk('walk1', [[1120, 1830], [1180, 1815]]); walk('walk2', [[1280, 1835], [1215, 1815]]); }],
-        [1.5, () => say('hawker1', '"Pure water! Gala! Buy your Gala! 🥤"')],
+        [1.5, () => say('hawker1', '"Pure water! Sausage roll! Buy your sausage roll! 🥤"')],
         [3.2, () => { say('hawker2', '"Chin-chin! Plantain chips! Last-last provision!"'); say('hug1', '"Na YOU?! Welcome back!!" 🤗'); }],
         [4.5, () => { say('gate', '"Name? … Which class? … Oya, enter! NEXT!"', 3500); Cutscene.cam({ x: 1200, y: 1820 }, -0.35, 0.42, 12); }],
         [6.3, () => { say('cry', '"😭 My baby! Make you bathe every day o! Don\'t forget to eat!"', 3800); say('kid', '"Mummy stop, people dey look!" 😩'); }],

@@ -59,7 +59,7 @@ These are the people your story is about. Status: **draft for approval.**
   - ↑ sharing food, sitting together, defending them, keeping secrets.
   - ↓ ignoring them for the "cool" crowd, telling their secret.
 - **Arc: "My Person"**
-  - **JSS1:** cries the first night; you comfort them (or not). Whot under the bunk becomes your thing.
+  - **JSS1:** cries the first night; you comfort them (or not). Last Card under the bunk becomes your thing.
   - **JSS2:** Dami gets pulled into Zara's circle ➜ you join, you sulk, or you invite Zara into yours.
   - **JSS3:** the divorce. Dami stops eating and their grades fall. ➜ Notice it (talk freely; the AI knows the beat) and support them, or miss it and Dami pulls away.
   - **SS1:** your departments split you (if you pick differently): a test of the friendship.
@@ -108,7 +108,7 @@ These are the people your story is about. Status: **draft for approval.**
   - ↑ standing up to them (respect), helping them read secretly (trust), never mocking them.
   - ↓ snitching, mocking their reading.
 - **Arc: "Bulldozer"**
-  - **JSS1:** takes your bucket and Milo ➜ fight back, report them, or hand it over.
+  - **JSS1:** takes your bucket and Strongman ➜ fight back, report them, or hand it over.
   - **JSS1–2:** you find Jide struggling to read a punishment letter ➜ help in secret (the key beat), laugh, or tell people.
   - **JSS2:** if you told the house master earlier, Jide remembers: *"Remember when you snitched on me in JSS2?"*.
   - **JSS3:** Jide passes BECE only if you helped them read ➜ otherwise they repeat again.
@@ -419,7 +419,7 @@ These are the people your story is about. Status: **draft for approval.**
   - **JSS3:** their final term ➜ an unexpected apology (if you never broke), or a parting threat.
   - **SS1:** **you become a senior**, and the game asks: will you be like Commander? (a mirror beat with your juniors).
 - **Where are they now:**
-  - Army officer, "apologised to you in a Facebook message in 2034";
+  - Army officer, "apologised to you in a social-media message in 2034";
   - "Nobody knows."
 
 ### S3. Senior Fola Adebayo ⚥: head prefect and role model (SS3 when you start)

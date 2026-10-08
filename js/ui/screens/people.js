@@ -45,7 +45,7 @@
     const persona = D.PERSONAS.find((p) => p.key === n.persona);
     let desc = '';
     if (n.type === 'classmate') desc = (n.role === 'seatmate' ? 'Sits next to you in class. ' : n.role === 'bunkmate' ? 'Sleeps on the bunk above you. ' : '') + D.ARCHETYPES[n.arch].desc;
-    else if (n.type === 'senior') desc = { bully: 'Collects provisions as "tax". Avoid or appease.', schoolParent: 'Your assigned school parent. Keep this relationship strong — protection na everything.', labourPrefect: 'Lives to find free hands for grass cutting.', diningPrefect: 'Guards the dining hall like Aso Rock.', headPrefect: 'The most powerful student in school.', houseCaptain: `Runs ${s.player.house.name}.`, chill: 'One of the nice ones. Rare species.', greedy: 'Has never bought Milo with their own money.' }[n.role];
+    else if (n.type === 'senior') desc = { bully: 'Collects provisions as "tax". Avoid or appease.', schoolParent: 'Your assigned school parent. Keep this relationship strong — protection na everything.', labourPrefect: 'Lives to find free hands for grass cutting.', diningPrefect: 'Guards the dining hall like Aso Rock.', headPrefect: 'The most powerful student in school.', houseCaptain: `Runs ${s.player.house.name}.`, chill: 'One of the nice ones. Rare species.', greedy: 'Has never bought Strongman with their own money.' }[n.role];
     else if (n.type === 'junior') desc = n.schoolChild ? 'Your school child. They look up to you for everything.' : 'One of the younger students. How you treat them go define your legacy.';
     else {
       // staff & teachers: personality and quirks from content/staff.json

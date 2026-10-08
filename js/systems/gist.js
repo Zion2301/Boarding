@@ -9,12 +9,12 @@
 
   const FILLER = [
     '{a} and {b} dey write each other letters. Na so e dey start.',
-    '{a} cry for house master office because Senior collect their Milo.',
+    '{a} cry for house master office because Senior collect their Strongman.',
     'They say {a} papa na Senator. I no believe.',
     '{a} see ghost for toilet last night. Na wetin dem dey talk o.',
     'The Maths teacher and the Agric teacher dey fight over one parking space.',
     'Dem say the dining hall go serve chicken on Sunday. Lie or truth?',
-    'Mama Tuck-shop don increase Gala price again. Wickedness.',
+    'Mama Tuck-shop don increase Jolly Roll price again. Wickedness.',
     '{a} dey hide heater for inside their bucket. I swear.',
   ];
 
