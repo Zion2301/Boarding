@@ -46,7 +46,9 @@
     { "id": "raid", "do": "raid", "weight": 0.8, "when": ["!block:class"], "text": "🚨 House master dey raid the hostel for contraband!" },
     { "id": "gistSpread", "do": "gist", "weight": 2, "text": "🗣️ New gist dey go round…" },
     { "id": "call", "do": "call", "weight": 4, "when": ["!block:class", "!block:sleep", "!block:assembly"], "text": "" },
-    { "id": "happening", "do": "happening", "weight": 3, "text": "" }
+    { "id": "happening", "do": "happening", "weight": 3, "text": "" },
+    { "id": "snake", "do": "snake", "weight": 1.2, "text": "🐍 SNAKE!!! Somebody see snake for the hostel!" },
+    { "id": "inspection", "do": "inspection", "weight": 1.2, "when": ["!night"], "text": "🧐 SURPRISE INSPECTION! The VP is checking uniforms, nails and hair." }
   ],
   "paths": {
     "scholar":  { "label": "Top of the Class", "emoji": "🎓", "titles": ["Bookworm", "Brainbox", "Scholar", "Valedictorian"], "ending": "You graduate as the school's academic star — your name dey the honours board forever." },

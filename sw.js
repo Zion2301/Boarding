@@ -1,6 +1,6 @@
 /* Offline cache. Bump CACHE when files change so players get the update.
    FILES = index.html scripts + content/manifest.json entries (regenerate when adding files). */
-const CACHE = 'boarding-house-v8';
+const CACHE = 'boarding-house-v9';
 const FILES = [
   './',
   'index.html',
@@ -14,6 +14,10 @@ const FILES = [
   'vendor/three-bundle.js',
   'js/core/util.js',
   'shared/moderation.js',
+  'shared/whot.js',
+  'shared/football.js',
+  'shared/boards.js',
+  'vendor/colyseus.js',
   'js/content/bundle.js',
   'js/core/content.js',
   'js/data/config.js',
@@ -51,6 +55,8 @@ const FILES = [
   'js/systems/clock.js',
   'js/systems/interaction.js',
   'js/systems/actions.js',
+  'js/systems/onboarding.js',
+  'js/systems/director.js',
   'js/systems/ai.js',
   'js/systems/excuse.js',
   'js/systems/writing.js',
@@ -75,8 +81,13 @@ const FILES = [
   'js/render3d/interior3d.js',
   'js/render3d/actors3d.js',
   'js/render3d/input3d.js',
+  'js/render3d/cutscene.js',
   'js/ui/hud.js',
   'js/ui/lesson.js',
+  'js/net/net.js',
+  'js/net/social.js',
+  'js/net/games.js',
+  'js/net/boards.js',
   'js/ui/radial.js',
   'js/ui/dialogue.js',
   'js/ui/chat.js',
@@ -108,6 +119,7 @@ const FILES = [
   'content/school.json',
   'content/staff.json',
   'content/lessons.json',
+  'content/calendar.json',
   'content/maps/campus.json',
   'content/maps/boysHostel.json',
   'content/maps/girlsHostel.json',

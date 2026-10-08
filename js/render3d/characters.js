@@ -249,10 +249,20 @@
         // procedural layer: carrying a bucket on the right arm
         const b = group.userData.bones;
         if (ch.carry === 'bucket' && !pose) { b.uarmR.rotation.set(-0.05, 0, -0.32); b.farmR.rotation.set(-0.15, 0, 0); }
+        // chop box on the head, steadied with both hands
+        if (ch.carry === 'box' && !pose) { b.uarmR.rotation.set(0, 0, 2.7); b.uarmL.rotation.set(0, 0, -2.7); b.farmR.rotation.set(0, 0, 0.5); b.farmL.rotation.set(0, 0, -0.5); }
         if (ch.carryMesh) ch.carryMesh.visible = ch.carry === 'bucket' && !pose;
+        if (ch.boxMesh) ch.boxMesh.visible = ch.carry === 'box' && !pose;
       },
       setCarry(kind) {
         ch.carry = kind;
+        if (kind === 'box' && !ch.boxMesh) {
+          const T = THREE;
+          const bx = new T.Mesh(new T.BoxGeometry(0.62, 0.34, 0.42), new T.MeshLambertMaterial({ color: '#8b5a2b' }));
+          bx.position.set(0, P.headR * 2.2 + 0.17, 0);
+          group.userData.bones.head.add(bx);
+          ch.boxMesh = bx;
+        }
         if (kind === 'bucket' && !ch.carryMesh) {
           const T = THREE;
           const bk = new T.Mesh(new T.CylinderGeometry(0.13, 0.1, 0.22, 8, 1, true), new T.MeshLambertMaterial({ color: '#1e88e5', side: T.DoubleSide }));
@@ -261,7 +271,7 @@
           ch.carryMesh = bk;
         }
       },
-      dispose() { mesh.geometry.dispose(); mesh.material.dispose(); if (ch.carryMesh) { ch.carryMesh.geometry.dispose(); ch.carryMesh.material.dispose(); } },
+      dispose() { mesh.geometry.dispose(); mesh.material.dispose(); [ch.carryMesh, ch.boxMesh].forEach((m) => { if (m) { m.geometry.dispose(); m.material.dispose(); } }); },
     };
     return ch;
   }

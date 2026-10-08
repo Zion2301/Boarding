@@ -71,7 +71,8 @@
 
       // perimeter fence (thin wall) — instanced posts
       const fenceMat = lam('#a1887f');
-      [[W / 2, 0.1, W, 0.15], [W / 2, H - 0.1, W, 0.15], [0.1, H / 2, 0.15, H], [W - 0.1, H / 2, 0.15, H]].forEach(([x, z, w, d]) => {
+      const G = cfg.LOCATIONS.gate, g1 = (G.x + 10) * S, g2 = (G.x + G.w - 10) * S; // opening at the school gate
+      [[W / 2, 0.1, W, 0.15], [g1 / 2, H - 0.1, g1, 0.15], [(g2 + W) / 2, H - 0.1, W - g2, 0.15], [0.1, H / 2, 0.15, H], [W - 0.1, H / 2, 0.15, H]].forEach(([x, z, w, d]) => {
         const f = new T.Mesh(new T.BoxGeometry(w, 1.6, d), fenceMat); f.position.set(x, 0.8, z); f.castShadow = true; root.add(f);
       });
 

@@ -10,7 +10,8 @@
       BH.Time.newDay(s);
       BH.log(s, `🚌 Resumption day at ${s.player.schoolName}`, 'day');
       BH.Time.startBlock(s);
-      BH.Events.optional(s, 'arrivalParent');
+      // the parent's goodbye now plays at the end of the resumption cutscene (BH.Onboarding)
+      if (!BH.Onboarding) BH.Events.optional(s, 'arrivalParent');
       BH.Save.save(s);
       BH.UI.go('game');
     },

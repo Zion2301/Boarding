@@ -107,6 +107,7 @@
       if (!s || !document.getElementById('hud-stats')) return;
       HUD.placePrompt(s);
       BH.LessonUI && BH.LessonUI.update();
+      BH.Social && BH.Social.update();
       const now = performance.now();
       if (!force && !HUD.dirty && now - HUD.last < 250) return;
       HUD.last = now; HUD.dirty = false;

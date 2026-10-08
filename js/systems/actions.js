@@ -488,5 +488,11 @@
     return good(`Smooth. ${U.money(amt)} don change pocket. ${c.npc.first} no feel anything. 🫳`);
   };
 
+  /* real players (multiplayer) — BH.Social does the work */
+  H.fbJoinHere = () => { if (!BH.Games.football.active()) BH.Games.football.join(); return { noTime: true, cancel: true }; };
+  H.fbKick = (s, c) => { BH.Games.football.kick(c.args.power); return { noTime: true, cancel: true }; };
+  H.socialMenu = (s, c) => { BH.Social.openPlayer(c.target.pid); return { noTime: true, cancel: true }; };
+  H.socialDo = (s, c) => { BH.Social.act(c.args.op, c.target.pid); return { noTime: true, cancel: true }; };
+
   BH.Actions = Actions;
 })(window.BH);

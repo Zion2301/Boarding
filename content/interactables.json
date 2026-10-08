@@ -361,6 +361,16 @@
     "emoji": "📌",
     "do": "boardPlayers",
     "prio": 2
+   },
+   {
+    "id": "runCaptain",
+    "label": "Run for class captain",
+    "emoji": "🗳️",
+    "do": "runForCaptain",
+    "when": [
+     "block:free"
+    ],
+    "prio": 3
    }
   ]
  },
@@ -1160,10 +1170,10 @@
    },
    {
     "id": "ball",
-    "label": "Play ball",
+    "label": "Join the football match",
     "emoji": "⚽",
-    "do": "playBall",
-    "mins": 30,
+    "do": "fbJoinHere",
+    "mins": 0,
     "prio": 1
    },
    {

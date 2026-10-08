@@ -21,7 +21,9 @@
     });
     C().TREES.forEach(([x, y]) => out.push({ x: x - 10, y: y + 2, w: 20, h: 20, tree: true }));
     const W = C().W, H = C().H;
-    out.push({ x: 0, y: 0, w: W, h: 12 }, { x: 0, y: H - 12, w: W, h: 12 }, { x: 0, y: 0, w: 12, h: H }, { x: W - 12, y: 0, w: 12, h: H });
+    // perimeter fence with an opening at the school gate (the road outside is walled off further out)
+    const G = BH.data.CAMPUS.LOCATIONS.gate, gx1 = G.x + 20, gx2 = G.x + G.w - 20;
+    out.push({ x: 0, y: 0, w: W, h: 12 }, { x: 0, y: H - 12, w: gx1, h: 12 }, { x: gx2, y: H - 12, w: W - gx2, h: 12 }, { x: 0, y: 0, w: 12, h: H }, { x: W - 12, y: 0, w: 12, h: H }, { x: 0, y: H + 130, w: W, h: 20 });
     return out;
   }
 

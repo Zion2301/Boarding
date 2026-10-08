@@ -64,6 +64,7 @@
       Engine.last = performance.now();
       const loop = (now) => { if (!Engine.running) return; Engine.raf = requestAnimationFrame(loop); Engine.frame(now); };
       Engine.raf = requestAnimationFrame(loop);
+      if (BH.Net && !BH.Net.online) BH.Net.connect();
       return Engine;
     },
 
@@ -87,6 +88,9 @@
       if (!cm.outdoor) { Engine.rig.distGoal = Math.min(Engine.rig.distGoal, 13); Engine.rig.pitchGoal = Math.max(Engine.rig.pitchGoal, 0.85); }
       if (BH.Sky3D && BH.Sky3D.setIndoors) BH.Sky3D.setIndoors(!cm.outdoor, cm);
       BH.HUD.setMap(cm.outdoor, cm);
+      // a brand-new student: resumption-day cutscene at the gate
+      const s = BH.Game.s;
+      if (cm.outdoor && BH.Onboarding && BH.Onboarding.step(s) === 'cutscene' && BH.Cutscene) BH.Cutscene.play(Engine);
     },
     refreshPlayer() { BH.Actors3D.reset(); },
 
@@ -109,6 +113,9 @@
       if (!s) return;
       if (!BH.SceneManager3D.busy) BH.Sim.update(dt * 1000);
       if (!Engine.running) return;
+      if (BH.Net) BH.Net.update(dt);
+      if (BH.Games) BH.Games.update(dt);
+      if (BH.Cutscene) BH.Cutscene.update(dt);
       BH.Actors3D.update(dt);
       if (Engine.indoors) BH.Interior3D.update(Engine, dt);
       if (BH.Sky3D && BH.Sky3D.update) BH.Sky3D.update(Engine, dt);

@@ -39,6 +39,8 @@
     expected(s) {
       const b = BH.Time.block(s);
       if (b.kind === 'free') return null;
+      // resumption day: the story objective replaces "wait at the gate"
+      if (BH.Onboarding && BH.Onboarding.active(s) && ['arrival', 'settling'].includes(BH.Time.blockId(s))) return null;
       // school blocks: your class arm (or your department / religion / language room for split periods)
       if (['class', 'register', 'prep'].includes(b.kind) && BH.School) return BH.School.placeFor(s, 'player');
       const key = BH.Clock.location(s);
@@ -68,6 +70,8 @@
       const id = BH.Time.blockId(s);
       const e = Activities.expected(s);
       if (s.act && s.act.type === 'sleep') return { kind: 'asleep', text: '😴 Asleep' };
+      const ob = BH.Onboarding && BH.Onboarding.objective(s);
+      if (ob && ['arrival', 'settling'].includes(BH.Time.blockId(s))) return { kind: 'story', text: `⭐ ${ob.text}` };
       if (!e) return { kind: 'free', text: 'Free time — go anywhere' };
       if (Activities.excused(s)) return { kind: 'excused', text: '🩺 Excused (sick bay)' };
       const att = s.today.att[id];

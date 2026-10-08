@@ -21,6 +21,12 @@
 
     lookFor(a) {
       const s = BH.Game.s;
+      if (a.kind === 'remote') {
+        if (!a.look || !a.look.av) return null;
+        return { key: 'r|' + JSON.stringify(a.look), look: { av: a.look.av, outfit: a.look.outfit || { kind: 'student', level: 1, gender: a.look.av.gender || 'm', style: 'uniform' } } };
+      }
+      if (a.kind === 'extra') return a.look ? { key: 'x|' + a.id, look: a.look } : null;
+      if (a.kind === 'fb') return { key: 'fb|' + a.team + (a.kit || ''), look: { av: BH.data.defaultAvatar(a.gender || 'm', 'christian'), outfit: { kind: 'student', school: s.player.school, level: 4, gender: a.gender || 'm', style: 'house', house: a.kit || (a.team === 'red' ? '#c62828' : '#1565c0'), seed: a.id } } };
       if (a.kind === 'player') {
         const req = BH.Outfits.forPlayer(s);
         return { key: 'p|' + JSON.stringify(s.player.avatar) + req.style + req.level + req.prefect, look: { av: s.player.avatar || D.defaultAvatar(s.player.gender, s.player.religion), outfit: req } };
@@ -197,16 +203,22 @@
       const tg = BH.Sim.target;
       // only the nearest few names (+ the target) and a handful of bubbles, so crowds stay readable
       const cand = [];
+      const now = performance.now();
       BH.Actors.list.forEach((a) => {
-        if (a.kind !== 'npc' || a.hidden || a.map !== BH.Sim.mapId) return;
+        if (a.hidden || a.map !== BH.Sim.mapId) return;
+        if (a.bubble && a.bubble.until < now && a.kind !== 'npc') a.bubble = null;
         const d = pl ? Math.hypot(a.x - pl.x, a.y - pl.y) : 0;
+        if (a.kind === 'player' || a.kind === 'extra') { if (a.bubble) cand.push({ a, d: a.kind === 'player' ? -1 : d, isTarget: false, me: true }); return; }
+        // real players: always named (they're the people you came to play with)
+        if (a.kind === 'remote' || a.kind === 'fb') { if (d < 900) cand.push({ a, d: d - 1000, isTarget: tg && tg.type === 'remote' && tg.pid === a.pid, real: true }); return; }
+        if (a.kind !== 'npc') return;
         const isTarget = tg && tg.type === 'npc' && tg.npc && tg.npc.id === a.npcId;
         if (d < 260 || a.bubble || isTarget) cand.push({ a, d, isTarget });
       });
       cand.sort((p, q) => (q.isTarget - p.isTarget) || p.d - q.d);
       let names = 0, bubbles = 0;
-      cand.forEach(({ a, d, isTarget }) => {
-        const showName = isTarget || (d < 260 && names < 7);
+      cand.forEach(({ a, d, isTarget, me, real }) => {
+        const showName = !me && (isTarget || real || (d < 260 && names < 7));
         const showBubble = a.bubble && bubbles < 4;
         if (!showName && !showBubble) return;
         if (showName) names++;
@@ -218,9 +230,17 @@
         used.add(a.id);
         let el = Actors3D.tags.get(a.id);
         if (!el) { el = document.createElement('div'); el.className = 'tag3d'; Actors3D.layer.appendChild(el); Actors3D.tags.set(a.id, el); }
-        const n = BH.NPC.get(s, a.npcId);
-        const name = n ? (n.type === 'teacher' || n.type === 'staff' ? BH.NPC.name(n) : n.first) : '';
-        const html = `<div class="tagw">${showBubble ? `<div class="bubble3d">${BH.U.esc(a.bubble.text)}</div>` : ''}${showName ? `<span class="name3d ${n ? n.type : ''}">${BH.U.esc(name)}</span>` : ''}</div>`;
+        let nameHtml = '';
+        if (showName && a.kind === 'remote') {
+          const fr = BH.Social && BH.Social.isFriend(a.pid), bf = BH.Social && BH.Social.isBestie(a.pid);
+          nameHtml = `<span class="name3d player ${fr ? 'friend' : ''}" data-act="playerMenu" data-arg="${BH.U.esc(a.pid || '')}">${bf ? '💛 ' : fr ? '🤝 ' : ''}${a.gang ? `[${BH.U.esc(a.gang)}] ` : ''}${BH.U.esc(String(a.name || 'Player').split(' ')[0])}</span>`;
+        } else if (showName && a.kind === 'fb') nameHtml = `<span class="name3d fb ${a.team}">${BH.U.esc(a.name || '')}</span>`;
+        else if (showName) {
+          const n = BH.NPC.get(s, a.npcId);
+          const name = n ? (n.type === 'teacher' || n.type === 'staff' ? BH.NPC.name(n) : n.first) : '';
+          nameHtml = `<span class="name3d ${n ? n.type : ''}">${BH.U.esc(name)}</span>`;
+        }
+        const html = `<div class="tagw">${showBubble ? `<div class="bubble3d ${a.bubble.player ? 'chat' : ''}">${BH.U.esc(a.bubble.text)}</div>` : ''}${nameHtml}</div>`;
         if (el.dataset.h !== html) { el.innerHTML = html; el.dataset.h = html; }
         el.style.transform = `translate(${p.x}px, ${p.y}px)`;
       });

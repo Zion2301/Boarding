@@ -227,5 +227,6 @@
   };
   WorldSim.H = H;
 
+  WorldSim.H = H; // other systems (BH.Director) add event handlers here
   BH.registerSystem('WorldSim', WorldSim);
 })(window.BH);

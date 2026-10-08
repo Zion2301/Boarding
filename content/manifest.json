@@ -31,5 +31,6 @@
   "outfits": "outfits.json",
   "school": "school.json",
   "staff": "staff.json",
-  "lessons": "lessons.json"
+  "lessons": "lessons.json",
+  "calendar": "calendar.json"
 }

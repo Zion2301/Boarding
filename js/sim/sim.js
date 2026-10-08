@@ -61,7 +61,7 @@
 
   /* ---------------- movement ---------------- */
   function moveActor(a, dt, all) {
-    if (a.hidden) return;
+    if (a.hidden || a.kind === 'remote') return; // other players move themselves (BH.Net)
     let dx = 0, dy = 0, want = 0;
     const top = a.run ? a.runSpeed : a.maxSpeed;
     if (a.move && Math.hypot(a.move.dx, a.move.dy) > 0.15) {
@@ -180,10 +180,10 @@
       // following an NPC / walking up to talk to one
       const chase = Sim.chasing || Sim.follow;
       if (chase) {
-        const o = Actors.get('npc:' + chase);
-        if (!o) { Sim.chasing = null; Sim.follow = null; return; }
+        const o = Actors.get(String(chase).startsWith('r:') ? chase : 'npc:' + chase);
+        if (!o || o.map !== Sim.mapId) { Sim.chasing = null; Sim.follow = null; return; }
         const d = Math.hypot(o.x - pl.x, o.y - pl.y);
-        if (Sim.chasing && d < 70) { Sim.chasing = null; Intents.push('player', { type: 'stop' }); BH.Dialogue.npc(o.npcId); return; }
+        if (Sim.chasing && d < 70) { Sim.chasing = null; Intents.push('player', { type: 'stop' }); if (o.kind === 'remote') BH.Social.openPlayer(o.pid); else BH.Dialogue.npc(o.npcId); return; }
         Sim.reT = (Sim.reT || 0) - dt;
         if (d > 60 && Sim.reT <= 0) { Sim.reT = 0.5; Intents.push('player', { type: 'moveTo', x: o.x, y: o.y + 20 }); }
       }
@@ -216,7 +216,7 @@
       pl.seat = !!(a && ['lesson', 'prep', 'seat'].includes(a.type));
       pl.hidden = false;
       pl.pose = !a ? null : a.type === 'sleep' ? 'sleep' : ['lesson', 'prep', 'seat'].includes(a.type) ? (a.mode === 'doze' ? 'sleep_sit' : 'sit') : a.type === 'busy' ? 'busy' : a.type === 'hide' ? 'crouch' : null;
-      pl.carry = BH.Inv.has(s, 'water') ? 'bucket' : null;
+      pl.carry = s.flags.carryBox ? 'box' : BH.Inv.has(s, 'water') ? 'bucket' : null;
       pl.ghost = BH.Rules.hidden(s);
     },
 
@@ -250,7 +250,9 @@
       const px = pl.x, py = pl.y, cm = Sim.cm;
       let best = null, bd = 1e9;
       const consider = (t, d) => { if (d < bd) { bd = d; best = t; } };
+      if (BH.Games && BH.Games.football.active() && BH.Games.football.nearBall()) { const b = BH.Games.football.ballPos(); consider({ type: 'ball', x: b.x, y: b.y, h: 0.9 }, -100); }
       Actors.list.forEach((o) => {
+        if (o.kind === 'remote' && o.map === Sim.mapId) { const d = Math.hypot(o.x - px, o.y - py); if (d < 78) consider({ type: 'remote', pid: o.pid, actor: o.id, x: o.x, y: o.y, h: 2.1 }, d - 14); return; }
         if (o.kind !== 'npc' || o.leaving || o.hidden) return;
         const d = Math.hypot(o.x - px, o.y - py);
         if (d < 78) consider({ type: 'npc', npc: BH.NPC.get(s, o.npcId), x: o.x, y: o.y, h: 2.1 }, d + (!o.path.length && (o.seat || !cm.outdoor) ? 18 : -12));
@@ -272,12 +274,17 @@
       const e = BH.Activities.expected(s);
       const present = BH.Activities.present(s);
       let obj = null;
-      if (e && !present) obj = Sim.route(e.map, e.key);
+      const ob = BH.Onboarding && BH.Onboarding.objective(s);
+      if (ob && ob.map) {
+        // resumption-day story objective (register → hostel → bunk → dinner → bed)
+        if (ob.map !== Sim.mapId) obj = Sim.route(ob.map, ob.key);
+        else if (ob.obj) { const o = Sim.cm.objects.find((x) => ob.obj.includes(x.kind) && (!['bunk', 'myBed'].includes(x.kind) || !s.world.myBunk || BH.Interaction.mine(s, x))); if (o) obj = { x: o.x, y: o.y, h: 1.5 }; }
+      } else if (e && !present) obj = Sim.route(e.map, e.key);
       else if (e && present && !Sim.cm.outdoor && !s.act) {
         const kind = BH.Time.block(s).kind;
         const desk = ['class', 'register', 'prep'].includes(kind) ? BH.School.deskOf(s, 'player', Sim.mapId) : null;
-        const want = { class: ['labBench', 'pew', 'prayerMat', 'staffTable', 'diningTable', 'desk'], meal: [s.today.flags.plate ? 'diningTable' : 'servingCounter'], sleep: ['myBed'] }[kind];
-        const o = desk || (want && Sim.cm.objects.find((x) => want.includes(x.kind) && (x.kind !== 'diningTable' || kind !== 'meal' || x.house === s.player.house.tag || !x.house)));
+        const want = { class: ['labBench', 'pew', 'prayerMat', 'staffTable', 'diningTable', 'desk'], meal: [s.today.flags.plate ? 'diningTable' : 'servingCounter'], sleep: ['myBed', 'bunk'] }[kind];
+        const o = desk || (want && Sim.cm.objects.find((x) => want.includes(x.kind) && (x.kind !== 'diningTable' || kind !== 'meal' || x.house === s.player.house.tag || !x.house) && (kind !== 'sleep' || BH.Interaction.mine(s, x))));
         if (o) obj = { x: o.x, y: o.y, h: 1.3 };
       }
       Sim.markers = { objective: obj, waypoint: Sim.waypoint() };
@@ -294,6 +301,13 @@
     },
     waypoint() {
       const s = BH.Game.s;
+      // a friend calling you / your best friend's location / a game you're walking to
+      const nw = BH.Net && BH.Net.waypoint;
+      if (nw) {
+        if (nw.until && Date.now() > nw.until) BH.Net.waypoint = null;
+        else if (nw.map === Sim.mapId) { const o = nw.actor && Actors.get(nw.actor); return { x: o ? o.x : nw.x, y: o ? o.y : nw.y, h: 2.4 }; }
+        else return Sim.route(nw.map, BH.School.campusKey(nw.map));
+      }
       const id = BH.HUD.waypoint;
       if (!id) return null;
       const m = s.missions.find((x) => x.id === id);

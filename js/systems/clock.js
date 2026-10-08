@@ -70,6 +70,8 @@
     wait(s, minutes, opts = {}) {
       const until = Clock.abs(s) + Math.max(1, Math.round(minutes));
       s.world.ff = { until, rate: opts.rate || (minutes > 120 ? 90 : 40), reason: opts.reason || 'wait', label: opts.label || '⏩ Waiting…' };
+      // online: the school clock only speeds up when everybody is sleeping / waiting
+      if (BH.Net && BH.Net.clockOn()) BH.Net.vote(minutes, s.world.ff.rate, s.world.ff.label);
       BH.Store && BH.Store.changed();
     },
     waitUntilNextBell(s) { Clock.wait(s, Clock.nextStart(s) - s.clock, { label: '⏩ Waiting for the bell…' }); },
@@ -77,6 +79,7 @@
       if (!s.world.ff) return;
       const reason = s.world.ff.reason;
       s.world.ff = null;
+      if (BH.Net && BH.Net.clockOn()) BH.Net.unvote();
       BH.Activities && BH.Activities.waitEnded(s, reason, why);
       BH.Store && BH.Store.changed();
     },
@@ -84,6 +87,8 @@
     /* Called every frame by the scene (or a headless test). dtMs = real milliseconds. */
     acc: 0,
     update(s, dtMs) {
+      // online: follow the room's clock (shared time of day for everyone on campus)
+      if (BH.Net && BH.Net.clockOn()) { const due = Math.min(240, BH.Net.due()); if (due > 0) Clock.tick(s, due); return Math.max(0, due); }
       Clock.acc += (dtMs / 1000) * Clock.speed(s);
       const mins = Math.min(240, Math.floor(Clock.acc));
       if (mins <= 0) return 0;
@@ -94,6 +99,7 @@
 
     /* ---------- the ticking ---------- */
     tick(s, minutes) {
+      if (BH.Net) BH.Net.ticked(minutes);
       for (let i = 0; i < minutes; i++) {
         if (s.gameOver) return;
         s.clock++;

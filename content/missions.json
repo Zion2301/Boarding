@@ -1134,7 +1134,7 @@
     "sunday"
    ],
    "when": [
-    "dayCount:3",
+    "did:robbed",
     "!arcDone:thief"
    ],
    "weight": 0,
@@ -1280,7 +1280,7 @@
     "saturday"
    ],
    "when": [
-    "week:2",
+    "did:sports",
     "!arcDone:sports"
    ],
    "weight": 1,

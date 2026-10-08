@@ -28,6 +28,7 @@
 
     /* per frame: keyboard + joystick → camera-relative move vector (map space) */
     update(E) {
+      if (BH.Cutscene && BH.Cutscene.active) { BH.Sim.input = { dx: 0, dy: 0, run: false }; return; }
       const fwd = { x: -Math.sin(E.rig.yaw), y: -Math.cos(E.rig.yaw) };
       const right = { x: -fwd.y, y: fwd.x };
       let f = 0, r = 0;

@@ -37,6 +37,8 @@
       return null;
     },
     here(s) { return Lessons.get(s, s.world && s.world.map); },
+    /* the day used for seeded picks — the room's day when online, so classmates get the same lesson */
+    day(s) { return BH.Net && BH.Net.clockOn() ? Math.floor(BH.Net.est() / 1440) : s.time.dayCount; },
     isMine(s, L) { const pl = Sc().placeFor(s, 'player'); return !!L && pl.map === L.room; },
 
     /* ---------- lesson material: notes for the board + questions ---------- */
@@ -67,7 +69,7 @@
       const absent = !t || !!(s.world.teacherAbsent && s.world.teacherAbsent[t.id]);
       const def = t ? Sc().staffDef(t.id) : null;
       const key = part.by ? `${part.code}:${part.group}` : part.code;
-      const mat = Lessons.material(s, part.code, key, U.hash(`${room}|${s.time.dayCount}|${b.period}`));
+      const mat = Lessons.material(s, part.code, key, U.hash(`${room}|${Lessons.day(s)}|${b.period}`));
       const L = {
         kind: 'lesson', room, code: part.code, group: part.group || null, key, t: t ? t.id : null, classes: slot.classes,
         free: absent, topic: U.seedPick(D.TOPICS[part.code] || ['Revision'], s.time.dayCount + part.code),
@@ -89,17 +91,22 @@
     /* who is in the room for this lesson (players here + bots scheduled here) */
     present(s, L) {
       const out = [];
-      if ((s.world.map || 'campus') === L.room) out.push('player');
+      // real players in a stable order (same on every screen in the room), then bots
+      const humans = [];
+      if ((s.world.map || 'campus') === L.room) humans.push({ id: 'player', key: s.player.playerId || 'player' });
+      if (BH.Net && BH.Net.online) BH.Net.here(L.room).forEach((p) => humans.push({ id: 'r:' + p.pid, key: p.pid }));
+      humans.sort((a, b) => (a.key < b.key ? -1 : 1)).forEach((h) => out.push(h.id));
       N().students(s).forEach((n) => { if (BH.Schedule.where(s, n).map === L.room) out.push(n.id); });
       return out;
     },
-    nameOf(s, sid) { if (sid === 'player') return s.player.name.split(' ')[0]; const n = N().get(s, sid); return n ? n.first : 'Someone'; },
+    nameOf(s, sid) { if (sid === 'player') return s.player.name.split(' ')[0]; if (String(sid).startsWith('r:')) return BH.Net ? BH.Net.nameOf(sid.slice(2)) : 'Someone'; const n = N().get(s, sid); return n ? n.first : 'Someone'; },
     teacher(s, L) { return L.t ? N().get(s, L.t) : null; },
     lines(L) { const d = L.t ? Sc().staffDef(L.t) : null; return (d && d.lines) || {}; },
     flags(L) { const d = L.t ? Sc().staffDef(L.t) : null; return (d && d.flags) || {}; },
     sirMa(s, L) { const t = Lessons.teacher(s, L); return t && t.gender === 'f' ? 'Ma' : 'Sir'; },
 
     say(s, L, who, text, kind = 'say') {
+      if (String(who).startsWith('r:') && BH.Actors) { const ra = [...BH.Actors.list.values()].find((x) => x.kind === 'remote' && 'r:' + x.pid === who); if (ra) ra.bubble = { text, until: performance.now() + 4000, player: true }; }
       const m = s.clock - L.start;
       L.feed.push({ who, name: who === 'teacher' ? N().name(Lessons.teacher(s, L)) : who === 'class' ? 'Class' : who === 'sys' ? '' : Lessons.nameOf(s, who), text, kind, m });
       if (L.feed.length > 40) L.feed.shift();
@@ -175,9 +182,10 @@
     ask(s, L, i) {
       const q = L.qs[i];
       const here = Lessons.present(s, L);
-      const r = U.hash(`${L.room}|${s.time.dayCount}|${i}`);
+      const r = U.hash(`${L.room}|${Lessons.day(s)}|${i}`);
       let called = null;
-      if (here.length && r % 10 < 5) called = here.includes('player') && r % 10 < 3 ? 'player' : here[r % here.length];
+      const online = BH.Net && BH.Net.online;
+      if (here.length && r % 10 < 5) called = !online && here.includes('player') && r % 10 < 3 ? 'player' : here[r % here.length];
       L.q = { i, q: q.q, o: q.o, a: q.a, e: q.e, at: s.clock - L.start, called, tries: [], closed: false };
       const opts = q.o.map((o, k) => `${LETTERS[k]}) ${o}`).join('   ');
       Lessons.say(s, L, 'teacher', called ? `"${Lessons.nameOf(s, called)}! ${q.q}"` : `"Who can tell me — ${q.q}"`);
@@ -341,6 +349,7 @@
       const room = s.world.map;
       if (BH.Intents && BH.Intents.send && BH.Actors && BH.Actors.player()) BH.Intents.send('player', { type: 'lesson:answer', room, text });
       else Lessons.answer(s, 'player', text);
+      if (BH.Net && BH.Net.online) BH.Net.send('lesson', { room, text }); // classmates in the room see your answer
     },
     intent(it) {
       const s = BH.Game.s;

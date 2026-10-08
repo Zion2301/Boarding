@@ -35,7 +35,15 @@
     /* Probability of being caught. base already includes situation (teacher strictness etc.) */
     caught(s, base) {
       const p = U.clamp(base + BH.Stats.mod(s, 'catch') - BH.Stats.mod(s, 'dodge') - BH.Stats.mod(s, 'luck') / 2, 0.05, 0.95);
-      return Math.random() < p;
+      const hit = Math.random() < p;
+      // your best friend standing next to you might cover for you ("Ma, she was with me!")
+      const bf = hit && BH.Social && BH.Social.coverChance(s);
+      if (bf && Math.random() < 0.4) {
+        BH.UI && BH.UI.toast(`💛 ${bf.name.split(' ')[0]} covers for you: "${BH.U.pick(['Sir, na me send am!', 'Ma, she was with me the whole time!', 'E no do anything, I swear!'])}" You're off the hook.`, 'good');
+        BH.Net.send('cover', { to: bf.pid });
+        return false;
+      }
+      return hit;
     },
     strict(s) { return BH.Stats.school(s).strict; },
 

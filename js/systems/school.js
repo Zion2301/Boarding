@@ -177,10 +177,25 @@
     },
     student(s, sid) {
       if (s.school.students[sid]) return s.school.students[sid];
+      if (String(sid).startsWith('r:') && BH.Net) return BH.Net.students().find((x) => x.id === sid) || null;
       const n = BH.NPC.get(s, sid);
       return n && ['classmate', 'senior', 'junior'].includes(n.type) ? School.botEntry(s, n) : null;
     },
-    students(s) { return [...Object.values(s.school.students), ...BH.NPC.students(s).map((n) => School.botEntry(s, n))]; },
+    students(s) { return [...Object.values(s.school.students), ...(BH.Net && BH.Net.online ? BH.Net.students() : []), ...BH.NPC.students(s).map((n) => School.botEntry(s, n))]; },
+    /* online: everybody shares one school (name, uniform, timetables) — the room's */
+    adoptSchool(s, sc) {
+      if (sc.name) s.player.schoolName = sc.name;
+      if (sc.type && BH.data.SCHOOLS[sc.type]) s.player.school = sc.type;
+      if (sc.seed && sc.seed !== s.school.seed) {
+        s.school.seed = sc.seed;
+        s.school.tt = null;
+        Object.values(s.school.classes).forEach((c) => { c.form = null; c.seating = {}; c.captain = null; c.assistant = null; });
+        s.school.houseMasters = null;
+        School.ensure(s);
+        s.world.seats = {};
+        BH.Schedule.onBlockStart();
+      }
+    },
     members(s, cid) {
       const c = s.school.classes[cid];
       return School.students(s).filter((st) => School.levelId(st.level) === c.level && st.arm === c.arm);

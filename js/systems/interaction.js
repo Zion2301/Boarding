@@ -36,6 +36,7 @@
       case 'mission': return BH.Missions.hasTag(s, v);
       case 'once': return !s.today.flags['once_' + v];
       case 'flag': return !!s.today.flags[v];
+      case 'did': return !!(s.flags && s.flags['did_' + v]); // things you've done (arcs start from behaviour, not dates)
       case 'map': return (s.world.map || 'campus') === v;
       case 'owner': return !!ctx.mine;
       case 'notOwner': return !ctx.mine;
@@ -66,6 +67,9 @@
     /* Is this object yours? (your bed/chop box/locker, your desk in your class) */
     mine(s, obj) {
       if (!obj) return false;
+      // the bunk you chose on resumption day (else the ⭐ bed)
+      const mb = s.world && s.world.myBunk;
+      if (mb && ['bunk', 'myBed'].includes(obj.kind)) return obj.map === mb.map && obj.id === mb.id;
       if (obj.kind === 'myBed') return obj.map === BH.Schedule.myHostel(s);
       if (obj.kind === 'chopBox') return obj.map === BH.Schedule.myHostel(s);
       if (obj.kind === 'locker') {
@@ -83,10 +87,13 @@
       if (kind === 'desk' && Interaction.mine(s, obj)) kind = 'myDesk';
       if (kind === 'myDesk' && !Interaction.mine(s, obj)) kind = 'desk';
       if (kind === 'myBed' && !Interaction.mine(s, obj)) kind = 'bunk';
+      if (kind === 'bunk' && Interaction.mine(s, obj)) kind = 'myBed';
       return C().interactable(kind);
     },
     title(s, target) {
       if (target.type === 'npc') return `${BH.NPC.emoji(target.npc)} ${BH.NPC.name(target.npc)}`;
+      if (target.type === 'ball') return '⚽ The ball';
+      if (target.type === 'remote') { const p = BH.Net && BH.Net.byPid(target.pid); return `${BH.Social.isBestie(target.pid) ? '💛' : BH.Social.isFriend(target.pid) ? '🤝' : '🧑🏾‍🎓'} ${p ? p.name : 'Player'}`; }
       if (target.type === 'door' && target.room) { const m = C().map(target.room); return `🚪 ${m ? m.name : target.room}${target.room === BH.Activities.myClassroom(s) ? ' (your class)' : ''}`; }
       if (target.type === 'door') { const L = D.CAMPUS.LOCATIONS[target.key]; return `${L.emoji} ${L.name}`; }
       if (target.type === 'self') return Interaction.selfTitle(s);
@@ -112,6 +119,18 @@
           list.push({ id: 'search', label: 'Search', emoji: '🔍', do: 'search', prio: 4 });
         }
       } else if (target.type === 'npc') list = Interaction.npcActions(s, target.npc);
+      else if (target.type === 'ball') list = [{ id: 'pass', label: 'Pass', emoji: '⚽', do: 'fbKick', args: { power: 0.55 }, prio: 0 }, { id: 'shoot', label: 'Shoot!', emoji: '🥅', do: 'fbKick', args: { power: 1 }, prio: 1 }];
+      else if (target.type === 'remote') {
+        const fr = BH.Social.isFriend(target.pid);
+        list = [
+          { id: 'menu', label: 'Hang out', emoji: '🧑🏾‍🤝‍🧑🏾', do: 'socialMenu', prio: 0 },
+          fr ? { id: 'follow', label: 'Walk together', emoji: '👣', do: 'socialDo', args: { op: 'follow' }, prio: 1 } : { id: 'friend', label: 'Add friend', emoji: '🤝', do: 'socialDo', args: { op: 'friend' }, prio: 1 },
+          { id: 'wave', label: 'Wave', emoji: '👋🏾', do: 'socialDo', args: { op: 'wave' }, prio: 2 },
+          { id: 'share', label: 'Share food', emoji: '🎁', do: 'socialDo', args: { op: 'share' }, prio: 3 },
+          { id: 'whot', label: 'Play Whot!', emoji: '🃏', do: 'socialDo', args: { op: 'whot' }, prio: 4 },
+          { id: 'sit', label: 'Sit together', emoji: '🪑', do: 'socialDo', args: { op: 'sit' }, prio: 5 },
+        ];
+      }
       else if (target.type === 'door') list = [{ id: 'enter', label: 'Enter', emoji: '🚪', do: 'enter', prio: 0 }];
       else if (target.type === 'self') list = Interaction.selfActions(s);
       list.push(...BH.collect('actionsFor', s, target));

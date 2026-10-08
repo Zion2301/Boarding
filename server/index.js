@@ -13,6 +13,9 @@ import { createGuard, cacheKey } from './guard.js';
 import { buildSystem, sheetFor, reloadContent } from './prompts.js';
 import { npcChat, gradeAnswer, judgeDebate, moderateText, AIUnavailable, CHAT_MODEL, GRADE_MODEL } from './ai.js';
 import { validate } from './effects.js';
+import { Server as GameServer } from 'colyseus';
+import { WebSocketTransport } from '@colyseus/ws-transport';
+import { CampusRoom, WhotRoom, FootballRoom, BoardRoom } from './mp/rooms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(here, '..');
@@ -280,7 +283,7 @@ function serveStatic(req, res, urlPath) {
   });
 }
 
-const server = http.createServer(async (req, res) => {
+const app = async (req, res) => {
   const url = new URL(req.url, 'http://x');
   if (req.method === 'OPTIONS') return send(res, 204, '');
   const route = routes[`${req.method} ${url.pathname}`];
@@ -292,7 +295,23 @@ const server = http.createServer(async (req, res) => {
     log('error', req.method, url.pathname, e.message);
     if (!res.headersSent) send(res, e.message === 'too large' ? 413 : 400, { error: e.message });
   }
-});
-server.listen(PORT, () => {
-  log(`Boarding House server on http://localhost:${PORT}  ·  store: ${store.kind}  ·  AI: ${process.env.AI_ENABLED === '0' ? 'OFF' : MOCK ? 'MOCK' : process.env.ANTHROPIC_API_KEY ? 'ON' : 'ON (no ANTHROPIC_API_KEY set — calls will fall back)'}${ADMIN_TOKEN ? '  ·  admin: /admin.html' : '  ·  set ADMIN_TOKEN to use /admin.html'}`);
-});
+};
+const server = http.createServer();
+/* multiplayer (Colyseus) on the same port: ws:// for rooms, /matchmake for joining */
+const gameServer = new GameServer({ transport: new WebSocketTransport({ server }), greet: false });
+gameServer.define('campus', CampusRoom).filterBy(['school']);
+gameServer.define('whot', WhotRoom);
+gameServer.define('football', FootballRoom);
+gameServer.define('board', BoardRoom);
+await gameServer.listen(PORT);
+// Colyseus registered its own HTTP handler: give it only its matchmaking routes, everything else is ours
+{
+  const coly = server.listeners('request').slice();
+  server.removeAllListeners('request');
+  server.on('request', (req, res) => (req.url.startsWith('/matchmake') ? coly.forEach((fn) => fn.call(server, req, res)) : app(req, res)));
+}
+{
+  const lan = Object.values((await import('node:os')).networkInterfaces()).flat().filter((i) => i && i.family === 'IPv4' && !i.internal).map((i) => i.address);
+  log(`Multiplayer ready · friends on the same Wi-Fi can open ${lan.map((a) => `http://${a}:${PORT}`).join(' or ') || `http://<this-computer's-IP>:${PORT}`}`);
+}
+log(`Boarding House server on http://localhost:${PORT}  ·  store: ${store.kind}  ·  AI: ${process.env.AI_ENABLED === '0' ? 'OFF' : MOCK ? 'MOCK' : process.env.ANTHROPIC_API_KEY ? 'ON' : 'ON (no ANTHROPIC_API_KEY set — calls will fall back)'}${ADMIN_TOKEN ? '  ·  admin: /admin.html' : '  ·  set ADMIN_TOKEN to use /admin.html'}`);

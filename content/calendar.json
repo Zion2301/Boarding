@@ -1,0 +1,12 @@
+{
+  "_doc": "The school's weekly calendar, run by js/systems/director.js. Each entry happens on a weekday (dow 0=Mon … 6=Sun) from 'at' to 'until', optionally only in some weeks ('weeks') or for some students ('who'). place = campus location key where it happens (a waypoint is offered). game = the minigame you can join there (race, dance, football). reward = given when you take part. Random events live in world.json; story arcs in missions.json start from what you do (did:… conditions), not from the date.",
+  "events": [
+    { "id": "jumat", "dow": 4, "at": "13:40", "until": "14:40", "who": { "religion": "muslim" }, "place": "mosque", "emoji": "🕌", "title": "Jumat prayers", "text": "It's Friday — Jumat prayers at the school mosque. The imam's khutbah is short today (he heard about the jollof).", "reward": { "morale": 5 } },
+    { "id": "interHouse", "dow": 2, "at": "16:00", "until": "18:00", "place": "field", "emoji": "🏃🏾", "title": "Inter-house practice", "text": "Inter-house sports practice on the field! Your house needs sprinters. Join a 100m race.", "game": "race" },
+    { "id": "visitingDay", "dow": 5, "weeks": [3, 6, 9], "at": "10:00", "until": "13:00", "place": "field", "emoji": "🧺", "title": "Visiting Day", "text": "VISITING DAY! Parents are under the trees with coolers of jollof, chicken and provisions. Go and find your people!" },
+    { "id": "socialNight", "dow": 5, "at": "19:00", "until": "21:30", "place": "assembly", "emoji": "🪩", "title": "Social Night", "text": "Social Night at the assembly hall — music, dancing, and the famous DANCE BATTLE. Show them what you've got.", "game": "dance" },
+    { "id": "nominations", "dow": 4, "weeks": [1], "at": "08:00", "until": "22:00", "emoji": "🗳️", "title": "Class captain nominations", "text": "Nominations for class captain are open! Want the job? Go to your class noticeboard and put your name down before Monday." },
+    { "id": "election", "dow": 0, "weeks": [2], "at": "07:50", "until": "08:00", "emoji": "🗳️", "title": "Class captain election", "text": "Election day! Your form teacher counts the votes during register." },
+    { "id": "sportsDay", "dow": 5, "weeks": [8], "at": "10:00", "until": "13:00", "place": "field", "emoji": "🏆", "title": "INTER-HOUSE SPORTS DAY", "text": "The biggest day of the term! Houses march in, drums everywhere, parents in the stands. Run for your house!", "game": "race", "reward": { "morale": 6 } }
+  ]
+}
