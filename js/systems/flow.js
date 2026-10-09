@@ -112,7 +112,7 @@
         const end = t ? t.replace('left:', '') : null;
         const was = prev && prev[r.id] ? prev[r.id].replace('left:', '') : null;
         const delta = end && was ? RANK[end] - RANK[was] : 0;
-        return Object.assign(r, { emoji: d ? d.emoji : '🏫', name: n ? Flow.nameOf(n) : d ? ((s.npcs.left || {})[r.id] || {}).name || d.nick : 'School', bond: n && n.key && St().bondLabel ? St().bondLabel(s, n) : '', end, delta, left: t && t.startsWith('left:') });
+        return Object.assign(r, { emoji: d ? d.emoji : '🏫', name: n ? Flow.nameOf(n) : d ? ((s.npcs.left || {})[r.id] || {}).name || d.nick : 'School', bond: n && n.key && St().bondLabel ? St().bondLabel(n) : '', end, delta, left: t && t.startsWith('left:') });
       });
       rows.sort((a, b) => b.nodes.length - a.nodes.length);
       const found = log.length, missed = rows.reduce((a, r) => a + r.missed, 0);

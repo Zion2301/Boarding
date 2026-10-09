@@ -148,11 +148,11 @@
       const act = (fn) => () => Dialogue.act(() => fn(s, n), () => Dialogue.npc(id));
       const choices = [];
       if (n.type === 'classmate') {
-        choices.push({ label: '💬 Gist', disabled: !can, sub: can ? 'Morale & friendship' : why, onPick: act(N.gist) });
+        choices.push(Dialogue.gistChoice(s, n, can, why, act));
         choices.push({ label: '📚 Ask for help', disabled: !can, sub: can ? 'Brilliant ones fit help' : why, onPick: act(N.askHelp) });
       } else if (n.type === 'senior') {
         if (s.time.year <= 3) choices.push({ label: '🙇 Greet', disabled: !can, sub: can ? 'Small favour' : why, onPick: act(N.greetSenior) });
-        else choices.push({ label: '💬 Gist', disabled: !can, sub: can ? '' : why, onPick: act(N.gist) });
+        else choices.push(Dialogue.gistChoice(s, n, can, why, act));
       } else if (n.type === 'junior') {
         choices.push({ label: '😇 Encourage', disabled: !can, sub: can ? 'Kind senior' : why, onPick: act(N.encourageJunior) });
         choices.push({ label: '🫵 Send on errand', disabled: !can, sub: can ? 'Wicked senior · + Rest' : why, onPick: act(N.sendJunior) });
@@ -205,6 +205,24 @@
       if (nodeId !== 'start') choices.push({ label: '↩ Back', ghost: true, onPick: back });
       choices.push({ label: '🚶 Walk away', ghost: true, onPick: () => Dialogue.close() });
       Dialogue.show({ portrait: portraitOf(s, n), name: BH.NPC.name(n), sub: n.label, text: U.seedPick(node.text, s.time.dayCount + nodeId), choices, mode: 'choices' });
+    },
+
+    /* 💬 Gist / Talk: a real back-and-forth from the conversation bank when one fits, else the quick gist */
+    gistChoice(s, n, can, why, act) {
+      const C = BH.Convos;
+      if (C && C.available(s, n)) return { label: '💬 Talk', sub: 'They have something to say', onPick: () => Dialogue.convo(n.id) };
+      return { label: '💬 Gist', disabled: !can, sub: can ? 'Morale & friendship' : why, onPick: act(BH.NPC.gist) };
+    },
+    convo(id) {
+      const s = BH.Game.s;
+      const n = BH.NPC.get(s, id);
+      const cv = n && BH.Convos && BH.Convos.start(s, n);
+      if (!cv) return Dialogue.npc(id);
+      const back = () => Dialogue.npc(id);
+      const choices = cv.replies.map((r) => ({ label: r.label, sub: r.sub, onPick: () => Dialogue.act(() => r.run(), back) }));
+      choices.push({ label: '↩ Not now', ghost: true, onPick: back });
+      const who = BH.Convos.who(n);
+      Dialogue.show({ portrait: portraitOf(s, n), name: BH.NPC.fullName(n), sub: BH.NPC.label(n), text: `${who}: ${cv.open}`, choices, mode: 'choices' });
     },
 
     /* ✍️ Typing your own words: always offered in conversations (AI when available, preset replies otherwise) */

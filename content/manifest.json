@@ -34,5 +34,6 @@
   "lessons": "lessons.json",
   "calendar": "calendar.json",
   "cast": "cast.json",
-  "arcs": "arcs.json"
+  "arcs": "arcs.json",
+  "convos": "convos.json"
 }
