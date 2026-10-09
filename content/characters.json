@@ -162,12 +162,12 @@
    "money_cap": 0
   },
   "gateman": {
-   "role": "Baba Musa, the gateman (Hausa elder)",
-   "personality": "Calm, sleepy, loyal to the school, has seen everything.",
+   "role": "Mallam Musa, the day gateman (Hausa elder)",
+   "personality": "Calm, dignified, incorruptible, has seen everything in twenty years at the gate.",
    "speech": "mix",
-   "style": "Simple English mixed with Hausa words (Sannu, Ina zuwa, Kai!). Max 2 sentences.",
-   "knows": "Who comes in and out, the fence holes.",
-   "goals": "Keep students inside.",
+   "style": "Simple English and Pidgin with Hausa words (Sannu, Ina zuwa, Haba, Allah ya kiyaye). Max 2 sentences.",
+   "knows": "Who comes in and out, the fence holes, which students greet him every day.",
+   "goals": "Keep students inside and safe. Never accepts money.",
    "allowed_actions": [
     "none",
     "refuse",
@@ -361,6 +361,23 @@
     "accept_excuse",
     "reject_excuse",
     "warn",
+    "end_conversation"
+   ],
+   "can_give": {},
+   "money_cap": 0
+  },
+  "nightwatch": {
+   "role": "Baba Sunday, the night watchman (Ibibio)",
+   "personality": "Loud, brave in front of students, secretly scared of ghosts, loves football radio, softened by food.",
+   "speech": "pidgin",
+   "style": "Loud Pidgin with Ibibio exclamations (Abasi mi!, Ehn!). Max 2-3 sentences.",
+   "knows": "Night noises, ghost stories, football scores, which hostel has noise after lights out.",
+   "goals": "Keep the night quiet, keep his radio on, get some small chop.",
+   "allowed_actions": [
+    "none",
+    "refuse",
+    "warn",
+    "report_to_principal",
     "end_conversation"
    ],
    "can_give": {},

@@ -23,6 +23,12 @@
     mount(root) {
       root.innerHTML = `
         <div class="hud">
+          <div class="hud-bar">
+            <button id="pill-stats" class="pill vitals" data-act="cxToggle" data-arg="stats" aria-label="Your needs"></button>
+            <span class="bar-gap"></span>
+            <button id="pill-missions" class="pill missions" data-act="cxToggle" data-arg="missions" aria-label="Missions" hidden></button>
+            <button id="pill-clock" class="pill clock" data-act="cxToggle" data-arg="clock" aria-label="Clock"></button>
+          </div>
           <div class="hud-tl"><div id="hud-stats" class="hud-stats"></div><div id="minimap-frame" class="minimap-frame"></div><div id="hud-room" class="hud-room"></div></div>
           <div class="hud-tr"><div id="hud-clock" class="hud-card clock-card"></div><div id="toasts"></div></div>
           <div id="hud-top" class="hud-top"></div>
@@ -33,6 +39,7 @@
             <button class="round-btn" data-act="openMe" aria-label="Me">👤</button>
             <button class="round-btn" data-act="openPhone" aria-label="Phone">📱<span id="phone-badge" class="badge" hidden></span></button>
             <button class="round-btn big" data-act="openBag" aria-label="Backpack">🎒</button>
+            <button class="round-btn menu-fab" data-act="cxToggle" data-arg="menu" aria-label="More">☰<span id="fab-badge" class="badge" hidden></span></button>
           </div>
           <button class="round-btn snap-btn" data-act="camSnap" aria-label="Back to player" title="Back to player">🎯</button>
           <div id="joystick" class="joystick"><div class="joy-knob"></div></div>
@@ -106,6 +113,7 @@
       const s = BH.Game.s;
       if (!s || !document.getElementById('hud-stats')) return;
       HUD.placePrompt(s);
+      BH.Compact && BH.Compact.update(s);
       BH.LessonUI && BH.LessonUI.update();
       BH.Social && BH.Social.update();
       BH.TimeBar && BH.TimeBar.update();
@@ -140,6 +148,7 @@
       const susHtml = sus ? `<div class="sus ${sus.level > 0.6 ? 'hot' : ''}"><span>👁️ ${U.esc((BH.NPC.get(s, sus.by) ? BH.NPC.name(BH.NPC.get(s, sus.by)) : 'Someone'))} dey look!</span><i style="width:${Math.round(sus.level * 100)}%"></i></div>` : '';
       const hide = BH.Rules.hidden(s) ? '<div class="sus safe"><span>🫥 Hidden</span></div>' : '';
       HUD.set('hud-top', calls + susHtml + hide);
+      document.body.classList.toggle('has-calls', !!(calls || susHtml || hide));
 
       // missions tracker
       const ms = BH.Missions.live(s).concat((s.missions || []).filter((m) => !['offered', 'active'].includes(m.status) && BH.Clock.abs(s) - (m.closedAt || 0) < 90));

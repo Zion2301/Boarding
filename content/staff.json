@@ -1850,17 +1850,20 @@
       "last": "Danladi",
       "gender": "m",
       "emoji": "💂🏾",
-      "label": "Gateman",
+      "label": "Day Gateman (6 AM – 7 PM)",
       "dialogue": "gateman",
       "authority": true,
-      "strict": 0.6,
-      "personality": "Mallam Musa the gateman. Has guarded the gate for 20 years, sees everything, can be softened with kola and respect, never with money.",
+      "strict": 0.75,
+      "personality": "Mallam Musa Danladi, the day gateman. Has guarded this gate for twenty years and remembers every face and every excuse. Calm, dignified, incorruptible: money insults him, but respect, a daily greeting and a kola nut warm him slowly. Prays on his mat by the gate at Zuhr and Asr. Listens to Hausa news on a small radio. Proud of the students who greet him; quietly disappointed in the ones who try to sneak past.",
       "speech": "pidgin",
-      "voice": "Hausa-flavoured Pidgin: 'Haba! Where you dey go?'.",
+      "voice": "Calm Hausa-flavoured Pidgin and English: 'Sannu, my son.' 'Ina zuwa? Where you dey go?' 'Haba! Money? Na me you wan buy?'",
       "quirks": [
-        "Prays on a mat by the gate",
-        "Knows every escape route"
-      ]
+        "Prays on a mat by the gate at 1:15 PM and 4:15 PM",
+        "Never takes money — takes kola nuts and greetings",
+        "Hausa news on a tiny radio",
+        "Remembers every student who greets him"
+      ],
+      "religion": "muslim"
     },
     {
       "id": "shehu",
@@ -1982,6 +1985,29 @@
       "voice": "Calm and measured.",
       "quirks": [
         "Gives dates to students after Jumat"
+      ]
+    },
+    {
+      "id": "sunday_nw",
+      "role": "nightwatch",
+      "title": "Baba",
+      "first": "Sunday",
+      "last": "Etim",
+      "gender": "m",
+      "emoji": "🔦",
+      "label": "Night Watchman (7 PM – 6 AM)",
+      "dialogue": "nightwatch",
+      "authority": true,
+      "strict": 0.45,
+      "religion": "christian",
+      "personality": "Baba Sunday Etim, the night watchman from Akwa Ibom. Big torch, bigger whistle, and an old dog called Bingo. Loud and brave in front of students, secretly terrified of ghosts — he will not go near the old lab after midnight. Lives for football commentary on his radio. Can be sweetened with food (a Jolly Roll, a bit of suya); dozes off on his bench after 1 AM unless the house master is doing a raid. Tells long folk tales by his fire to anyone who brings him food.",
+      "voice": "Loud Ibibio-flavoured Pidgin: 'WHO DEY THERE?! Ehn? Talk now!' 'My pikin, you get small chop for your baba?' 'Abasi mi!'",
+      "quirks": [
+        "Whistle and a huge torch",
+        "Old dog Bingo follows him",
+        "Scared of the old lab after midnight",
+        "Football radio at full volume",
+        "Snores on his bench after 1 AM"
       ]
     }
   ]

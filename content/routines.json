@@ -159,10 +159,11 @@
   },
   "gateman": {
    "default": "patrol:gate",
-   "lightsout": [
-    "patrol:gate",
-    "patrol:fence"
-   ]
+   "prep": "home",
+   "lightsout": "home",
+   "rising": "home",
+   "duty": "patrol:gate",
+   "social": "home"
   },
   "chaplain": {
    "default": "chapel",
@@ -343,6 +344,17 @@
    ],
    "rising": "patrol:gate",
    "social": "patrol:gate"
+  },
+  "nightwatch": {
+   "default": "home",
+   "prep": "patrol:gate",
+   "social": "patrol:gate",
+   "lightsout": [
+    "patrol:gate",
+    "patrol:fence",
+    "patrol:gate"
+   ],
+   "rising": "patrol:gate"
   }
  },
  "skipClass": {

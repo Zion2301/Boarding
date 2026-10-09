@@ -398,7 +398,7 @@
       ];
       if (!s.phone.has) out.push({ label: '📱 Hide a phone inside the garri bag', sub: 'Contraband — the gateman might search', run(s) {
         const model = { struggling: "your uncle's old brick phone", middle: 'a small smartphone', bigman: 'a brand-new big-screen phone' }[s.player.background];
-        if (BH.Discipline.caught(s, BH.Discipline.strict(s) * 0.55)) return `Baba Musa search your box and bring out ${model}. "PHONE?! On resumption day?!" Seized. ` + BH.Discipline.minor(s, 'Phone found at the gate');
+        if (BH.Discipline.caught(s, BH.Discipline.strict(s) * 0.55)) return `Mallam Musa search your box and bring out ${model}. "PHONE?! On resumption day?!" Seized. ` + BH.Discipline.minor(s, 'Phone found at the gate');
         BH.Phone.give(s, 90);
         return `You hide ${model} inside the garri. The gateman search everything… except the garri. 📱`;
       } });

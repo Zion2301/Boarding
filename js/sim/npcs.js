@@ -167,7 +167,7 @@
             if (!writing && a.bubble && (!a.emote || a.emote.until < performance.now())) a.emote = { anim: 'talk', until: performance.now() + 1600 };
           } else if (a.pose === 'busy') a.pose = null;
         }
-        if (!a.path.length && !a.seat && !a.seek && !a.patrolPts) {
+        if (!a.path.length && !a.seat && !a.seek && !a.patrolPts && a.pose !== 'kneel' && a.pose !== 'sit') {
           a.idle += dt;
           // outdoors people mill around; watchers look around
           if (BH.Sim.cm.outdoor && a.idle > 4 + Math.random() * 6 && a.goal) { a.idle = 0; I().push(a.id, { type: 'moveTo', x: a.goal.x + U.randInt(-40, 40), y: a.goal.y + U.randInt(-30, 30) }); }

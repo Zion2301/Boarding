@@ -51,6 +51,11 @@
       const L = BH.Lessons.here(s);
       if (!L) { if (!el.hidden) { el.hidden = true; document.body.classList.remove('in-lesson'); } return; }
       if (el.hidden) { el.hidden = false; document.body.classList.add('in-lesson'); LessonUI.v = -1; }
+      if (BH.Compact && BH.Compact.on) {
+        const mine = L.q && !L.q.closed && (L.kind === 'lesson' || L.q.sid === 'player');
+        const k = mine ? 'q' + (L.q.q || L.q.sid) + L.start : 'none';
+        if (k !== LessonUI.autoKey) { LessonUI.autoKey = k; if (!LessonUI.pinned) LessonUI.open = !!mine; }
+      }
       const key = `${BH.Lessons.v}|${s.clock}|${LessonUI.open}`;
       if (key === LessonUI.v) return;
       LessonUI.v = key;
@@ -73,7 +78,7 @@
   };
 
   Object.assign(BH.actions, {
-    lessonToggle() { LessonUI.open = !LessonUI.open; LessonUI.v = -1; LessonUI.update(); },
+    lessonToggle() { LessonUI.open = !LessonUI.open; LessonUI.pinned = LessonUI.open; LessonUI.v = -1; LessonUI.update(); },
     lessonPick(letter) { LessonUI.send(letter); },
   });
   BH.bus.on('lesson:update', () => { LessonUI.v = -1; });

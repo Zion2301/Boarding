@@ -588,6 +588,19 @@
    "use": null,
    "tool": true,
    "desc": "Pass it round so friends answer questions about themselves (and you). Open it from 🎒 → ✍️ Writing."
+  },
+  "kola": {
+   "name": "Kola nut",
+   "emoji": "🌰",
+   "unit": "nut",
+   "cat": "food",
+   "price": 50,
+   "shop": true,
+   "use": {
+    "rest": 4,
+    "morale": 1
+   },
+   "desc": "Bitter, wakes you up. Old men love it — Mallam Musa especially."
   }
  },
  "recipes": {
@@ -793,7 +806,8 @@
   "bucket",
   "mosquitoNet",
   "cutlass",
-  "slamBook"
+  "slamBook",
+  "kola"
  ],
  "starter": {
   "bucket": 1

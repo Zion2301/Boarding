@@ -35,7 +35,8 @@
   "staff": {
     "nurse": { "top": "#ffffff", "sleeves": "short", "bottom": "gown", "bottomColor": "#ffffff", "socks": "#ffffff", "shoes": "#ffffff" },
     "cook": { "top": "#fafafa", "sleeves": "short", "bottom": "gown", "bottomColor": "#ef6c00", "wrapper": "#ef6c00", "socks": "#5d4037", "shoes": "#5d4037" },
-    "gateman": { "top": "#5d4037", "sleeves": "long", "bottom": "trousers", "bottomColor": "#3e2723", "socks": "#212121", "shoes": "#212121" }
+    "gateman": { "top": "#efe6d2", "sleeves": "long", "bottom": "gown", "bottomColor": "#efe6d2", "socks": "#5d4037", "shoes": "#5d4037" },
+    "nightwatch": { "top": "#1b2a4a", "sleeves": "long", "bottom": "trousers", "bottomColor": "#263238", "socks": "#111111", "shoes": "#111111" }
   },
   "prefectBadge": "#ffd54f"
 }

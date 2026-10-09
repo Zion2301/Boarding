@@ -99,7 +99,7 @@
       t.className = `toast ${type}`;
       t.innerHTML = U.esc(String(text).replace(/\*\*(.+?)\*\*/g, '$1').replace(/(^|\s)_(.+?)_(?=[\s.,!?]|$)/g, '$1$2'));
       wrap.appendChild(t);
-      while (wrap.children.length > 3) wrap.firstChild.remove();
+      while (wrap.children.length > (document.body.classList.contains('compact') ? 2 : 3)) wrap.firstChild.remove();
       setTimeout(() => t.classList.add('out'), 3200);
       setTimeout(() => t.remove(), 3700);
       if (BH.Sound) BH.Sound.play(celebrate ? 'success' : type === 'bad' ? 'bad' : 'notify');

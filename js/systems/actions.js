@@ -356,11 +356,11 @@
     S().money(s, -fine); s.phone.confiscated = false; s.phone.hidden = false;
     return good(`"Take. If I see am again, e go remain with me till you graduate." (−₦${fine}) 📱`);
   };
-  H.useExeat = (s) => { I().take(s, 'exeat', 1); return H.outsideTrip(s, 'Baba Musa read the exeat, look you, look the paper… and open the gate. FREEDOM! 🚪'); };
+  H.useExeat = (s) => { I().take(s, 'exeat', 1); return H.outsideTrip(s, 'Mallam Musa reads the exeat, looks at you, looks at the paper again… and opens the gate. "Back before six." FREEDOM! 🚪'); };
   H.bribeGate = (s) => {
     S().money(s, -500);
-    if (U.chance(0.6 + S().mod(s, 'luck'))) return H.outsideTrip(s, 'Baba Musa pocket the ₦500 and look the other side. 🤫');
-    return bad('Baba Musa collect the money… then report you to the VP. ' + BH.Discipline.offence(s, 'Trying to bribe the gateman', 2));
+    if (U.chance(0.6 + S().mod(s, 'luck'))) return H.outsideTrip(s, 'Mallam Musa pocket the ₦500 and look the other side. 🤫');
+    return bad('Mallam Musa collect the money… then report you to the VP. ' + BH.Discipline.offence(s, 'Trying to bribe the gateman', 2));
   };
   H.outsideTrip = (s, intro) => {
     S().change(s, { hunger: 40, thirst: 15, morale: 15 }); S().rep(s, 3); BH.Paths.add(s, 'trouble', 2); BH.Paths.add(s, 'popular', 1);

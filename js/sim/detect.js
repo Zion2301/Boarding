@@ -25,6 +25,7 @@
       const cones = [];
       A().list.forEach((a) => {
         if (a.kind !== 'npc' || !a.auth || a.leaving) return;
+        if (BH.Gate && BH.Gate.notWatching(s, a.npcId)) return; // praying, dozing, or fed and 'did not see you'
         const dx = pl.x - a.x, dy = pl.y - a.y, d = Math.hypot(dx, dy);
         if (d > range * 1.8) return;
         const inCone = d < range && angDiff(Math.atan2(dy, dx), a.h) < half && !BH.Nav.losBlocked(Sim.mapId, a, pl);

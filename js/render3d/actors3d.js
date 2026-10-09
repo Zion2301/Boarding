@@ -217,9 +217,11 @@
       });
       cand.sort((p, q) => (q.isTarget - p.isTarget) || p.d - q.d);
       let names = 0, bubbles = 0;
+      const small = document.body.classList.contains('compact');
+      const maxNames = small ? 3 : 7, maxBubbles = small ? 2 : 4, near = small ? 170 : 260;
       cand.forEach(({ a, d, isTarget, me, real }) => {
-        const showName = !me && (isTarget || real || (d < 260 && names < 7));
-        const showBubble = a.bubble && bubbles < 4;
+        const showName = !me && (isTarget || real || (d < near && names < maxNames));
+        const showBubble = a.bubble && (bubbles < maxBubbles || me || isTarget);
         if (!showName && !showBubble) return;
         if (showName) names++;
         if (showBubble) bubbles++;
