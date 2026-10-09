@@ -1,6 +1,7 @@
 server/node_modules/
 server/data/
-server/.env
-.env
 node_modules/
 dist/
+# env files: never commit (any folder, any variant); the template is fine
+.env*
+!.env.example
