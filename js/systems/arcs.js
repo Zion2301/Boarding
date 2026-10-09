@@ -112,16 +112,26 @@
     choose(s, b, c) {
       s.story.done[b.id] = c.id || c.label;
       s.story.choices = (s.story.choices || 0) + 1;
-      (s.story.beatLog = s.story.beatLog || []).push({ id: b.id, at: St().stamp(s), emoji: b.emoji || '✨', title: Arcs.fill(s, b.title, b) });
-      const notes = Arcs.apply(s, c.fx || {}, b);
+      const fx = c.fx || {};
+      const F = BH.Flow;
+      const before = F ? F.snapshot(s, b, fx) : {};
+      (s.story.beatLog = s.story.beatLog || []).push({ id: b.id, at: St().stamp(s), emoji: b.emoji || '✨', title: Arcs.fill(s, b.title, b), choice: (b.choices || []).indexOf(c) });
+      if (F) F.choosing = true;
+      let notes;
+      try { notes = Arcs.apply(s, fx, b); } finally { if (F) F.choosing = false; }
       BH.bus.emit('arc:choice', { beat: b.id, choice: c.id || c.label });
-      return [Arcs.fill(s, c.reply || '', b), ...notes].filter(Boolean).join('\n\n');
+      const lines = F ? F.outcomeLines(s, b, fx, before) : [];
+      return [Arcs.fill(s, c.reply || '', b), ...notes, ...lines].filter(Boolean).join('\n\n');
     },
     ignore(s, b) {
       s.story.done[b.id] = 'ignored';
+      (s.story.beatLog = s.story.beatLog || []).push({ id: b.id, at: St().stamp(s), emoji: b.emoji || '✨', title: Arcs.fill(s, b.title, b), choice: -1 });
       const ig = b.ignore || { fx: { rel: -3, note: ['ignored'] }, text: '{name} waited for you, then left. They noticed.' };
-      Arcs.apply(s, ig.fx || {}, b);
-      return Arcs.fill(s, ig.text || '', b);
+      const F = BH.Flow;
+      if (F) F.choosing = true;
+      try { Arcs.apply(s, ig.fx || {}, b); } finally { if (F) F.choosing = false; }
+      const n = b.char && N().get(s, b.char);
+      return [Arcs.fill(s, ig.text || '', b), n && F ? `_${F.remember([n])}_` : ''].filter(Boolean).join('\n\n');
     },
 
     /* a choice that starts a game with the character (Whot under the bunk, a race on the field) */

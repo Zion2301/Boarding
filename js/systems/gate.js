@@ -7,6 +7,10 @@
      (bring him something and he "doesn't see you" tonight), ₦300 can open the gate at night (if he trusts you),
      he tells folk tales by his fire, he's scared of the old lab, and on most nights he dozes off between 1 and 3:30 AM
      — unless the house master is raiding.
+   · The tuck shop at night is HIS: torch beam (longer sight), faster to raise the alarm, rounds of the tuck shop every
+     half hour (sometimes he goes inside to check), and Bingo hears you in there. Food buys his blindness for wandering,
+     never for theft. After a night-time theft he's on alert for three nights: no dozing, rounds every 15 minutes,
+     and he comes looking.
    Each one barks his own lines when you're near, and the 3D actor kneels to pray / slumps asleep on his bench. */
 (function (BH) {
   const U = BH.U;
@@ -31,6 +35,7 @@
       idle: ['"WHO DEY THERE?!"', '📻 "GOOOAL! …ah, na replay."', '"Bingo! Come here!" 🐕', '"Night no be for small pikin. Go sleep!"', '"Abasi mi… this cold."', '🔦 (sweeps his torch across the fence)'],
       friend: ['"My pikin! You bring my chop?"', '"You be correct person. No tell anybody I talk am."'],
       ghost: ['"I no dey go near that old lab after twelve o. Na there the thing dey waka."', '"You hear that noise? …Na cat. Na cat."'],
+      alert: ['"Tuck shop thief, I dey wait for you!"', '🔦 "I no go sleep this week. Try me."', '"Bingo, smell am! Find the thief!" 🐕', '"Whoever touch Mama Tuck-shop goods — your time don reach."'],
       doze: ['💤 Zzz…', '💤 (snoring loudly on his bench)', '💤 "…offside…" (talking in his sleep)'],
     },
   };
@@ -71,19 +76,32 @@
     dozing(s) {
       const m = mins(s);
       if (!(m >= 60 && m < 3 * 60 + 30)) return false;
-      if (Gate.raidTonight(s)) return false;
-      return U.hash('doze' + nightKey(s)) % 10 < 7; // most nights
+      if (Gate.raidTonight(s) || Gate.alert(s)) return false;
+      const g = Gate.ensure(s);
+      if (g.woke === nightKey(s)) return false; // Bingo woke him tonight
+      return U.hash('doze' + nightKey(s)) % 10 < 5; // about half the nights
     },
-    fedTonight(s) { return Gate.ensure(s).fed === nightKey(s); },
-    /* detect.js asks this: is this watcher looking at all right now? */
-    notWatching(s, npcId) {
+    fedTonight(s) { return Gate.ensure(s).fed === nightKey(s) && !Gate.alert(s); },
+    alert(s) { return (Gate.ensure(s).alertUntil || 0) > s.time.dayCount; },
+    night(s) { const m = mins(s); return m >= 19 * 60 + 30 || m < 6 * 60; },
+    /* detect.js asks this: is this watcher looking at all right now? (a fed watchman still sees thieves) */
+    notWatching(s, npcId, broken) {
       if (npcId === MUSA) return !!Gate.praying(s);
-      if (npcId === SUNDAY) return Gate.dozing(s) || Gate.fedTonight(s);
+      if (npcId === SUNDAY) {
+        if (Gate.dozing(s)) return true;
+        const theft = (broken || []).some((r) => r === 'stealing' || r === 'afterHours');
+        return Gate.fedTonight(s) && !theft;
+      }
       return false;
     },
+    /* his torch: he sees further at night, and further still on alert nights */
+    rangeMul(s, npcId, dark) { return npcId === SUNDAY && dark ? (Gate.alert(s) ? 1.9 : 1.55) : 1; },
+    strict(s, npcId, base) { return npcId === SUNDAY && Gate.night(s) ? Math.max(base, Gate.alert(s) ? 0.95 : 0.8) : base; },
     gateOpen(s) { const who = Gate.onDuty(s); return who === MUSA ? !!Gate.praying(s) : Gate.dozing(s); },
 
     onNewDay(s) {
+      const g = Gate.ensure(s);
+      if (g.theftNight === s.time.dayCount - 1 && g.reported !== g.theftNight) { g.reported = g.theftNight; BH.Gist.add(s, 'Mama Tuck-shop dey cry — somebody thief from her shelf for night. Baba Sunday don swear say he go catch the person 🔦', { valence: -0.2, tags: ['stealing'] }); BH.UI.toast('🛒 Mama Tuck-shop discovered the theft. Baba Sunday is on ALERT for 3 nights. 🔦', 'bad'); }
       if (U.hash('ghost' + s.time.dayCount) % 6 === 0) BH.Gist.add(s, 'Baba Sunday run comot from near the old lab last night — he swear say he see something wey get white cloth 👻', { valence: 0 });
     },
 
@@ -92,6 +110,7 @@
       if (BH.Pacing && BH.Pacing.simulating) return;
       Gate.pose(s, MUSA, Gate.praying(s) ? 'kneel' : null);
       Gate.pose(s, SUNDAY, Gate.dozing(s) ? 'sit' : null);
+      Gate.rounds(s);
       if (s.clock % 3) return;
       const pl = BH.Actors && BH.Actors.player();
       if (!pl) return;
@@ -103,9 +122,35 @@
         const t = Gate.trust(s, id);
         let pool;
         if (id === MUSA) pool = Gate.praying(s) ? LINES.musa.pray : t >= 60 ? LINES.musa.friend.concat(LINES.musa.idle) : s.gate.bribes ? LINES.musa.cold : LINES.musa.idle;
-        else pool = Gate.dozing(s) ? LINES.sunday.doze : mins(s) >= 22 * 60 || mins(s) < 4 * 60 ? LINES.sunday.idle.concat(LINES.sunday.ghost) : t >= 60 ? LINES.sunday.friend.concat(LINES.sunday.idle) : LINES.sunday.idle;
+        else pool = Gate.dozing(s) ? LINES.sunday.doze : Gate.alert(s) ? LINES.sunday.alert : mins(s) >= 22 * 60 || mins(s) < 4 * 60 ? LINES.sunday.idle.concat(LINES.sunday.ghost) : t >= 60 ? LINES.sunday.friend.concat(LINES.sunday.idle) : LINES.sunday.idle;
         if (d < 140 || U.chance(0.35)) say(a, U.pick(pool), 3800);
       });
+    },
+    /* ---------- the tuck shop at night ---------- */
+    inShop(s) { return (s.world.map || '') === 'tuckshop'; },
+    rounds(s) {
+      if (Gate.onDuty(s) !== SUNDAY || !Gate.night(s) || Gate.dozing(s)) return;
+      const g = Gate.ensure(s);
+      const m = BH.Clock.abs(s);
+      const ov = s.world.overrides && s.world.overrides[SUNDAY];
+      const busy = ov && ov.until > m;
+      // Bingo hears someone inside the tuck shop
+      if (Gate.inShop(s) && !busy && U.chance(Gate.alert(s) ? 0.12 : 0.06)) { Gate.bingo(s); return; }
+      if (busy) return;
+      const every = Gate.alert(s) ? 15 : 30;
+      if (m - (g.lastRound || 0) < every) return;
+      g.lastRound = m;
+      // check the padlock outside — or go in with the torch
+      const inside = Gate.alert(s) || U.chance(0.45);
+      BH.Schedule.override(s, SUNDAY, inside ? { key: 'tuckshop', map: 'tuckshop', seek: Gate.alert(s) } : { key: 'tuckshop', map: 'campus' }, inside ? 8 : 6);
+      if (Gate.inShop(s) && inside) BH.UI.toast('🔦 A torch beam sweeps across the window… footsteps at the door!', 'bad');
+    },
+    bingo(s) {
+      const g = Gate.ensure(s);
+      g.woke = nightKey(s);
+      BH.Schedule.override(s, SUNDAY, { key: 'tuckshop', map: 'tuckshop', seek: true }, 15);
+      BH.UI.toast('🐕 Bingo is barking outside the tuck shop… "WHO DEY INSIDE?!" 🔦 Hide — or run!', 'bad');
+      if (BH.Sound) BH.Sound.play('bad');
     },
     pose(s, id, pose) {
       const a = Gate.actor(id);
@@ -153,6 +198,7 @@
         const night = Gate.onDuty(s) === SUNDAY;
         const snack = SNACKS.find((it) => BH.Inv.has(s, it));
         out.push({ label: '🍞 Give him some chop', sub: snack ? `${(BH.data.ITEMS[snack] || {}).name || snack} — he won't "see" you tonight` : 'You have no snack', disabled: !snack ? 'No snack' : Gate.fedTonight(s) ? 'Already fed him tonight' : null, run: () => {
+          if (Gate.alert(s)) { BH.Inv.take(s, snack, 1); Gate.addTrust(s, SUNDAY, 2); return '"Thank you, my pikin." He eats it — and keeps his torch on you. "But hear me: since that tuck shop wahala, my eye open. Nobody dey waka for night this week."'; }
           BH.Inv.take(s, snack, 1); s.gate.fed = nightKey(s); Gate.addTrust(s, SUNDAY, 8); BH.NPC.rel(s, n, 5);
           return '"Abasi mi! My pikin get heart!" He eats it in two bites and taps his nose. "Tonight… my eye no too sharp. Na our secret o." 🤫';
         } });
@@ -171,6 +217,7 @@
     },
 
     musaGist(s) {
+      if (Gate.alert(s)) return '"Somebody thief tuck shop for night. Baba Sunday don swear — him no go sleep until he catch the person." He looks at you a little too long.';
       if (Gate.raidTonight(s)) return '"Hmm. House master ask me for extra torch battery today. Make I just talk am like that." He looks away. (A raid is coming tonight.)';
       if (!s.flags.knowsFenceHole && Gate.trust(s, MUSA) >= 55) { s.flags.knowsFenceHole = true; return '"Behind the dining hall, near the big bush — the fence don tear. I know. Everybody think say I no know." He chuckles. "I know everything. Don\'t use it."'; }
       return U.pick([
@@ -243,8 +290,27 @@
     return { text: who === MUSA ? 'You tiptoe past Mallam Musa\'s prayer mat. Suya, cold mineral and an hour of freedom — back before he rolls up his mat. 🍢' : 'Baba Sunday snores like a generator. Bingo just watches you. Night market, suya, back in your bunk before he wakes. 🌙', mins: 60 };
   });
 
-  // Sunday's whistle when he catches someone
-  BH.bus.on('caught', (p, s) => { if (p && p.npc === SUNDAY) { const a = Gate.actor(SUNDAY); if (a) say(a, '🔊 FWEEEEEE! "I DON CATCH YOU!"', 3000); } });
+  // a theft from the tuck shop at night puts him on alert for three nights
+  BH.bus.on('interact', (p, s) => {
+    if (!s || !p || p.map !== 'tuckshop' || !Gate.night(s) || !s.world.crime || s.world.crime.rule !== 'stealing') return;
+    const g = Gate.ensure(s);
+    if (g.theftNight !== nightKey(s)) { g.theftNight = nightKey(s); g.alertUntil = s.time.dayCount + 3 + (mins(s) < 6 * 60 ? 0 : 1); g.thefts = (g.thefts || 0) + 1; }
+    if (U.chance(0.25)) Gate.bingo(s); // shelves rattle
+  });
+  // Sunday's whistle when he catches someone — at the tuck shop it costs you the loot and his trust
+  BH.bus.on('caught', (p, s) => {
+    if (!p || p.npc !== SUNDAY || !s) return;
+    const a = Gate.actor(SUNDAY);
+    if (a) say(a, '🔊 FWEEEEEE! "I DON CATCH YOU!"', 3000);
+    if (p.rule === 'stealing' || p.rule === 'afterHours') {
+      const c = s.world.crime;
+      if (c && c.item && BH.Inv.has(s, c.item)) BH.Inv.take(s, c.item, c.n || 1);
+      Gate.addTrust(s, SUNDAY, Gate.ensure(s).fed === nightKey(s) ? -35 : -20);
+      Gate.ensure(s).alertUntil = Math.max(Gate.ensure(s).alertUntil || 0, s.time.dayCount + 2);
+      if (BH.Story) BH.Story.note(s, 'caught_stealing', SUNDAY);
+      BH.UI.toast(Gate.ensure(s).fed === nightKey(s) ? '🔦 "I chop your food and you still go thief?! Shame!" He hands back what you took to Mama Tuck-shop.' : '🔦 Baba Sunday drags you out by the ear and puts the goods back on the shelf.', 'bad');
+    }
+  });
 
   BH.Gate = Gate;
   BH.registerSystem('Gate', Gate);

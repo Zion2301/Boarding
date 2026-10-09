@@ -765,3 +765,32 @@ body.compact .toast { font-size: .76rem; padding: 7px 10px; }
 body.compact .joystick:not(.on) { opacity: .55; }
 body.compact .snap-btn { top: auto; bottom: calc(var(--sab) + 160px); transform: none; }
 body.compact kbd { display: none; }
+
+/* missing class: red, pulsing off-screen arrow (bigger) */
+.edge-arrow.urgent { border-left-width: 17px; border-right-width: 17px; border-bottom-width: 36px; margin: -18px 0 0 -17px; filter: drop-shadow(0 0 6px rgba(255, 45, 45, .9)) drop-shadow(0 2px 3px rgba(0,0,0,.5)); animation: edgeUrgent .55s ease-in-out infinite; }
+@keyframes edgeUrgent { 50% { opacity: .55; } }
+
+/* ---------- consequences: "will remember" + the chapter flowchart (js/systems/flow.js) ---------- */
+.toast.remember { border-left-color: #b388ff; background: rgba(40, 20, 70, .94); font-style: italic; }
+.flow { text-align: left; }
+.flow h2 { margin-bottom: 2px; }
+.flow-char { background: var(--cream); border-radius: 14px; padding: 9px 10px; margin: 8px 0; }
+.fc-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.fc-head .fc-em { font-size: 1.3rem; }
+.fc-head small { font-size: .74rem; }
+.traj { font-weight: 800; } .traj.up { color: #1f9d55; } .traj.mid { color: #b07d00; } .traj.down { color: #c62828; }
+.traj i { font-style: normal; } .traj i.up { color: #1f9d55; } .traj i.down { color: #c62828; }
+.fc-nodes { position: relative; margin: 6px 0 0 10px; padding-left: 12px; border-left: 3px solid rgba(27, 42, 74, .25); display: flex; flex-direction: column; gap: 7px; }
+.fnode { position: relative; background: #fff; border: 2px solid rgba(27, 42, 74, .15); border-radius: 11px; padding: 6px 8px; }
+.fnode::before { content: ''; position: absolute; left: -21px; top: 12px; width: 12px; height: 12px; border-radius: 50%; background: #1b2a4a; border: 2px solid var(--cream); }
+.fnode.turn { border-color: #e9b949; box-shadow: 0 0 0 2px rgba(233, 185, 73, .3); }
+.fnode.turn::before { border-radius: 2px; transform: rotate(45deg); background: #e9b949; }
+.fnode.missed { background: transparent; border-style: dashed; opacity: .7; }
+.fnode.missed::before { background: #9aa3b2; }
+.fnode.ignored { opacity: .8; }
+.fn-title { font-weight: 800; font-size: .86rem; }
+.branches { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.br { font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
+.br.on { background: #1b2a4a; color: #ffe27a; }
+.br.lock { background: rgba(27, 42, 74, .08); color: #6b7487; }
+.br.ign { background: #ffe0dc; color: #8a1c12; }

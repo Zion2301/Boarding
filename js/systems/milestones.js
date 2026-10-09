@@ -116,6 +116,7 @@
         position: r ? `${BH.Reports.ordinal(r.position)} of ${r.classSize}` : null, average: r ? r.average : null,
         bestie: best ? best.first : null, friends: Milestones.closest(s, 3).map((n) => n.first), moments: moments.slice(0, 12),
         punished: s.stats_history.punished,
+        traj: BH.Flow ? BH.Flow.trajectories(s) : null,
       });
     },
     chaptersHtml(s) {
@@ -125,6 +126,7 @@
         <div class="ch-head"><b>${U.esc(c.title)}</b><small>${U.esc(c.label)}${now ? ' · now' : ''}</small></div>
         ${c.position ? `<div class="muted tiny">📜 ${c.position} · avg ${c.average}%${c.bestie ? ` · 💛 ${U.esc(c.bestie)}` : ''}</div>` : ''}
         ${c.moments && c.moments.length ? `<ul>${c.moments.map((m) => `<li>${U.esc(m)}</li>`).join('')}</ul>` : `<p class="muted tiny">${now ? 'Still being written…' : 'A quiet term.'}</p>`}
+        ${BH.Flow && !s.gameOver ? `<button class="chunky small ghost" data-act="openFlow" data-arg="${c.id}">🔀 Flowchart${now ? ' so far' : ''}</button>` : ''}
       </div>`;
       const live = Object.assign({}, cur, { moments: [
         ...Object.entries(s.story.milestones).filter(([, m]) => m.at === cur.id).map(([k]) => `${DEFS[k].emoji} ${DEFS[k].title}`),

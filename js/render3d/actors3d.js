@@ -148,11 +148,20 @@
       const mk = Actors3D.mk;
       const t = performance.now() / 1000;
       const M = BH.Sim.markers || {};
+      // missing class: the objective goes red, bigger and faster
+      const urgent = !!(M.objective && M.objective.urgent);
+      if (mk.urgent !== urgent) {
+        mk.urgent = urgent;
+        const c = urgent ? '#ff2d2d' : '#ffd400';
+        mk.objRing.material.color.set(c); mk.objArrow.material.color.set(c); mk.objArrow.material.emissive.set(c);
+        mk.objArrow.scale.setScalar(urgent ? 1.7 : 1);
+      }
       const place = (ring, arrow, p) => {
         ring.visible = arrow.visible = !!p;
         if (!p) return;
-        ring.position.set(p.x * S, 0.08, p.y * S); ring.scale.setScalar(1 + Math.sin(t * 4) * 0.08);
-        arrow.position.set(p.x * S, (p.h || 2) + 0.6 + Math.sin(t * 3) * 0.15, p.y * S); arrow.rotation.y = t * 1.5;
+        const u = p.urgent ? 2.2 : 1;
+        ring.position.set(p.x * S, 0.08, p.y * S); ring.scale.setScalar((p.urgent ? 1.5 : 1) + Math.sin(t * 4 * u) * 0.08 * u);
+        arrow.position.set(p.x * S, (p.h || 2) + 0.6 * u + Math.sin(t * 3 * u) * 0.15 * u, p.y * S); arrow.rotation.y = t * 1.5 * u;
       };
       place(mk.objRing, mk.objArrow, M.objective);
       place(mk.wpRing, mk.wpArrow, M.waypoint);
@@ -178,8 +187,9 @@
         m.material.opacity = c.hot ? 0.28 : 0.14;
       });
       // off-screen arrow toward the waypoint/objective
-      const goal = M.waypoint || M.objective;
+      const goal = urgent ? M.objective : M.waypoint || M.objective;
       const el = Actors3D.edge;
+      el.classList.toggle('urgent', urgent);
       if (goal) {
         const v = new T.Vector3(goal.x * S, 1, goal.y * S).project(eng.camera);
         const off = v.z > 1 || Math.abs(v.x) > 0.95 || Math.abs(v.y) > 0.95;
@@ -190,7 +200,7 @@
           const r = 0.82;
           const sx = (Math.cos(ang) * r * 0.5 + 0.5) * innerWidth, sy = (Math.sin(ang) * r * 0.5 + 0.5) * innerHeight;
           el.style.transform = `translate(${sx}px, ${sy}px) rotate(${ang + Math.PI / 2}rad)`;
-          el.style.borderBottomColor = M.waypoint ? '#2ec4ff' : '#ffd400';
+          el.style.borderBottomColor = urgent ? '#ff2d2d' : M.waypoint ? '#2ec4ff' : '#ffd400';
         }
       } else el.style.display = 'none';
     },

@@ -279,7 +279,13 @@
         // resumption-day story objective (register → hostel → bunk → dinner → bed)
         if (ob.map !== Sim.mapId) obj = Sim.route(ob.map, ob.key);
         else if (ob.obj) { const o = Sim.cm.objects.find((x) => ob.obj.includes(x.kind) && (!['bunk', 'myBed'].includes(x.kind) || !s.world.myBunk || BH.Interaction.mine(s, x))); if (o) obj = { x: o.x, y: o.y, h: 1.5 }; }
-      } else if (e && !present) obj = Sim.route(e.map, e.key);
+      } else if (e && !present) {
+        obj = Sim.route(e.map, e.key);
+        // you're late / absent → the marker turns red and urgent
+        const st = (BH.Clock.info(s).status || {}).kind;
+        const missing = st === 'absent' || (st === 'due' && BH.Time.block(s).kind !== 'sleep' && s.clock - BH.Clock.blockStart(s) > 3);
+        if (obj && missing) obj = Object.assign({}, obj, { urgent: true });
+      }
       else if (e && present && !Sim.cm.outdoor && !s.act) {
         const kind = BH.Time.block(s).kind;
         const desk = ['class', 'register', 'prep'].includes(kind) ? BH.School.deskOf(s, 'player', Sim.mapId) : null;

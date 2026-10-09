@@ -17,7 +17,7 @@
       const pl = A().player();
       const hidden = BH.Rules.hidden(s);
       const dark = Sim.cm.outdoor && BH.Clock.isDark(s);
-      const range = dark ? (BH.Inv.has(s, 'torch') ? v.nightRange + 40 : v.nightRange) : v.range;
+      const range0 = dark ? (BH.Inv.has(s, 'torch') ? v.nightRange + 40 : v.nightRange) : v.range;
       const half = (v.angle * Math.PI) / 180 / 2;
       const showCones = Detect.broken.length > 0 || dark;
       const nowAbs = BH.Clock.abs(s);
@@ -25,7 +25,8 @@
       const cones = [];
       A().list.forEach((a) => {
         if (a.kind !== 'npc' || !a.auth || a.leaving) return;
-        if (BH.Gate && BH.Gate.notWatching(s, a.npcId)) return; // praying, dozing, or fed and 'did not see you'
+        if (BH.Gate && BH.Gate.notWatching(s, a.npcId, Detect.broken)) return; // praying, dozing, or fed and 'did not see you'
+        const range = range0 * (BH.Gate ? BH.Gate.rangeMul(s, a.npcId, dark) : 1);
         const dx = pl.x - a.x, dy = pl.y - a.y, d = Math.hypot(dx, dy);
         if (d > range * 1.8) return;
         const inCone = d < range && angDiff(Math.atan2(dy, dx), a.h) < half && !BH.Nav.losBlocked(Sim.mapId, a, pl);
@@ -37,7 +38,7 @@
           BH.bus.emit('spotted', { npc: a.npcId, role: (n && (n.role || n.type)) || '' });
         }
         const rule = BH.Rules.caresAbout(s, a.auth.kind, Detect.broken);
-        if (rule && (!seer || d < seer.dist)) seer = { id: a.npcId, dist: d, rule, strict: a.auth.strict, a };
+        if (rule && (!seer || d < seer.dist)) seer = { id: a.npcId, dist: d, rule, strict: BH.Gate ? BH.Gate.strict(s, a.npcId, a.auth.strict) : a.auth.strict, a };
       });
       Sim.cones = cones;
       const before = (s.world.sus && s.world.sus.level) || 0;
