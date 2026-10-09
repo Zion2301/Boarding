@@ -36,10 +36,19 @@
   BH.bus.on('convo', () => Track.send('convo'));
   BH.bus.on('net:status', (p) => { if (p.online && !Track.mpSent) { Track.mpSent = true; Track.send('mp'); } });
 
-  // visit + one-minute play heartbeat
+  // visit (+ where it came from) and play time: counted to the second while you're in the game and the tab is visible,
+  // sent every 30 s and flushed when you leave or switch apps, so short phone sessions still count
   const coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches;
-  setTimeout(() => Track.send('visit', { ref: document.referrer || '', mobile: !!coarse }), 1500);
-  setInterval(() => { if (Track.playing()) Track.send('beat', { s: 60 }); }, 60000);
+  const q = new URLSearchParams(location.search);
+  const src = q.get('ref') || q.get('utm_source') || '';
+  setTimeout(() => Track.send('visit', { ref: document.referrer || '', src, mobile: !!coarse }), 1500);
+  let acc = 0, last = Date.now();
+  const tick = () => { const now = Date.now(); if (Track.playing()) acc += Math.min(now - last, 5000); last = now; };
+  const flush = () => { tick(); const s = Math.floor(acc / 1000); if (s >= 1) { acc -= s * 1000; Track.send('beat', { s }); } };
+  setInterval(tick, 1000);
+  setInterval(flush, 30000);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) flush(); else last = Date.now(); });
+  addEventListener('pagehide', flush);
 
   Object.assign(BH.actions, { setStats(v) { Track.setOn(v === '1'); if (BH.Panels) BH.Panels.refresh(); if (BH.UI) BH.UI.toast(v === '1' ? '📊 Thank you! Anonymous play stats are on.' : '📊 Play stats off. Nothing is sent.', 'info'); } });
   BH.Track = Track;

@@ -11,9 +11,14 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const ORDER = ['JSS1T1', 'JSS1T2', 'JSS1T3', 'JSS2T1', 'JSS2T2', 'JSS2T3', 'JSS3T1', 'JSS3T2', 'JSS3T3', 'SS1T1', 'SS1T2', 'SS1T3', 'SS2T1', 'SS2T2', 'SS2T3', 'SS3T1', 'SS3T2', 'SS3T3'];
 const EVENTS = new Set(['visit', 'beat', 'newgame', 'chapter', 'grad', 'choice', 'mp', 'convo']);
 const DEVICE = /^[a-zA-Z0-9-]{8,64}$/;
-const day = (t = Date.now()) => new Date(t).toISOString().slice(0, 10);
+// calendar days in Nigeria time (WAT), not UTC — so "today" flips at midnight in Lagos
+const TZ = process.env.STATS_TZ || 'Africa/Lagos';
+const dayFmt = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' });
+const day = (t = Date.now()) => dayFmt.format(new Date(t));
 const clampInt = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(Number(v) || 0)));
 const host = (r) => { try { return new URL(String(r)).hostname.replace(/^www\./, '').slice(0, 60); } catch { return ''; } };
+// where a visit came from: ?ref=tiktok on the link wins (WhatsApp/TikTok apps rarely send a referrer), else the referrer's site
+const source = (v) => { const tag = String(v.src || '').toLowerCase().replace(/[^a-z0-9_.-]/g, '').slice(0, 30); return tag || host(v.ref); };
 
 export function createAnalytics(store) {
   const online = new Map(); // device → last heartbeat (ms)
@@ -30,9 +35,14 @@ export function createAnalytics(store) {
   }
   const bump = async (d, patch) => { const r = await dayRow(d); const next = {}; Object.entries(patch).forEach(([k, v]) => { next[k] = (r[k] || 0) + v; }); await store.update('analytics_daily', d, next); };
 
+  // one write at a time, so two players' updates never overwrite each other (matters on Supabase)
+  let chain = Promise.resolve();
+  const serial = (fn) => { const run = chain.then(fn, fn); chain = run.catch(() => {}); return run; };
+
   return {
     /* POST /api/track  { d: deviceId, e: event, v: {…} } */
-    async track(b = {}) {
+    track(b = {}) { return serial(() => this._track(b)); },
+    async _track(b = {}) {
       const id = String(b.d || '');
       const e = String(b.e || '');
       if (!DEVICE.test(id) || !EVENTS.has(e)) return { ok: false };
@@ -42,19 +52,19 @@ export function createAnalytics(store) {
       recent.push(now); rate.set(id, recent);
       const v = b.v && typeof b.v === 'object' ? b.v : {};
       const today = day(now);
+      if (e !== 'grad') online.set(id, now); // any sign of life counts as playing right now
       let dev = await store.get('analytics_devices', id);
-      if (!dev) dev = await store.insert('analytics_devices', { id, first: today, last: today, days: 0, visits: 0, play: 0, games: 0, furthest: -1, mobile: !!v.mobile, ref: host(v.ref), mode: 'story', graduated: false });
+      if (!dev) dev = await store.insert('analytics_devices', { id, first: today, last: today, days: 0, visits: 0, play: 0, games: 0, furthest: -1, mobile: !!v.mobile, ref: source(v), mode: 'story', graduated: false });
       const patch = {};
       if (e === 'visit') {
         const firstToday = dev.lastVisitDay !== today;
         const isNew = dev.first === today && !dev.visits;
         patch.visits = (dev.visits || 0) + 1; patch.lastVisitDay = today; patch.mobile = !!v.mobile;
-        if (!dev.ref && v.ref) patch.ref = host(v.ref);
+        if (!dev.ref && source(v)) patch.ref = source(v);
         if (firstToday) patch.days = (dev.days || 0) + 1;
         await bump(today, { visits: 1, uniques: firstToday ? 1 : 0, newDevices: isNew ? 1 : 0, returning: firstToday && !isNew ? 1 : 0 });
       } else if (e === 'beat') {
         const secs = clampInt(v.s, 0, 120);
-        online.set(id, now);
         patch.play = (dev.play || 0) + secs;
         await bump(today, { playSeconds: secs });
       } else if (e === 'newgame') { patch.games = (dev.games || 0) + 1; await bump(today, { newGames: 1 }); }
@@ -76,7 +86,8 @@ export function createAnalytics(store) {
       return { ok: true };
     },
 
-    async recordPayment({ amount, currency = 'NGN', ref = '', note = '' }) {
+    recordPayment(p) { return serial(() => this._recordPayment(p)); },
+    async _recordPayment({ amount, currency = 'NGN', ref = '', note = '' }) {
       const a = Math.round(Number(amount) || 0);
       if (a <= 0) return { error: 'amount must be positive' };
       return store.insert('payments', { amount: a, currency: String(currency).slice(0, 3).toUpperCase(), ref: String(ref).slice(0, 80), note: String(note).slice(0, 120) });
@@ -92,7 +103,7 @@ export function createAnalytics(store) {
       const t = daily.find((d) => d.id === today) || {};
       const sum = (k) => daily.reduce((a, d) => a + (d[k] || 0), 0);
       const now = Date.now();
-      const onlineNow = [...online.values()].filter((x) => now - x < 150000).length;
+      const onlineNow = [...online.values()].filter((x) => now - x < 90000).length; // heartbeat every 30 s
       const totalPlay = devices.reduce((a, d) => a + (d.play || 0), 0);
       const players = devices.filter((d) => (d.play || 0) >= 60);
       const cameBack = devices.filter((d) => (d.days || 0) >= 2).length;
