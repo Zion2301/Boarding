@@ -1,7 +1,7 @@
 // Storage adapter. Supabase (Postgres) when SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY are set,
 // otherwise a local JSON file (server/data/db.json) — fine for development and a single small server.
 // Tables / collections (see supabase.sql): npc_memory, ledger, usage, board_posts, graffiti, shirts,
-// slambooks, reports, settings.
+// slambooks, reports, settings, analytics_devices, analytics_daily, analytics_choices, payments.
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -13,7 +13,7 @@ export const newId = () => crypto.randomUUID();
 
 /* ---------------- JSON file store ---------------- */
 function fileStore(file) {
-  let db = { npc_memory: [], ledger: [], usage: [], board_posts: [], graffiti: [], shirts: [], slambooks: [], reports: [], settings: [] };
+  let db = { npc_memory: [], ledger: [], usage: [], board_posts: [], graffiti: [], shirts: [], slambooks: [], reports: [], settings: [], analytics_devices: [], analytics_daily: [], analytics_choices: [], payments: [] };
   try { db = Object.assign(db, JSON.parse(fs.readFileSync(file, 'utf8'))); } catch { /* fresh */ }
   let timer = null;
   const save = () => { clearTimeout(timer); timer = setTimeout(() => { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, JSON.stringify(db)); }, 200); };

@@ -312,6 +312,8 @@
             <div class="seg"><button class="${BH.AI.playerOn() ? 'on' : ''}" data-act="setAi" data-arg="1">On</button><button class="${BH.AI.playerOn() ? '' : 'on'}" data-act="setAi" data-arg="0">Off</button></div></div>
           <div class="setting"><b>🧪 Bot students <small class="muted">(dev / testing)</small></b><small>${BH.School.botsOn(BH.Game.s) ? 'On — bots fill empty desks so the campus isn\'t empty' : 'Off — students are real players; only staff are NPCs'}</small>
             <div class="seg"><button class="${BH.School.botsOn(BH.Game.s) ? 'on' : ''}" data-act="setBots" data-arg="1">On</button><button class="${BH.School.botsOn(BH.Game.s) ? '' : 'on'}" data-act="setBots" data-arg="0">Off</button></div></div>
+          <div class="setting"><b>📊 Play stats</b><small>Anonymous: how long people play and how far they get. No names, nothing you type.</small>
+            <div class="seg"><button class="${BH.Track && BH.Track.on() ? 'on' : ''}" data-act="setStats" data-arg="1">On</button><button class="${BH.Track && BH.Track.on() ? '' : 'on'}" data-act="setStats" data-arg="0">Off</button></div></div>
           <button class="chunky" data-act="openHelp">💛 Help & support</button>
           <button class="chunky" data-act="howTo">❓ How to play</button>
           <div class="setting"><b>🎵 Music</b><small>Afrobeat by day, calm at night, party at Social Night</small>

@@ -18,6 +18,7 @@ import { WebSocketTransport } from '@colyseus/ws-transport';
 import { CampusRoom, WhotRoom, FootballRoom, BoardRoom, Online, Tables } from './mp/rooms.js';
 import { Social } from './mp/social.js';
 import { Accounts } from './mp/accounts.js';
+import { createAnalytics } from './analytics.js';
 import { SchoolClock } from './mp/schoolclock.js';
 import os from 'node:os';
 
@@ -33,6 +34,7 @@ const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
 const MOCK = process.env.AI_MOCK === '1';
 
 const store = await openStore();
+const analytics = createAnalytics(store);
 const guard = createGuard(store);
 const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
 
@@ -288,7 +290,19 @@ const routes = {
     send(res, 200, { ok: true });
   },
 
+  /* ---------- anonymous play analytics (no personal data; see analytics.js) ---------- */
+  'POST /api/track': async (req, res, q, b) => send(res, 200, await analytics.track(b)),
+
   /* ---------- admin (header x-admin-token: ADMIN_TOKEN) ---------- */
+  'GET /api/admin/metrics': async (req, res) => {
+    if (!isAdmin(req)) return send(res, 401, { error: 'admin token required' });
+    send(res, 200, await analytics.metrics({ accounts: Accounts.count(), ai: Object.assign({ on: await guard.aiEnabled(), mock: MOCK }, guard.stats()) }));
+  },
+  'POST /api/admin/payment': async (req, res, q, b) => {
+    if (!isAdmin(req)) return send(res, 401, { error: 'admin token required' });
+    const r = await analytics.recordPayment(b);
+    send(res, r.error ? 400 : 200, r.error ? r : { ok: true, payment: r });
+  },
   'GET /api/admin/overview': async (req, res) => {
     if (!isAdmin(req)) return send(res, 401, { error: 'admin token required' });
     const [reports, posts, graffiti] = await Promise.all([store.select('reports', { resolved: false }, { limit: 100 }), store.select('board_posts', {}, { limit: 50 }), store.select('graffiti', {}, { limit: 50 })]);

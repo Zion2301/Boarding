@@ -126,6 +126,7 @@
     ignore(s, b) {
       s.story.done[b.id] = 'ignored';
       (s.story.beatLog = s.story.beatLog || []).push({ id: b.id, at: St().stamp(s), emoji: b.emoji || '✨', title: Arcs.fill(s, b.title, b), choice: -1 });
+      BH.bus.emit('arc:choice', { beat: b.id, choice: 'ignored' }); // stats: ignoring counts as a choice
       const ig = b.ignore || { fx: { rel: -3, note: ['ignored'] }, text: '{name} waited for you, then left. They noticed.' };
       const F = BH.Flow;
       if (F) F.choosing = true;

@@ -75,6 +75,22 @@ try {
   ok((await fetch(base + '/index.html')).status === 200, 'game is served');
   ok((await fetch(base + '/server/index.js')).status === 404, 'server source is not served');
   ok((await fetch(base + '/server/.env')).status === 404, 'secrets are not served');
+
+  console.log('Analytics');
+  const dev = 'test-device-0001';
+  ok((await post('/api/track', { d: dev, e: 'visit', v: { ref: 'https://www.tiktok.com/@x', mobile: true } })).ok, 'visit tracked');
+  await post('/api/track', { d: dev, e: 'beat', v: { s: 60 } });
+  await post('/api/track', { d: dev, e: 'newgame' });
+  await post('/api/track', { d: dev, e: 'chapter', v: { stamp: 'JSS1T2' } });
+  await post('/api/track', { d: dev, e: 'choice', v: { beat: 'dami_cry', choice: 0 } });
+  ok(!(await post('/api/track', { d: 'x', e: 'visit' })).ok, 'bad device id rejected');
+  ok(!(await post('/api/track', { d: dev, e: 'hack' })).ok, 'unknown event rejected');
+  ok((await get('/api/admin/metrics')).error, 'metrics need the admin token');
+  await post('/api/admin/payment', { amount: 3000, note: 'test' }, { 'x-admin-token': 'smoke' });
+  const mt = await get('/api/admin/metrics', { 'x-admin-token': 'smoke' });
+  ok(mt.totals.visits === 1 && mt.totals.visitors === 1 && mt.today.playMin === 1 && mt.totals.newGames === 1, `metrics add up (${mt.totals.visits} visit, ${mt.today.playMin} min)`);
+  ok(mt.funnel[1].devices === 1 && mt.referrers[0].name === 'tiktok.com' && mt.devices[0].n === 1, 'funnel, referrer and device split');
+  ok(mt.revenue.totalNGN === 3000 && mt.topChoices[0].total === 1, 'revenue and story choices');
 } catch (e) {
   fail++; console.error(e);
 } finally {

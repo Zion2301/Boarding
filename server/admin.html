@@ -2,51 +2,168 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Boarding House Admin</title>
 <style>
-:root { --bg: #f6f3ea; --card: #fff; --ink: #1f2421; --muted: #6b6f68; --line: #e4dccb; --bad: #c62828; --ok: #1f9d55; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #141713; --card: #1e221d; --ink: #ecebe4; --muted: #a2a59c; --line: #333a31; } }
+:root { --bg: #f6f3ea; --card: #fff; --ink: #1f2421; --muted: #6b6f68; --line: #e4dccb; --bad: #c62828; --ok: #1f9d55; --accent: #1b2a4a; --gold: #e9b949; --bar: #2e8a5f; --bar2: #e9b949; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #141713; --card: #1e221d; --ink: #ecebe4; --muted: #a2a59c; --line: #333a31; --accent: #ffe27a; --bar: #4cc38a; } }
+* { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, sans-serif; }
-main { max-width: 1000px; margin: 0 auto; padding: 16px; }
-h1 { font-size: 1.4rem; } h2 { font-size: 1.05rem; margin: 0 0 8px; }
-section { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 12px 0; overflow-x: auto; }
+main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.4rem; margin: 4px 0 10px; } h2 { font-size: 1.02rem; margin: 0 0 10px; }
+section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin: 12px 0; overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: .9rem; } td, th { text-align: left; padding: 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
-.muted { color: var(--muted); } button { font: inherit; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
-.on { color: var(--ok); font-weight: 700; } .off { color: var(--bad); font-weight: 700; } input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: min(320px, 100%); }
+.muted { color: var(--muted); } .tiny { font-size: .8rem; }
+button { font: inherit; padding: 6px 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 700; }
+.on { color: var(--ok); font-weight: 700; } .off { color: var(--bad); font-weight: 700; }
+input, select { font: inherit; padding: 7px 9px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
 .txt { max-width: 420px; white-space: pre-wrap; word-break: break-word; }
+.tabs { display: flex; gap: 6px; margin: 8px 0; } .tabs button.sel { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+.card b { display: block; font-size: 1.55rem; line-height: 1.15; margin-top: 2px; }
+.card small { color: var(--muted); }
+.card.live b { color: var(--ok); }
+.card.money b { color: var(--gold); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.grid2 section { margin: 0; }
+.bars { display: flex; flex-direction: column; gap: 6px; }
+.bar { display: grid; grid-template-columns: 110px 1fr 56px; align-items: center; gap: 8px; font-size: .86rem; }
+.bar .track { display: block; background: var(--bg); border: 1px solid var(--line); border-radius: 99px; height: 12px; overflow: hidden; }
+.bar .fill { display: block; height: 100%; min-width: 2px; background: var(--bar); border-radius: 99px; }
+.opt { margin: 0 0 6px; font-size: .85rem; } .opt .row { display: grid; grid-template-columns: 1fr 70px; gap: 8px; align-items: center; margin-top: 2px; }
+.opt.top .fill { background: var(--bar2); }
+.bar .n { text-align: right; font-variant-numeric: tabular-nums; }
+.chart { width: 100%; height: 190px; display: block; }
+.legend { display: flex; gap: 14px; font-size: .82rem; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.choice { margin: 0 0 12px; } .choice h3 { font-size: .92rem; margin: 0 0 5px; }
+form.pay { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+@media (max-width: 520px) { .bar { grid-template-columns: 90px 1fr 44px; } .card b { font-size: 1.3rem; } }
 </style></head>
 <body><main>
 <h1>🏫 Boarding House — Admin</h1>
-<section><label>Admin token <input id="tok" type="password" placeholder="ADMIN_TOKEN"></label> <button id="go">Load</button> <span id="msg" class="muted"></span></section>
-<div id="out"></div>
+<section><label>Admin token <input id="tok" type="password" placeholder="ADMIN_TOKEN" autocomplete="current-password"></label> <button id="go" class="primary">Load</button> <span id="msg" class="muted"></span></section>
+<div class="tabs" id="tabs" hidden><button data-tab="stats" class="sel">📊 Stats</button><button data-tab="mod">🛡️ Moderation</button></div>
+<div id="stats"></div>
+<div id="mod" hidden></div>
 </main>
 <script>
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-let token = '';
+const fmt = (n) => Number(n || 0).toLocaleString();
+const naira = (n) => '₦' + Number(n || 0).toLocaleString();
+let token = '', timer = null, tab = 'stats';
 try { token = sessionStorage.getItem('bh_admin') || ''; } catch (e) {}
 $('#tok').value = token;
 const api = (p, body) => fetch(p, { method: body ? 'POST' : 'GET', headers: { 'content-type': 'application/json', 'x-admin-token': token }, body: body ? JSON.stringify(body) : undefined }).then((r) => r.json());
-async function load() {
-  token = $('#tok').value.trim();
-  try { sessionStorage.setItem('bh_admin', token); } catch (e) {}
+
+/* ---------- 📊 stats ---------- */
+function bars(list, total) {
+  const max = Math.max(1, ...list.map((x) => x.n));
+  return `<div class="bars">${list.map((x) => `<div class="bar"><span title="${esc(x.name)}">${esc(x.name)}</span><span class="track"><span class="fill" style="width:${Math.round((x.n / max) * 100)}%"></span></span><span class="n">${fmt(x.n)}${total ? ` <span class="muted tiny">${Math.round((x.n / Math.max(1, total)) * 100)}%</span>` : ''}</span></div>`).join('') || '<p class="muted">No data yet.</p>'}</div>`;
+}
+function chart(series) {
+  const W = 720, H = 190, P = 24, n = series.length;
+  const max = Math.max(1, ...series.map((d) => Math.max(d.visits, d.uniques)));
+  const bw = (W - P * 2) / n;
+  const y = (v) => H - P - (v / max) * (H - P * 2);
+  const rects = series.map((d, i) => `<rect x="${P + i * bw + bw * 0.12}" y="${y(d.visits)}" width="${bw * 0.76}" height="${H - P - y(d.visits)}" rx="3" fill="var(--bar)"><title>${d.day}: ${d.visits} visits, ${d.uniques} visitors, ${d.playMin} min played</title></rect>`).join('');
+  const line = series.map((d, i) => `${i ? 'L' : 'M'}${P + i * bw + bw / 2},${y(d.uniques)}`).join(' ');
+  const labels = series.map((d, i) => (i % 5 === 0 || i === n - 1) ? `<text x="${P + i * bw + bw / 2}" y="${H - 6}" font-size="10" text-anchor="middle" fill="var(--muted)">${d.day.slice(5)}</text>` : '').join('');
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Visits over the last 30 days">
+    <line x1="${P}" x2="${W - P}" y1="${H - P}" y2="${H - P}" stroke="var(--line)"/>
+    <text x="${P}" y="14" font-size="10" fill="var(--muted)">${fmt(max)}</text>${rects}
+    <path d="${line}" fill="none" stroke="var(--bar2)" stroke-width="2.5"/>${labels}</svg>
+    <div class="legend"><span><i style="background:var(--bar)"></i>Visits</span><span><i style="background:var(--bar2)"></i>Unique visitors</span></div>`;
+}
+async function loadStats() {
+  const m = await api('/api/admin/metrics');
+  if (m.error) { $('#msg').textContent = m.error; return false; }
+  const T = m.totals, D = m.today, R = m.revenue;
+  const card = (label, value, sub, cls = '') => `<div class="card ${cls}"><small>${label}</small><b>${value}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
+  const funnelMax = Math.max(1, ...m.funnel.map((f) => f.devices));
+  $('#stats').innerHTML = `
+    <div class="cards">
+      ${card('🟢 Playing right now', fmt(T.onlineNow), 'active in the last 2 min', 'live')}
+      ${card('👀 Total visits', fmt(T.visits), `${fmt(D.visits)} today`)}
+      ${card('🧑🏾 Unique visitors', fmt(T.visitors), `${fmt(D.visitors)} today · ${fmt(D.newVisitors)} new`)}
+      ${card('🎮 Real players', fmt(T.players), 'played 1+ minute')}
+      ${card('⏱️ Time played', `${fmt(T.playHours)} h`, `avg ${fmt(T.avgPlayMin)} min / player`)}
+      ${card('🔁 Came back', `${T.returningPct}%`, 'visited on 2+ days')}
+      ${card('🆕 New games', fmt(T.newGames), `${fmt(D.newGames)} today`)}
+      ${card('🎓 Graduated', fmt(T.graduations), 'finished SS3')}
+      ${card('💬 Conversations', fmt(T.convos), 'talks with characters')}
+      ${card('🌐 Private-school joins', fmt(T.mpJoins), `${fmt(T.accounts)} accounts`)}
+      ${card('💰 Money made', naira(R.totalNGN), `${naira(R.monthNGN)} this month · ${fmt(R.payments)} payments`, 'money')}
+    </div>
+    <section><h2>📈 Last 30 days</h2>${chart(m.series)}</section>
+    <div class="grid2">
+      <section><h2>🪜 How far players get</h2><p class="muted tiny">Players who reached each term (story mode). Big drops show where people quit.</p>
+        <div class="bars">${m.funnel.map((f) => `<div class="bar"><span>${esc(f.stamp)}</span><span class="track"><span class="fill" style="width:${Math.round((f.devices / funnelMax) * 100)}%"></span></span><span class="n">${fmt(f.devices)}</span></div>`).join('')}</div></section>
+      <section><h2>🔗 Where visitors come from</h2>${bars(m.referrers, T.visitors)}
+        <h2 style="margin-top:14px">📱 Devices</h2>${bars(m.devices, T.visitors)}
+        <h2 style="margin-top:14px">🎮 Modes</h2>${bars(m.modes, T.visitors)}</section>
+    </div>
+    <div class="grid2">
+      <section><h2>🔀 What players choose</h2><p class="muted tiny">The most-played story moments and how players split.</p>
+        ${m.topChoices.length ? m.topChoices.map((c) => { const best = Math.max(...c.opts.map((o) => o.n)); return `<div class="choice"><h3>${esc(c.title)} <span class="muted tiny">${fmt(c.total)} player${c.total === 1 ? '' : 's'}</span></h3>${c.opts.map((o) => `<div class="opt ${o.n && o.n === best ? 'top' : ''}">${esc(o.label)}<div class="row"><span class="bar" style="display:block"><span class="track"><span class="fill" style="width:${Math.round((o.n / Math.max(1, c.total)) * 100)}%"></span></span></span><span class="n muted">${fmt(o.n)} · ${Math.round((o.n / Math.max(1, c.total)) * 100)}%</span></div></div>`).join('')}</div>`; }).join('') : '<p class="muted">No story choices yet.</p>'}</section>
+      <section><h2>💰 Money</h2>
+        <p>Total: <b>${naira(R.totalNGN)}</b> · This month: <b>${naira(R.monthNGN)}</b></p>
+        <p class="muted tiny">Payments aren't switched on in the game yet. When they are, they'll appear here automatically. You can also record one by hand (e.g. a brand deal):</p>
+        <form class="pay" id="pay"><input name="amount" type="number" min="1" placeholder="Amount (₦)" required style="width:140px"><input name="note" placeholder="Note (e.g. brand deal)" style="flex:1;min-width:140px"><button class="primary">Record</button></form>
+        ${R.latest.length ? `<table style="margin-top:10px">${R.latest.map((p) => `<tr><td class="muted">${esc(String(p.created_at).slice(0, 10))}</td><td>${naira(p.amount)}</td><td>${esc(p.note || p.ref || '')}</td></tr>`).join('')}</table>` : ''}
+        <h2 style="margin-top:16px">🧠 AI</h2>
+        <p>Status: <span class="${m.ai && m.ai.on ? 'on' : 'off'}">${m.ai && m.ai.on ? 'ON' : 'OFF'}</span>${m.ai && m.ai.mock ? ' (test mode — no key, no cost)' : ''}</p>
+        <p class="muted tiny">Today: ${fmt(m.ai ? m.ai.globalCount : 0)} AI calls · ${fmt(m.ai ? m.ai.players : 0)} players</p>
+      </section>
+    </div>
+    <p class="muted tiny">Updated ${new Date(m.generated).toLocaleTimeString()} · refreshes every 30 s · anonymous data only (random device ids, no names or IPs).</p>`;
+  $('#pay').onsubmit = async (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const r = await api('/api/admin/payment', { amount: Number(f.get('amount')), note: f.get('note') });
+    if (r.error) alert(r.error); else loadStats();
+  };
+  return true;
+}
+
+/* ---------- 🛡️ moderation (unchanged tools) ---------- */
+async function loadMod() {
   const d = await api('/api/admin/overview');
   if (d.error) { $('#msg').textContent = d.error; return; }
   $('#msg').textContent = `store: ${d.store}`;
   const row = (type, it) => `<tr><td class="muted">${esc(it.created_at.slice(0, 16))}</td><td>${esc(it.author)}</td><td class="txt">${esc(it.text)}</td><td>${esc(it.status)} · ${it.reports || 0}🚩</td><td><button data-type="${type}" data-id="${it.id}" data-status="${it.status === 'hidden' ? 'visible' : 'hidden'}">${it.status === 'hidden' ? 'Restore' : 'Hide'}</button></td></tr>`;
-  $('#out').innerHTML = `
+  $('#mod').innerHTML = `
     <section><h2>AI</h2><p>Status: <span class="${d.ai ? 'on' : 'off'}">${d.ai ? 'ON' : 'OFF'}</span>${d.mock ? ' (mock model)' : ''} <button id="toggle">${d.ai ? 'Switch AI OFF' : 'Switch AI ON'}</button></p>
       <p class="muted">Today ${esc(d.guard.day)}: ${d.guard.globalCount} AI calls · ${d.guard.players} players · cache ${d.guard.cacheSize} · limits ${d.guard.limits.RATE_PER_MIN}/min, ${d.guard.limits.DAILY_BUDGET}/player/day, ${d.guard.limits.GLOBAL_DAILY}/day total</p></section>
     <section><h2>Open reports (${d.reports.length})</h2>${d.reports.length ? `<table><tr><th>When</th><th>Type</th><th>Original text</th><th>Reason</th><th></th></tr>${d.reports.map((r) => `<tr><td class="muted">${esc(r.created_at.slice(0, 16))}</td><td>${esc(r.item_type)}</td><td class="txt">${esc(r.original_text)}</td><td>${esc(r.reason)}</td><td><button data-type="${r.item_type}" data-id="${r.item_id}" data-sub="${esc(r.sub_id || '')}" data-status="hidden">Hide item</button> <button data-resolve="${r.id}">Resolve</button></td></tr>`).join('')}</table>` : '<p class="muted">Nothing reported. 🎉</p>'}</section>
     <section><h2>Noticeboard posts</h2><table>${d.posts.map((p) => row('board_posts', p)).join('') || '<tr><td class="muted">None yet</td></tr>'}</table></section>
     <section><h2>Graffiti</h2><table>${d.graffiti.map((p) => row('graffiti', p)).join('') || '<tr><td class="muted">None yet</td></tr>'}</table></section>`;
-  $('#toggle').onclick = async () => { await api('/api/admin/ai', { enabled: !d.ai }); load(); };
+  $('#toggle').onclick = async () => { await api('/api/admin/ai', { enabled: !d.ai }); loadMod(); };
+}
+
+async function load() {
+  token = $('#tok').value.trim();
+  try { sessionStorage.setItem('bh_admin', token); } catch (e) {}
+  const ok = await loadStats();
+  if (!ok) return;
+  $('#msg').textContent = '✅ Signed in';
+  $('#tabs').hidden = false;
+  clearInterval(timer);
+  timer = setInterval(() => { if (tab === 'stats' && !document.hidden) loadStats(); }, 30000);
 }
 document.addEventListener('click', async (e) => {
   const b = e.target.closest('button');
   if (!b) return;
-  if (b.dataset.resolve) { await api('/api/admin/report', { id: b.dataset.resolve }); load(); }
-  else if (b.dataset.type) { await api('/api/admin/item', { type: b.dataset.type, id: b.dataset.id, subId: b.dataset.sub, status: b.dataset.status }); load(); }
+  if (b.dataset.tab) {
+    tab = b.dataset.tab;
+    document.querySelectorAll('#tabs button').forEach((x) => x.classList.toggle('sel', x === b));
+    $('#stats').hidden = tab !== 'stats'; $('#mod').hidden = tab !== 'mod';
+    if (tab === 'mod') loadMod(); else loadStats();
+  } else if (b.dataset.resolve) { await api('/api/admin/report', { id: b.dataset.resolve }); loadMod(); }
+  else if (b.dataset.type) { await api('/api/admin/item', { type: b.dataset.type, id: b.dataset.id, subId: b.dataset.sub, status: b.dataset.status }); loadMod(); }
 });
 $('#go').onclick = load;
+$('#tok').addEventListener('keydown', (e) => { if (e.key === 'Enter') load(); });
 if (token) load();
 </script>
 </body></html>

@@ -66,3 +66,9 @@ alter table shirts enable row level security;
 alter table slambooks enable row level security;
 alter table reports enable row level security;
 alter table settings enable row level security;
+
+-- Anonymous play analytics (server/analytics.js) — no personal data
+create table if not exists analytics_devices (id text primary key, created_at timestamptz default now(), first text, last text, "lastVisitDay" text, days int default 0, visits int default 0, play int default 0, games int default 0, furthest int default -1, mobile boolean default false, ref text, mode text default 'story', graduated boolean default false);
+create table if not exists analytics_daily (id text primary key, created_at timestamptz default now(), visits int default 0, uniques int default 0, "newDevices" int default 0, returning int default 0, "playSeconds" int default 0, "newGames" int default 0, graduations int default 0, "mpJoins" int default 0, convos int default 0);
+create table if not exists analytics_choices (id text primary key, created_at timestamptz default now(), counts jsonb default '{}'::jsonb);
+create table if not exists payments (id uuid primary key, created_at timestamptz default now(), amount int not null, currency text default 'NGN', ref text, note text);

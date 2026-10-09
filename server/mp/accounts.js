@@ -21,6 +21,7 @@ const hashPw = (pw, salt) => crypto.scryptSync(pw, salt, 32).toString('hex');
 const attempts = new Map(); // ip → [timestamps]
 
 export const Accounts = {
+  count() { return Object.keys(db.users || {}).length; },
   validName(u) { return /^[a-z0-9_]{3,20}$/.test(u); },
   throttle(ip) {
     const now = Date.now();
