@@ -729,15 +729,15 @@ body.compact .hud-bar { display: flex; position: absolute; top: calc(var(--sat) 
 @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } }
 
 /* the dropdowns: hidden until tapped (or popped by something important) */
-body.compact .hud-tl { display: none; top: calc(var(--sat) + 46px); }
+body.compact .hud-tl { display: none; top: calc(var(--sat) + var(--cxTop, 46px)); }
 body.compact.x-stats .hud-tl { display: block; animation: dropIn .18s ease-out; }
 body.compact .hud-room { display: none; }
-body.compact .hud-tr { top: calc(var(--sat) + 46px); width: min(236px, calc(100vw - 16px)); }
+body.compact .hud-tr { top: calc(var(--sat) + var(--cxTop, 46px)); width: min(236px, calc(100vw - 16px)); }
 body.compact .clock-card, body.compact .hud-time { display: none; }
 body.compact.x-clock .clock-card { display: block; animation: dropIn .18s ease-out; }
 body.compact.x-clock .hud-time { display: flex; animation: dropIn .18s ease-out; }
 body.compact .hud-missions { display: none; }
-body.compact.x-missions .hud-missions { display: block; top: calc(var(--sat) + 46px); right: calc(var(--sar) + 8px); bottom: auto; transform: none; width: min(250px, calc(100vw - 16px)); animation: dropIn .18s ease-out; }
+body.compact.x-missions .hud-missions { display: block; top: calc(var(--sat) + var(--cxTop, 46px)); right: calc(var(--sar) + 8px); bottom: auto; transform: none; width: min(250px, calc(100vw - 16px)); animation: dropIn .18s ease-out; }
 body.compact.x-missions .missions-card .mrow { display: flex !important; }
 body.compact.x-missions .missions-card .mrow .step { display: block; }
 
@@ -753,13 +753,13 @@ body.compact .hud-br .badge[id="phone-badge"], body.compact .hud-br .badge[id="s
 body.compact.x-menu .hud-br .badge[id="phone-badge"]:not([hidden]), body.compact.x-menu .hud-br .badge[id="social-badge"]:not([hidden]) { display: flex; }
 
 /* everything else that floats up top sits under the bar */
-body.compact .hud-top { top: calc(var(--sat) + 46px); left: 8px; right: 8px; width: auto; transform: none; align-items: center; }
-body.compact.in-lesson .hud-top { top: calc(var(--sat) + 92px); }
-body.compact .hud-social, body.compact .hud-score { top: calc(var(--sat) + 46px); }
-body.compact .hud-lesson { top: calc(var(--sat) + 46px); width: calc(100vw - 16px); max-height: 44vh; }
+body.compact .hud-top { top: calc(var(--sat) + var(--cxTop, 46px)); left: 8px; right: 8px; width: auto; transform: none; align-items: center; }
+body.compact.in-lesson .hud-top { top: calc(var(--sat) + var(--cxTop, 46px) + 46px); }
+body.compact .hud-social, body.compact .hud-score { top: calc(var(--sat) + var(--cxTop, 46px)); }
+body.compact .hud-lesson { top: calc(var(--sat) + var(--cxTop, 46px)); width: calc(100vw - 16px); max-height: 44vh; }
 body.compact .hud-lesson.closed { width: auto; max-width: calc(100vw - 16px); left: 50%; }
-body.compact #toasts { position: fixed; top: calc(var(--sat) + 46px); left: 50%; right: auto; transform: translateX(-50%); width: min(340px, calc(100vw - 24px)); align-items: stretch; z-index: 30; pointer-events: none; }
-body.compact.has-calls #toasts, body.compact.in-lesson #toasts { top: calc(var(--sat) + 92px); }
+body.compact #toasts { position: fixed; top: calc(var(--sat) + var(--cxTop, 46px)); left: 50%; right: auto; transform: translateX(-50%); width: min(340px, calc(100vw - 24px)); align-items: stretch; z-index: 30; pointer-events: none; }
+body.compact.has-calls #toasts, body.compact.in-lesson #toasts { top: calc(var(--sat) + var(--cxTop, 46px) + 46px); }
 body.compact.x-clock #toasts, body.compact.x-missions #toasts, body.compact.x-stats #toasts { top: 46%; }
 body.compact .toast { font-size: .76rem; padding: 7px 10px; }
 body.compact .joystick:not(.on) { opacity: .55; }
@@ -794,3 +794,19 @@ body.compact kbd { display: none; }
 .br.on { background: #1b2a4a; color: #ffe27a; }
 .br.lock { background: rgba(27, 42, 74, .08); color: #6b7487; }
 .br.ign { background: #ffe0dc; color: #8a1c12; }
+
+/* phones: the always-visible "where you need to be" strip under the top bar */
+.obj-strip { display: none; }
+body.compact { --cxTop: 46px; }
+body.compact.has-obj { --cxTop: 92px; }
+body.compact .obj-strip:not([hidden]) { display: flex; position: absolute; top: calc(var(--sat) + 46px); left: calc(var(--sal) + 8px); right: calc(var(--sar) + 8px); z-index: 9; align-items: center; gap: 8px; min-height: 40px; padding: 5px 12px; border-radius: 12px; background: var(--hud); color: #fff; border: 1px solid var(--hud-line); border-left: 5px solid #7fd4ff; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 3px 10px rgba(0,0,0,.25); font: inherit; font-size: .84rem; font-weight: 800; text-align: left; cursor: pointer; pointer-events: auto; }
+.obj-strip i { font-style: normal; font-size: 1.05rem; }
+.obj-strip span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.obj-strip small { display: block; font-weight: 700; font-size: .72rem; opacity: .78; overflow: hidden; text-overflow: ellipsis; }
+body.compact .obj-strip.story { border-left-color: #ffd400; }
+body.compact .obj-strip.due { border-left-color: #7fd4ff; }
+body.compact .obj-strip.late { border-left-color: #ff2d2d; background: rgba(110, 18, 18, .92); animation: stripPulse 1.2s ease-in-out infinite; }
+body.compact .obj-strip.ok { border-left-color: #7ee2a8; }
+body.compact .obj-strip.mission { border-left-color: #2ec4ff; }
+body.compact .obj-strip.free { border-left-color: #9fb3c8; }
+@keyframes stripPulse { 50% { box-shadow: 0 0 0 3px rgba(255, 45, 45, .45); } }

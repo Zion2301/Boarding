@@ -31,7 +31,7 @@
       // tapping the world closes whatever is open
       document.addEventListener('pointerdown', (e) => {
         if (!Compact.on || !Compact.openK) return;
-        if (e.target.closest && e.target.closest('.hud-bar, .hud-tl, .hud-tr, .hud-missions, .hud-br, .overlay')) { Compact.hold(); return; }
+        if (e.target.closest && e.target.closest('.hud-bar, .obj-strip, .hud-tl, .hud-tr, .hud-missions, .hud-br, .overlay')) { Compact.hold(); return; }
         Compact.close();
       }, true);
     },
@@ -59,6 +59,37 @@
       el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
     },
 
+    /* ---------- the always-visible objective strip: where you need to be right now ----------
+       priority: resumption-day story step → the timetable (red when you're missing it) → your tracked/most urgent mission */
+    objective(s, info, st) {
+      const el = document.getElementById('obj-strip');
+      if (!el) return;
+      let cls = '', html = '';
+      const ob = BH.Onboarding && BH.Onboarding.objective(s);
+      const e = st.e || (info.status && info.status.e);
+      const missing = st.kind === 'absent' || (st.kind === 'due' && info.b.kind !== 'sleep' && s.clock - BH.Clock.blockStart(s) > 3);
+      const live = BH.Missions.live(s).filter((m) => m.status === 'active');
+      const tracked = (BH.HUD && BH.HUD.waypoint && live.find((m) => m.id === BH.HUD.waypoint)) || live.slice().sort((a, b) => (a.due || 1e12) - (b.due || 1e12))[0];
+      const esc = U.esc;
+      if (ob) { cls = 'story'; html = `<i>⭐</i><span>${esc(ob.text)}</span>`; }
+      else if (st.kind === 'asleep') { el.hidden = true; document.body.classList.remove('has-obj'); return; }
+      else if (e && ['due', 'absent'].includes(st.kind)) {
+        cls = missing ? 'late' : 'due';
+        const subj = info.b.kind === 'class' && BH.Clock.subjectNow(s) ? ` · ${BH.Academics.name(s, BH.Clock.subjectNow(s), true)}` : '';
+        html = `<i>${missing ? '❗' : '👉🏾'}</i><span><b>${missing ? 'Missing' : 'Go to'}</b> ${esc(e.name)}<small>${info.b.emoji} ${esc(info.b.title)}${subj}</small></span>`;
+      } else if (e && ['present', 'late', 'excused'].includes(st.kind)) {
+        cls = 'ok'; html = `<i>✅</i><span>${esc(info.b.title)}${info.b.kind === 'class' && BH.Clock.subjectNow(s) ? ` · ${esc(BH.Academics.name(s, BH.Clock.subjectNow(s), true))}` : ''}<small>${esc(e.name)}</small></span>`;
+      } else if (tracked) {
+        const left = tracked.due ? tracked.due - BH.Clock.abs(s) : null;
+        cls = left !== null && left < 30 ? 'late' : 'mission';
+        html = `<i>${tracked.emoji || '🎯'}</i><span>${esc(BH.Missions.stepLabel(s, tracked) || tracked.title)}<small>${esc(tracked.title)}${left !== null ? ` · ⏱ ${BH.Clock.until(left)}` : ''}</small></span>`;
+      } else { cls = 'free'; html = `<i>🎈</i><span>Free time — go anywhere<small>🔔 ${esc(info.next.title)} in ${BH.Clock.until(info.left)}</small></span>`; }
+      el.className = `obj-strip ${cls}`;
+      if (Compact.sig.obj !== html) { Compact.sig.obj = html; el.innerHTML = html; }
+      el.hidden = false;
+      document.body.classList.add('has-obj');
+    },
+
     /* ---------- render the pills + decide when things pop (called from HUD.update) ---------- */
     update(s) {
       document.body.classList.toggle('cam-free', !!(BH.Engine3D && BH.Engine3D.rig && BH.Engine3D.rig.isFree && BH.Engine3D.rig.isFree()));
@@ -79,6 +110,8 @@
       const dot = { absent: 'late', late: 'soon', due: info.left <= 10 ? 'soon' : 'due', present: 'ok', excused: 'ok' }[st.kind] || 'free';
       const paused = BH.Pacing && BH.Pacing.paused(s);
       set('pill-clock', `<span class="dot ${dot}"></span><b>${BH.Clock.label(s)}</b>${paused ? '<i>⏸</i>' : s.world.ff ? '<i>⏩</i>' : ''}<small>${info.b.emoji}</small>`);
+
+      Compact.objective(s, info, st);
 
       // missions: count, red when something is due soon
       const live = BH.Missions.live(s);

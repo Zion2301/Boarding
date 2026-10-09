@@ -29,6 +29,7 @@
             <button id="pill-missions" class="pill missions" data-act="cxToggle" data-arg="missions" aria-label="Missions" hidden></button>
             <button id="pill-clock" class="pill clock" data-act="cxToggle" data-arg="clock" aria-label="Clock"></button>
           </div>
+          <button id="obj-strip" class="obj-strip" data-act="cxToggle" data-arg="clock" aria-label="Where you need to be" hidden></button>
           <div class="hud-tl"><div id="hud-stats" class="hud-stats"></div><div id="minimap-frame" class="minimap-frame"></div><div id="hud-room" class="hud-room"></div></div>
           <div class="hud-tr"><div id="hud-clock" class="hud-card clock-card"></div><div id="toasts"></div></div>
           <div id="hud-top" class="hud-top"></div>
