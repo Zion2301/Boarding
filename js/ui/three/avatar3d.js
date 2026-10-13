@@ -19,7 +19,18 @@
     return { school: s.player.school, level: s.time.year, gender: s.player.gender, house: s.player.house.color };
   }
 
+  /* the creator / profile preview uses the in-game character builder, so what you pick is what you see on campus */
   function build(av, outfit) {
+    if (BH.Characters && BH.Outfits) {
+      try {
+        const g = BH.Characters.build({ av, outfit: { kind: 'student', school: outfit.school, level: outfit.level || 1, gender: outfit.gender, house: outfit.house, style: 'uniform', hijab: av.hair === 'hijab', seed: 'player' } });
+        g.scale.setScalar(1.15);
+        return g;
+      } catch (e) { console.warn('preview fallback', e); }
+    }
+    return buildLegacy(av, outfit);
+  }
+  function buildLegacy(av, outfit) {
     const T = THREE;
     const A = D.AVATAR;
     const g = new T.Group();
@@ -161,8 +172,10 @@
     const cam = new T.PerspectiveCamera(32, w / h, 0.1, 50);
     cam.position.set(0, 1.25, 4.6);
     cam.lookAt(0, 1.05, 0);
-    scene.add(new T.HemisphereLight(0xffffff, 0x8a7a5a, 0.9));
-    const sun = new T.DirectionalLight(0xffffff, 0.7); sun.position.set(2, 4, 3); scene.add(sun);
+    // same light + tone mapping as the 3D campus (js/render3d/sky3d.js), so the preview matches the game
+    renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+    scene.add(new T.HemisphereLight('#cfe9ff', '#7a5a3a', 1.1));
+    const sun = new T.DirectionalLight('#fff3d6', 2.2); sun.position.set(2, 4, 3); scene.add(sun);
     const floor = new T.Mesh(new T.CircleGeometry(0.75, 32), new T.MeshToonMaterial({ color: 0x0f5c3f, transparent: true, opacity: 0.18 }));
     floor.rotation.x = -Math.PI / 2; scene.add(floor);
     let model = build(av, outfit);

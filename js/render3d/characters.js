@@ -49,8 +49,22 @@
     const H = find(A.heights, look.av.height).h;
     const age = look.outfit.kind === 'adult' ? 1.08 : 0.86 + Math.min(6, look.outfit.level || 1) * 0.025; // JSS1 → SS3 grow taller
     const k = H * age;
-    return { k, W, leg: 0.8 * k, thigh: 0.4 * k, shin: 0.38 * k, torso: 0.5 * k, uarm: 0.27 * k, farm: 0.25 * k, shoulder: 0.19 * k * W, hip: 0.085 * k * W, headR: 0.135 * k, girth: W };
+    const fem = look.outfit.gender === 'f';
+    return { k, W, fem, leg: 0.8 * k, thigh: 0.4 * k, shin: 0.38 * k, torso: 0.5 * k, uarm: 0.27 * k, farm: 0.25 * k, shoulder: 0.19 * k * W * (fem ? 0.9 : 1), hip: 0.085 * k * W, headR: 0.135 * k, girth: W };
   }
+
+  /* a flared, pleated skirt: an open cone whose hem folds in and out (flat shading turns that into pleats) */
+  function skirtGeo(rTop, rBot, len, pleats = 9) {
+    const g = new THREE.CylinderGeometry(rTop, rBot, len, pleats * 2, 1, true);
+    const pos = g.attributes.position, n = pleats * 2 + 1;
+    for (let i = 0; i < n; i++) {
+      const j = n + i; // the hem ring
+      const f = i % 2 ? 0.9 : 1.02;
+      pos.setX(j, pos.getX(j) * f); pos.setZ(j, pos.getZ(j) * f);
+    }
+    return g;
+  }
+  const shade = (c, f) => new THREE.Color(c).multiplyScalar(f);
 
   function buildParts(look, P) {
     const av = look.av, o = BH.Outfits.resolve(look.outfit);
@@ -63,29 +77,53 @@
     part(L, sph(P.headR, 10, 8), 'head', skin, 0, P.headR * 0.95, 0, 0, 0, 0, 0.95, 1.05, 1);
     part(L, sph(P.headR * 0.18, 5, 4), 'head', skin, P.headR * 0.95, P.headR * 0.9, 0); // ears
     part(L, sph(P.headR * 0.18, 5, 4), 'head', skin, -P.headR * 0.95, P.headR * 0.9, 0);
-    part(L, sph(P.headR * 0.13, 5, 4), 'head', '#1a1a1a', P.headR * 0.36, P.headR * 1.05, P.headR * 0.84); // eyes
-    part(L, sph(P.headR * 0.13, 5, 4), 'head', '#1a1a1a', -P.headR * 0.36, P.headR * 1.05, P.headR * 0.84);
-    part(L, box(P.headR * 0.5, P.headR * 0.07, 0.01), 'head', '#5a2a1a', 0, P.headR * 0.62, P.headR * 0.9); // mouth
+    const r = P.headR;
+    [1, -1].forEach((sg) => {
+      part(L, sph(r * 0.17, 6, 5), 'head', '#f4f1ea', sg * r * 0.36, r * 1.02, r * 0.86, 0, 0, 0, 1, 0.85, 0.55); // eye white
+      part(L, sph(r * 0.1, 6, 4), 'head', '#140d08', sg * r * 0.36, r * 1.0, r * 0.93, 0, 0, 0, 1, 1, 0.6); // pupil
+      part(L, box(r * 0.3, r * 0.06, r * 0.06), 'head', shade(hair, 0.9), sg * r * 0.37, r * 1.26, r * 0.9, 0, 0, sg * -0.12); // brow
+      if (P.fem) part(L, box(r * 0.08, r * 0.05, r * 0.04), 'head', '#0d0d0d', sg * r * 0.55, r * 1.1, r * 0.86, 0, 0, sg * 0.6); // lashes flick
+    });
+    part(L, box(r * (P.fem ? 0.42 : 0.5), r * (P.fem ? 0.1 : 0.07), r * 0.06), 'head', P.fem ? '#7a2c2c' : '#5a2a1a', 0, r * 0.62, r * 0.9); // mouth / lips
+    if (P.fem && av.hair !== 'hijab') [1, -1].forEach((sg) => part(L, sph(r * 0.07, 5, 4), 'head', '#e8c25a', sg * r * 0.99, r * 0.72, r * 0.04)); // gold studs
     if (av.glasses) { [1, -1].forEach((sg) => part(L, new THREE.TorusGeometry(P.headR * 0.22, P.headR * 0.04, 4, 10), 'head', '#111111', sg * P.headR * 0.36, P.headR * 1.05, P.headR * 0.92)); part(L, box(P.headR * 0.3, P.headR * 0.04, 0.01), 'head', '#111111', 0, P.headR * 1.07, P.headR * 0.95); }
     hairParts(L, av.hair, hair, P, o);
     part(L, cyl(P.headR * 0.42, P.headR * 0.48, 0.1), 'neck', o.hijab ? o.hijab : skin, 0, 0.03, 0);
     // --- torso (shirt / gown) with tie or pinafore
-    const tw = 0.34 * W * P.k, td = 0.2 * P.k;
-    part(L, box(tw, P.torso * 0.55, td), 'chest', o.top, 0, P.torso * 0.22, 0);
-    part(L, box(tw * 0.92, P.torso * 0.5, td * 0.92), 'spine', o.top, 0, P.torso * 0.25, 0);
-    part(L, cyl(tw * 0.62, tw * 0.62, 0.05, 8), 'chest', o.top, 0, P.torso * 0.5, 0, 0, 0, 0, 1, 1, 0.65); // shoulders
+    const tw = 0.34 * W * P.k * (P.fem ? 0.92 : 1), td = 0.2 * P.k;
+    if (P.fem) {
+      // shoulders → narrow waist → hips: two tapered 10-sided sections, flattened front to back
+      const dz = (td / tw) * 1.05;
+      part(L, cyl(tw * 0.5, tw * 0.4, P.torso * 0.56, 10), 'chest', o.top, 0, P.torso * 0.22, 0, 0, 0, 0, 1, 1, dz);
+      part(L, cyl(tw * 0.4, tw * 0.5, P.torso * 0.5, 10), 'spine', o.top, 0, P.torso * 0.25, 0, 0, 0, 0, 1, 1, dz);
+    } else {
+      part(L, box(tw, P.torso * 0.55, td), 'chest', o.top, 0, P.torso * 0.22, 0);
+      part(L, box(tw * 0.92, P.torso * 0.5, td * 0.92), 'spine', o.top, 0, P.torso * 0.25, 0);
+    }
+    part(L, cyl(tw * (P.fem ? 0.54 : 0.62), tw * (P.fem ? 0.54 : 0.62), 0.05, 8), 'chest', o.top, 0, P.torso * 0.5, 0, 0, 0, 0, 1, 1, 0.65); // shoulders
     if (o.tie) part(L, box(0.035 * P.k, P.torso * 0.6, 0.01), 'chest', o.tie, 0, P.torso * 0.12, td / 2 + 0.006);
     if (o.collar) part(L, box(tw * 0.5, 0.03, td * 0.7), 'chest', o.collar, 0, P.torso * 0.48, 0.02);
-    if (o.pinafore) { part(L, box(tw * 1.02, P.torso * 0.62, td * 1.06), 'spine', o.pinafore, 0, P.torso * 0.3, 0); [1, -1].forEach((sg) => part(L, box(0.04, P.torso * 0.5, td * 1.08), 'chest', o.pinafore, sg * tw * 0.3, P.torso * 0.3, 0)); }
+    if (o.pinafore) {
+      const zf = td * 0.55;
+      part(L, cyl(tw * 0.43, tw * 0.53, P.torso * 0.5, 10), 'spine', o.pinafore, 0, P.torso * 0.25, 0, 0, 0, 0, 1, 1, (td / tw) * 1.12); // bodice
+      part(L, box(tw * 0.5, P.torso * 0.34, 0.012), 'chest', o.pinafore, 0, P.torso * 0.12, zf); // bib
+      [1, -1].forEach((sg) => {
+        part(L, box(0.035 * P.k, P.torso * 0.62, 0.012), 'chest', o.pinafore, sg * tw * 0.22, P.torso * 0.2, zf + 0.002); // front strap
+        part(L, box(0.035 * P.k, P.torso * 0.8, 0.012), 'chest', o.pinafore, sg * tw * 0.22, P.torso * 0.12, -zf); // back strap
+        part(L, box(0.035 * P.k, 0.012, td * 1.1), 'chest', o.pinafore, sg * tw * 0.22, P.torso * 0.51, 0); // over the shoulder
+        part(L, sph(0.014 * P.k, 5, 4), 'chest', '#e0e0e0', sg * tw * 0.22, P.torso * 0.3, zf + 0.012); // button
+      });
+    }
     if (o.badge) part(L, sph(0.03 * P.k, 6, 4), 'chest', o.badge, tw * 0.28, P.torso * 0.36, td / 2 + 0.01);
     if (o.wrapper) part(L, cyl(tw * 0.62, tw * 0.66, 0.08, 9), 'spine', o.wrapper, 0, P.torso * 0.05, 0); // waist band / iro
     // --- arms: sleeves short or long, skin below
     ['L', 'R'].forEach((side) => {
       const sg = side === 'L' ? 1 : -1;
       const sleeve = o.sleeves === 'long' ? P.uarm : o.sleeves === 'none' ? 0 : P.uarm * 0.55;
-      if (sleeve) part(L, cyl(0.055 * P.k * W, 0.05 * P.k * W, sleeve), 'uarm' + side, o.top, 0, -sleeve / 2, 0);
-      if (P.uarm - sleeve > 0.01) part(L, cyl(0.04 * P.k, 0.036 * P.k, P.uarm - sleeve), 'uarm' + side, skin, 0, -sleeve - (P.uarm - sleeve) / 2, 0);
-      part(L, cyl(0.036 * P.k, 0.032 * P.k, P.farm), 'farm' + side, o.sleeves === 'long' ? o.top : skin, 0, -P.farm / 2, 0);
+      const ak = P.fem ? 0.88 : 1;
+      if (sleeve) part(L, cyl(0.055 * P.k * W * ak, 0.05 * P.k * W * ak, sleeve), 'uarm' + side, o.top, 0, -sleeve / 2, 0);
+      if (P.uarm - sleeve > 0.01) part(L, cyl(0.04 * P.k * ak, 0.036 * P.k * ak, P.uarm - sleeve), 'uarm' + side, skin, 0, -sleeve - (P.uarm - sleeve) / 2, 0);
+      part(L, cyl(0.036 * P.k * ak, 0.032 * P.k * ak, P.farm), 'farm' + side, o.sleeves === 'long' ? o.top : skin, 0, -P.farm / 2, 0);
       part(L, sph(0.045 * P.k, 6, 5), 'farm' + side, skin, 0, -P.farm - 0.02, 0.005);
       void sg;
     });
@@ -106,26 +144,46 @@
     if (bottom === 'shorts' || bottom === 'trousers') part(L, box(0.33 * W * P.k, 0.1 * P.k, 0.2 * P.k), 'hips', o.bottomColor, 0, 0, 0);
     if (bottom === 'skirt' || bottom === 'gown') {
       const len = bottom === 'gown' ? P.leg * 0.92 : o.skirtLen || P.thigh * 1.15;
-      part(L, cyl(0.17 * W * P.k, (bottom === 'gown' ? 0.27 : 0.23) * W * P.k, len, 10), 'hips', o.bottomColor, 0, 0.06 - len / 2, 0);
+      const top = 0.165 * W * P.k, hem = (bottom === 'gown' ? 0.3 : 0.27) * W * P.k;
+      part(L, skirtGeo(top, hem, len, bottom === 'gown' ? 7 : 9), 'hips', o.bottomColor, 0, 0.06 - len / 2, 0);
+      part(L, cyl(top * 1.04, top * 1.04, 0.035 * P.k, 10), 'hips', shade(o.bottomColor, 0.75), 0, 0.06, 0); // waistband
     }
     return L;
   }
 
+  /* Hair sits back from the face: the cap is tilted so the hairline is above the brows and it covers the nape.
+     Girls' styles: braids (with beads), shuku, Ghana weaving, threading (isi owu), puff, two buns, ponytail, low cut, hijab. */
+  const BEADS = ['#f5d76e', '#ffffff', '#d84343', '#3fa7d6'];
   function hairParts(L, style, hair, P, o) {
     const r = P.headR;
-    const cap = (s = 1.06, cut = 0.55) => part(L, new THREE.SphereGeometry(r * s, 10, 6, 0, Math.PI * 2, 0, Math.PI * cut), 'head', hair, 0, r * 0.98, -r * 0.03);
+    const cap = (s = 1.06, cut = 0.55, tilt = 0.55) => part(L, new THREE.SphereGeometry(r * s, 12, 7, 0, Math.PI * 2, 0, Math.PI * cut), 'head', hair, 0, r * 0.98, -r * 0.03, -tilt);
+    /* a strand hanging from the back of the head; a = angle around the back (0 = straight back) */
+    const strand = (a, len, thick, bead) => {
+      const x = Math.sin(a) * r * 0.92, z = -Math.cos(a) * r * 0.9 - r * 0.05, top = r * 1.15;
+      part(L, cyl(thick, thick * 0.8, len, 4), 'head', hair, x, top - len / 2, z, -0.12 * Math.cos(a), 0, 0.12 * Math.sin(a));
+      if (bead) part(L, sph(thick * 1.5, 5, 4), 'head', bead, x * 1.05, top - len, z - 0.12 * Math.cos(a) * len * 0.5);
+    };
+    const rows = (n, len, y0 = 1.8) => { for (let i = 0; i < n; i++) { const x = (i - (n - 1) / 2) * r * 0.27; part(L, box(r * 0.09, r * 0.09, len), 'head', shade(hair, 1.35), x, r * y0 - Math.abs(x) * 0.35, -r * 0.12, -0.25); } };
     switch (style) {
       case 'bald': break;
-      case 'lowcut': case 'fade': case 'waves': cap(1.03, 0.5); break;
-      case 'afro': part(L, sph(r * 1.35, 10, 8), 'head', hair, 0, r * 1.3, -r * 0.12); break;
-      case 'puff': cap(1.05, 0.5); part(L, sph(r * 0.55, 8, 6), 'head', hair, 0, r * 2.05, -r * 0.2); break;
-      case 'buns': cap(1.05, 0.5); [1, -1].forEach((sg) => part(L, sph(r * 0.38, 7, 5), 'head', hair, sg * r * 0.7, r * 1.8, -r * 0.1)); break;
-      case 'cornrows': cap(1.06, 0.55); for (let i = -2; i <= 2; i++) part(L, box(r * 0.08, r * 0.1, r * 1.9), 'head', hair, i * r * 0.28, r * 1.75 - Math.abs(i) * r * 0.12, -r * 0.1); break;
-      case 'braids': cap(1.07, 0.6); for (let i = 0; i < 7; i++) { const a = -1.3 + i * 0.43; part(L, cyl(r * 0.07, r * 0.06, r * 1.8, 4), 'head', hair, Math.sin(a) * r * 0.95, r * 0.25, -Math.cos(a) * r * 0.8 - r * 0.1); } break;
+      case 'lowcut': case 'fade': case 'waves': cap(1.075, 0.5); break; // ≥1.07 or it z-fights the scalp
+      case 'afro': part(L, sph(r * 1.18, 10, 8), 'head', hair, 0, r * 1.5, -r * 0.35); break;
+      case 'puff': cap(1.07, 0.5); part(L, sph(r * 0.6, 8, 6), 'head', hair, 0, r * 2.0, -r * 0.55); part(L, cyl(r * 0.3, r * 0.3, r * 0.1, 8), 'head', '#e53950', 0, r * 1.6, -r * 0.42, -0.9); break;
+      case 'buns': cap(1.07, 0.5); [1, -1].forEach((sg) => { part(L, sph(r * 0.4, 7, 5), 'head', hair, sg * r * 0.72, r * 1.85, -r * 0.25); part(L, cyl(r * 0.24, r * 0.24, r * 0.08, 7), 'head', '#ffffff', sg * r * 0.62, r * 1.6, -r * 0.2, 0, 0, sg * 0.6); }); break;
+      case 'cornrows': cap(1.07, 0.55); rows(5, r * 1.7); part(L, sph(r * 0.32, 7, 5), 'head', hair, 0, r * 1.95, -r * 0.7); break; // shuku: rows meet in a top knot
+      case 'braids': cap(1.07, 0.6); for (let i = 0; i < 9; i++) strand(-1.7 + i * 0.425, r * 2.6, r * 0.075, BEADS[i % 4]); break;
+      case 'ghana': cap(1.07, 0.58); rows(6, r * 1.9, 1.85); for (let i = 0; i < 6; i++) strand(-0.9 + i * 0.36, r * 3.2, r * 0.07, null); break; // Ghana weaving, swept back
+      case 'threaded': { // isi owu: hair wrapped in black thread, standing up in spikes
+        cap(1.07, 0.5);
+        for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2; const sx = Math.sin(a), sz = Math.cos(a); part(L, cyl(r * 0.05, r * 0.09, r * 0.95, 5), 'head', '#0d0d0d', sx * r * 0.45, r * 2.2, sz * r * 0.45 - r * 0.15, sz * 0.7, 0, -sx * 0.7); }
+        break;
+      }
+      case 'ponytail': cap(1.06, 0.55); part(L, cyl(r * 0.2, r * 0.2, r * 0.14, 8), 'head', '#e53950', 0, r * 1.55, -r * 0.9, 1.2); part(L, cyl(r * 0.32, r * 0.1, r * 1.7, 7), 'head', hair, 0, r * 0.85, -r * 1.25, 0.3); break;
       case 'hijab': {
         const c = o.hijab || '#263238';
-        part(L, sph(r * 1.12, 10, 8), 'head', c, 0, r * 1.0, -r * 0.08, 0, 0, 0, 1, 1.05, 1);
-        part(L, new THREE.ConeGeometry(r * 1.55, r * 1.6, 10, 1, true), 'neck', c, 0, -r * 0.35, -r * 0.05);
+        part(L, new THREE.SphereGeometry(r * 1.13, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.3), 'head', c, 0, r * 0.98, -r * 0.04, -0.25); // crown
+        part(L, new THREE.SphereGeometry(r * 1.13, 12, 8, Math.PI / 2 + 0.85, Math.PI * 2 - 1.7, Math.PI * 0.25, Math.PI * 0.6), 'head', c, 0, r * 0.98, -r * 0.04); // sides + back, face open
+        part(L, new THREE.CylinderGeometry(r * 0.95, r * 1.75, r * 1.5, 12, 1, true), 'neck', c, 0, -r * 0.35, -r * 0.05); // drape from the chin over the shoulders
         break;
       }
       default: cap();
