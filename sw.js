@@ -1,6 +1,6 @@
 /* Offline cache. Bump CACHE when files change so players get the update.
    FILES = index.html scripts + content/manifest.json entries (regenerate when adding files). */
-const CACHE = 'boarding-house-v20';
+const CACHE = 'boarding-house-v21';
 const FILES = [
   'js/net/track.js',
   'content/convos.json',
@@ -88,6 +88,7 @@ const FILES = [
   'js/render3d/outfits.js',
   'js/render3d/characters.js',
   'js/render3d/campus3d.js',
+  'js/render3d/sky3d.js',
   'js/render3d/interior3d.js',
   'js/render3d/actors3d.js',
   'js/render3d/input3d.js',

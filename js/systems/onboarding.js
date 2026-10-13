@@ -57,6 +57,7 @@
       if (!Onboarding.active(s) || s.onboard.step !== 'cutscene') return;
       Onboarding.go(s, 'register');
       if (!s.flags.parentBye) { s.flags.parentBye = true; s.queue.push({ id: 'arrivalParent', ctx: {} }); } // the goodbye, right there at the car
+      if (!s.flags.missionBrief) { s.flags.missionBrief = true; s.queue.push({ id: 'missionBrief', ctx: {} }); } // then the mission, stated plainly
     },
 
     /* ---------- cohort (multiplayer) ---------- */

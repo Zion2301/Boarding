@@ -216,3 +216,15 @@ The 3D campus and interiors, Sims-style camera, schedules, class arms, timetable
 - Grind-heavy economies.
 - Competitive multiplayer.
 - Any real-world harmful advice through the AI (the safety rules in `server/prompts.js` always apply).
+
+## 15. Player feedback, round 1 (2026-10-12)
+
+What testers asked for, and where each item stands. The team rule from this round: **no competing with other games. Build our own, 1–2 hours a day.**
+
+| # | Feedback | Status |
+|---|---|---|
+| 1 | **Girl designs need work** | To do. Girls share the boy body in `js/render3d/characters.js`, and only the hair, skirt and pinafore differ. Planned: a girl-specific torso/hip/shoulder silhouette, more hairstyles (Ghana weaving, threaded hair, low cut, "all-back"), hair ribbons/clips, a proper pinafore with straps, and earrings (studs only, per school rules). |
+| 2 | **State the mission at the start** | ✅ Done. The "🎯 Your Mission" card (`EVENTS.missionBrief`) plays once after the parent's goodbye: graduate with a name nobody forgets (pass, find your people, build your rep, don't get expelled). |
+| 3 | **Gossipers, bullies, night security with a big torch, troublemakers, noisy boys** | Partly done. Bullies (chop-box inspection, bully arcs), gossip (`gist.js`), the night watchman Baba Sunday and patrolling prefects already existed. ✅ New: a real **day/night cycle** in 3D (`js/render3d/sky3d.js`) and **visible torch beams** on the watchman, patrolling prefects/house masters and you (if you own a torch). Guards sweep their beam. Next: NPC troublemakers who act *in the world* (noisy dorm after lights out → collective punishment, boys sneaking out, fights you can stop or watch, gossips who spread what they saw). |
+| 4 | **Online with real players + NPCs; 15% of real players slotted into senior secondary** | Proposal (it changes §1 and §11). Most real players start in JSS1. About 15% of joiners are placed in SS1–SS3 (rounded: 50 players → 8 seniors), so juniors face some *real* seniors. Seniors gain rep by "bullying" NPC juniors and real juniors **inside the teachers' rules** (punishments come from the same rules engine: catch-and-report, the VP's office). Real juniors get a live response choice (obey / argue / report / run). The story mode stays: players create their own storyline. |
+| 5 | **Talk bar = live chat with real people; how long it stays depends on where you are** | To do (with #4). In class a chat lasts **2.5 minutes** before the teacher gets angry (warning → punishment). Outside or in the dorm there's no limit. |

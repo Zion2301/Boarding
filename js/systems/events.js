@@ -405,6 +405,17 @@
       return out;
     },
   };
+  /* The mission, said out loud once at the very start (player feedback: "the mission needs to be stated at the beginning") */
+  EVENTS.missionBrief = {
+    weight: 0, forced: true, cinematic: true, emoji: '🎯', title: 'Your Mission',
+    text: (s) => `**Six years. JSS1 to SS3. One mission: graduate from ${s.player.schoolName} with a name nobody forgets.**\n\n` +
+      '📚 **Pass** — tests, BECE, WAEC. Your report card goes home to your parents.\n' +
+      '🤝 **Find your people** — friends, a squad, a best friend who is still there at graduation.\n' +
+      '😎 **Build your rep** — sports star, brain box, hustler, prefect… or the most punished student in history.\n' +
+      '🚫 **Don\'t get expelled** — seniors, bullies, gossips, prefects and the night watchman\'s torch are all waiting.\n\n' +
+      '_Nobody will hold your hand. Every choice is remembered — and somebody will bring it up in SS3._',
+    choices: () => [{ label: '🎒 Let\'s go', run: () => 'Your story starts now. Follow the gold arrow to register at the Admin Block.' }],
+  };
   EVENTS.settlingBully = {
     weight: 0, emoji: '📦', title: 'Chop Box Inspection',
     ctx: (s) => ({ npc: (N().senior(s, 'bully') || {}).id }),

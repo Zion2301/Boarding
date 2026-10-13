@@ -135,31 +135,5 @@
     },
   };
 
-  /* Sun, sky light and a placeholder player marker for step 1 (replaced by sky.js and the character rig) */
-  BH.Sky3D = BH.Sky3D || {
-    build(E) {
-      const T = THREE;
-      const hemi = new T.HemisphereLight('#cfe9ff', '#7a5a3a', 1.1);
-      const sun = new T.DirectionalLight('#fff3d6', 2.2);
-      sun.position.set(40, 60, 20);
-      sun.castShadow = true;
-      sun.shadow.mapSize.set(E.mobile ? 1024 : 2048, E.mobile ? 1024 : 2048);
-      const sc = sun.shadow.camera; sc.left = -24; sc.right = 24; sc.top = 24; sc.bottom = -24; sc.far = 120;
-      sun.target.position.set(30, 0, 22);
-      E.scene.add(hemi, sun, sun.target);
-      E.scene.fog = new T.Fog('#9fd3f0', 90, 220);
-      Object.assign(BH.Sky3D, { hemi, sun });
-    },
-    setIndoors() {},
-    /* keep the shadow camera around the player so shadows stay sharp */
-    update(E) {
-      const pl = BH.Actors.player();
-      if (!pl || !BH.Sky3D.sun) return;
-      const x = pl.x * E.S, z = pl.y * E.S;
-      BH.Sky3D.sun.position.set(x + 20, 40, z + 12);
-      BH.Sky3D.sun.target.position.set(x, 0, z);
-    },
-  };
-
   BH.Campus3D = Campus3D;
 })(window.BH);
