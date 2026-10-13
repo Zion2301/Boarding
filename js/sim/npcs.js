@@ -117,11 +117,18 @@
     /* sitting at a desk/bench/bed: face the room's front, take the pose */
     sitDown(a, n) {
       a.seat = true;
-      const s = BH.Game.s;
-      const sleeping = BH.Time.block(s).kind === 'sleep' && BH.Clock.isNight(s) && /Hostel$/.test(BH.Sim.mapId);
-      a.pose = sleeping ? 'sleep' : 'sit';
+      // walking pushes them out of solid furniture, so they arrive beside a bed/bench — hop onto the seat itself
+      const g = a.goal;
+      if (g && g.seat && Math.hypot(g.x - a.x, g.y - a.y) < BH.Sim.cm.T * 2) { a.x = g.x; a.y = g.y; a.vx = a.vy = 0; a.path = []; }
+      a.pose = NPC3.restPose();
       a.h = Math.PI / 2 + (BH.Sim.cm.src.houseTables ? 0 : -Math.PI); // classrooms face the board (north)
       if (BH.Sim.cm.src.classroom || BH.Sim.mapId === 'chapel' || BH.Sim.mapId === 'mosque') a.h = -Math.PI / 2;
+    },
+
+    /* seated in the hostel after lights out = asleep on the bunk; otherwise just sitting */
+    restPose() {
+      const s = BH.Game.s;
+      return BH.Time.block(s).kind === 'sleep' && BH.Clock.isNight(s) && /Hostel$/.test(BH.Sim.mapId) ? 'sleep' : 'sit';
     },
 
     /* ---------- per tick ---------- */
@@ -148,6 +155,8 @@
             if (seat) { a.goal = { x: seat.seats[0].x, y: seat.seats[0].y, seat: true }; a.wantSeat = true; I().push(a.id, { type: 'path', path: BH.Nav.path(map, a, a.goal) }); NPC3.say(a, '"Shift small, I dey come." 🪑'); }
           } else if (d <= 70) { if (a.path.length) I().push(a.id, { type: 'stop' }); I().push(a.id, { type: 'face', x: pl.x, y: pl.y }); if (!a.saidHi) { a.saidHi = true; NPC3.say(a, U.pick(['"Hey! You! Come here!"', '"I dey find you since!"', '"Oya come, I wan talk to you."'])); } }
         }
+        // already on a bunk when lights go out (or the rising bell rings): lie down / sit up
+        if (a.seat && (a.pose === 'sit' || a.pose === 'sleep') && /Hostel$/.test(map)) a.pose = NPC3.restPose();
         if (a.wait > 0) { a.wait -= dt; if (a.path.length) { a.pausedPath = a.path; a.path = []; } return; }
         if (a.pausedPath) { a.path = a.pausedPath; a.pausedPath = null; }
         if (a.arrived) {

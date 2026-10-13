@@ -88,9 +88,67 @@
       trunk.castShadow = crown.castShadow = true;
       root.add(trunk, crown);
 
+      Campus3D.buildLamps(root, cfg, S);
       E.rig.colliders = Campus3D.colliders;
       E.rig.bounds = { minX: -4, maxX: W + 4, minZ: -4, maxZ: H + 4 };
       Campus3D.size = { W, H };
+    },
+
+    /* street lamps (LAMPS) leaning over the nearest path + a security bulb over every building door.
+       Bulbs and the warm pools on the ground are unlit meshes Sky3D fades in at night; it also parks a small pool
+       of real point lights on the lamps nearest you. */
+    buildLamps(root, cfg, S) {
+      const T = THREE;
+      const posts = [], bulbs = [];
+      cfg.LAMPS.forEach(([x, y]) => {
+        // lean the arm toward the closest road
+        let best = null;
+        cfg.ROADS.forEach(([rx, ry, rw, rh]) => {
+          const nx = Math.max(rx, Math.min(x, rx + rw)), ny = Math.max(ry, Math.min(y, ry + rh));
+          const d = Math.hypot(nx - x, ny - y);
+          if (!best || d < best.d) best = { d, dx: nx - x, dy: ny - y };
+        });
+        const l = best && best.d > 1 ? best.d : 0;
+        const ux = l ? best.dx / l : 0, uz = l ? best.dy / l : 1;
+        posts.push({ x: x * S, z: y * S, ux, uz });
+        bulbs.push({ x: x * S + ux * 0.8, y: 4.05, z: y * S + uz * 0.8, r: 4.2, street: true });
+      });
+      Object.values(cfg.LOCATIONS).forEach((L) => {
+        if (L.kind !== 'b' || !L.door) return;
+        const cz = (L.y + L.h / 2) * S, d = L.h * S;
+        const front = L.door.y > L.y + L.h / 2;
+        bulbs.push({ x: L.door.x * S, y: 2.55, z: front ? cz + d / 2 + 0.2 : cz - d / 2 - 0.2, r: 2.6 });
+      });
+
+      const metal = new T.MeshLambertMaterial({ color: new T.Color('#4b4f54') });
+      const pole = new T.InstancedMesh(new T.CylinderGeometry(0.06, 0.09, 4.2, 6), metal, posts.length);
+      const arm = new T.InstancedMesh(new T.BoxGeometry(0.06, 0.06, 0.9), metal, posts.length);
+      const m4 = new T.Matrix4(), q = new T.Quaternion(), up = new T.Vector3(0, 1, 0), one = new T.Vector3(1, 1, 1);
+      posts.forEach((p, i) => {
+        m4.makeTranslation(p.x, 2.1, p.z); pole.setMatrixAt(i, m4);
+        q.setFromAxisAngle(up, Math.atan2(p.ux, p.uz));
+        m4.compose(new T.Vector3(p.x + p.ux * 0.4, 4.17, p.z + p.uz * 0.4), q, one); arm.setMatrixAt(i, m4);
+      });
+      pole.castShadow = true;
+
+      const bulbMat = new T.MeshBasicMaterial({ color: new T.Color('#5a5a52'), fog: false });
+      const bulb = new T.InstancedMesh(new T.BoxGeometry(0.34, 0.12, 0.34), bulbMat, bulbs.length);
+      // soft warm pools on the ground under each bulb (additive, no real light needed)
+      const cv = document.createElement('canvas'); cv.width = cv.height = 128;
+      const x = cv.getContext('2d'); const gr = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+      gr.addColorStop(0, 'rgba(255,214,140,1)'); gr.addColorStop(0.45, 'rgba(255,190,110,.45)'); gr.addColorStop(1, 'rgba(255,170,90,0)');
+      x.fillStyle = gr; x.fillRect(0, 0, 128, 128);
+      const glowMat = new T.MeshBasicMaterial({ map: new T.CanvasTexture(cv), transparent: true, opacity: 0, depthWrite: false, blending: T.AdditiveBlending, fog: false });
+      const pg = new T.PlaneGeometry(2, 2); pg.rotateX(-Math.PI / 2);
+      const glow = new T.InstancedMesh(pg, glowMat, bulbs.length);
+      bulbs.forEach((b, i) => {
+        m4.makeTranslation(b.x, b.y, b.z); bulb.setMatrixAt(i, m4);
+        m4.makeScale(b.r, 1, b.r).setPosition(b.x, 0.07, b.z); glow.setMatrixAt(i, m4);
+      });
+      glow.renderOrder = 2; glow.visible = false;
+      root.add(pole, arm, bulb, glow);
+      Campus3D.lamps = bulbs;
+      Campus3D.lampFx = { bulbMat, glowMat, glow };
     },
 
     /* a building volume with a gable roof, door and windows; registers a camera collider */

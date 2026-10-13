@@ -70,7 +70,10 @@
         let dh = (a.h - c.h) % (Math.PI * 2); if (dh > Math.PI) dh -= Math.PI * 2; if (dh < -Math.PI) dh += Math.PI * 2;
         c.h += dh * (1 - Math.exp(-dt * 14));
         const g = c.ch.group;
-        g.position.set(c.x * S, a.seat ? Actors3D.seatHeight(a) : 0, c.y * S);
+        // sleepers lie on the mattress (not the floor), centred on the bed so head and feet stay on it
+        const lift = a.seat || a.anim === 'sleep' ? Actors3D.seatHeight(a) : 0;
+        const T = BH.Sim.cm.T, onBed = a.anim === 'sleep' && lift > 0.3;
+        g.position.set((onBed ? (Math.floor(c.x / T) + 0.5) * T : c.x) * S, lift, (onBed ? (Math.floor(c.y / T) + 0.5) * T : c.y) * S);
         g.rotation.y = Math.PI / 2 - c.h;
         g.visible = !a.hidden;
         g.traverse((o) => { if (o.material && o.isMesh && !o.userData.bucket) { o.material.transparent = !!a.ghost; o.material.opacity = a.ghost ? 0.35 : 1; } });

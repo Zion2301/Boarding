@@ -3,9 +3,12 @@
      Indoors follows the room's lights: bright while there's power and it isn't lights out, dark otherwise (NEPA!).
    · Torches: a fixed pool of spot lights + visible beams (never added/removed at runtime, so no shader recompiles).
      At night they go to the nearest torch carriers: the night watchman (unless he's dozing), patrolling prefects and
-     house masters, and you — if you own a torchlight. Beams sweep side to side like a real torch. */
+     house masters, and you — if you own a torchlight. Beams sweep side to side like a real torch.
+   · Street lamps: Campus3D builds the posts, bulbs and ground pools; a fixed pool of point lights follows the lamps
+     nearest you. They burn from dusk to dawn whenever there's power — NEPA takes them too. */
 (function (BH) {
   const POOL = 4;
+  const LAMP_POOL = 8;
   const lerp = (a, b, k) => a + (b - a) * k;
   const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 
@@ -30,10 +33,17 @@
         E.scene.add(light, light.target, beam);
         torches.push({ light, beam, seed: i * 1.7 });
       }
+      const lamps = [];
+      for (let i = 0; i < (E.mobile ? LAMP_POOL / 2 : LAMP_POOL); i++) {
+        const l = new T.PointLight('#ffcf87', 0, 15, 1.3);
+        E.scene.add(l);
+        lamps.push(l);
+      }
       Object.assign(Sky3D, {
-        hemi, sun, torches, indoors: false,
-        cols: { skyDay: new T.Color('#9fd3f0'), skyDusk: new T.Color('#f0a35e'), skyNight: new T.Color('#0b1426'), tmp: new T.Color(),
-          hemiDay: new T.Color('#cfe9ff'), hemiNight: new T.Color('#5a6f9f'), sunDay: new T.Color('#fff3d6'), sunDusk: new T.Color('#ffb070'), moon: new T.Color('#9db4e0') },
+        hemi, sun, torches, lamps, lampT: 0, indoors: false,
+        cols: { skyDay: new T.Color('#9fd3f0'), skyDusk: new T.Color('#f0a35e'), skyNight: new T.Color('#182848'), tmp: new T.Color(),
+          bulbOff: new T.Color('#5a5a52'), bulbOn: new T.Color('#ffe9b0'),
+          hemiDay: new T.Color('#cfe9ff'), hemiNight: new T.Color('#7389c4'), sunDay: new T.Color('#fff3d6'), sunDusk: new T.Color('#ffb070'), moon: new T.Color('#9db4e0') },
       });
     },
     setIndoors(on) { Sky3D.indoors = on; },
@@ -54,6 +64,7 @@
       Sky3D.sun.target.position.set(x, 0, z);
       Sky3D.light(E, s);
       Sky3D.updateTorches(E, s, dt);
+      Sky3D.updateLamps(E, s, dt);
     },
 
     light(E, s) {
@@ -66,13 +77,15 @@
         day = Math.max(day, bulbs * 0.85); dusk = 0;
       }
       Sky3D.dark = day < 0.35;
-      Sky3D.hemi.intensity = lerp(0.32, 1.1, day);
+      Sky3D.day = day;
+      // night is moonlit, not pitch black: you can still make out paths, buildings and people
+      Sky3D.hemi.intensity = lerp(0.7, 1.1, day);
       Sky3D.hemi.color.copy(C.hemiNight).lerp(C.hemiDay, day);
-      Sky3D.sun.intensity = lerp(0.35, 2.2, day) * (1 - dusk * 0.3);
+      Sky3D.sun.intensity = lerp(0.8, 2.2, day) * (1 - dusk * 0.3);
       Sky3D.sun.color.copy(C.moon).lerp(C.sunDay, day).lerp(C.sunDusk, dusk);
       const bg = C.tmp.copy(C.skyNight).lerp(C.skyDay, day).lerp(C.skyDusk, dusk * 0.7);
-      if (!Sky3D.indoors) { E.scene.background.copy(bg); E.scene.fog.color.copy(bg); E.scene.fog.near = lerp(30, 90, day); E.scene.fog.far = lerp(110, 220, day); }
-      E.renderer.toneMappingExposure = lerp(0.85, 1.05, day);
+      if (!Sky3D.indoors) { E.scene.background.copy(bg); E.scene.fog.color.copy(bg); E.scene.fog.near = lerp(40, 90, day); E.scene.fog.far = lerp(140, 220, day); }
+      E.renderer.toneMappingExposure = lerp(1.0, 1.05, day);
     },
 
     /* who is holding a lit torch right now */
@@ -111,6 +124,34 @@
         t.beam.lookAt(t.light.target.position);
         t.beam.rotateX(-Math.PI / 2); // the cone's axis is -Y after the translate; point it at the target
       });
+    },
+
+    /* street + door lamps: bulbs/pools fade in from dusk; the real lights go to the lamps nearest you */
+    updateLamps(E, s, dt) {
+      const C3 = BH.Campus3D, fx = C3 && C3.lampFx;
+      const outside = !Sky3D.indoors && fx && C3.lamps && C3.lamps.length;
+      const power = !BH.WorldSim || BH.WorldSim.power(s);
+      const on = outside && power ? clamp01((0.6 - (Sky3D.day == null ? 1 : Sky3D.day)) / 0.3) : 0;
+      if (fx) {
+        fx.bulbMat.color.copy(Sky3D.cols.bulbOff).lerp(Sky3D.cols.bulbOn, on);
+        fx.glowMat.opacity = on * 0.5;
+        fx.glow.visible = on > 0.01;
+      }
+      if (!on) { Sky3D.lamps.forEach((l) => { l.intensity = 0; }); return; }
+      Sky3D.lampT -= dt || 0;
+      if (Sky3D.lampT <= 0) {
+        Sky3D.lampT = 0.5;
+        const pl = BH.Actors.player(), px = pl.x * E.S, pz = pl.y * E.S;
+        const near = C3.lamps.slice().sort((a, b) => Math.hypot(a.x - px, a.z - pz) - Math.hypot(b.x - px, b.z - pz));
+        Sky3D.lamps.forEach((l, i) => {
+          const b = near[i];
+          if (!b) { l.userData.k = 0; return; }
+          l.position.set(b.x, b.y - 0.15, b.z);
+          l.distance = b.street ? 15 : 8;
+          l.userData.k = b.street ? 22 : 9;
+        });
+      }
+      Sky3D.lamps.forEach((l) => { l.intensity = (l.userData.k || 0) * on; });
     },
   };
 
