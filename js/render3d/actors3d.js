@@ -159,8 +159,13 @@
         mk.objRing.material.color.set(c); mk.objArrow.material.color.set(c); mk.objArrow.material.emissive.set(c);
         mk.objArrow.scale.setScalar(urgent ? 1.7 : 1);
       }
+      // only one floating arrow at a time (the edge arrow's goal); the other marker keeps just its ground ring,
+      // and the arrow drops away once you're standing near it
+      const goal = urgent ? M.objective : M.waypoint || M.objective;
+      const pl = BH.Actors.player();
       const place = (ring, arrow, p) => {
-        ring.visible = arrow.visible = !!p;
+        ring.visible = !!p;
+        arrow.visible = !!p && p === goal && !(pl && Math.hypot(p.x - pl.x, p.y - pl.y) < 60);
         if (!p) return;
         const u = p.urgent ? 2.2 : 1;
         ring.position.set(p.x * S, 0.08, p.y * S); ring.scale.setScalar((p.urgent ? 1.5 : 1) + Math.sin(t * 4 * u) * 0.08 * u);
@@ -190,7 +195,6 @@
         m.material.opacity = c.hot ? 0.28 : 0.14;
       });
       // off-screen arrow toward the waypoint/objective
-      const goal = urgent ? M.objective : M.waypoint || M.objective;
       const el = Actors3D.edge;
       el.classList.toggle('urgent', urgent);
       if (goal) {

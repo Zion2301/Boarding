@@ -179,6 +179,7 @@
       const door = new T.Mesh(new T.BoxGeometry(1.1, 2.1, 0.08), new T.MeshLambertMaterial({ color: new T.Color('#5d4037') }));
       door.position.set(L.door.x * S, 1.05, doorFront ? cz + d / 2 + 0.04 : cz - d / 2 - 0.04);
       g.add(door);
+      g.add(Campus3D.sign(key, L, S, wallH, doorFront ? cz + d / 2 + 0.07 : cz - d / 2 - 0.07, doorFront, w));
       // windows
       const winMat = new T.MeshLambertMaterial({ color: new T.Color('#35556e') });
       const n = Math.max(2, Math.floor(w / 2.2));
@@ -190,6 +191,36 @@
       root.add(g);
       Campus3D.colliders.push(new T.Box3(new T.Vector3(cx - w / 2, 0, cz - d / 2), new T.Vector3(cx + w / 2, wallH + rh, cz + d / 2)));
       return g;
+    },
+
+    /* painted name board over the door (canvas texture, redrawn once the display font has loaded) */
+    sign(key, L, S, wallH, z, front, w) {
+      const T = THREE;
+      const st = BH.Game && BH.Game.s;
+      const mine = st && st.player ? (st.player.gender === 'f' ? 'girlsHostel' : 'boysHostel') : null;
+      const text = `${L.emoji} ${L.name}${key === mine ? ' ⭐' : ''}`;
+      const cv = document.createElement('canvas'); cv.width = 512; cv.height = 112;
+      const tex = new T.CanvasTexture(cv);
+      tex.colorSpace = T.SRGBColorSpace;
+      const draw = () => {
+        const x = cv.getContext('2d');
+        x.fillStyle = '#1b2a4a'; x.fillRect(0, 0, 512, 112);
+        x.fillStyle = '#f4ead2'; x.fillRect(8, 8, 496, 96);
+        let fs = 64;
+        x.font = `${fs}px 'Lilita One', sans-serif`;
+        while (fs > 28 && x.measureText(text).width > 470) { fs -= 4; x.font = `${fs}px 'Lilita One', sans-serif`; }
+        x.fillStyle = '#1b2a4a'; x.textAlign = 'center'; x.textBaseline = 'middle';
+        x.fillText(text, 256, 60);
+        tex.needsUpdate = true;
+      };
+      draw();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+      const bw = Math.min(w * 0.85, 4.2), bh = bw * (112 / 512);
+      const board = new T.Mesh(new T.PlaneGeometry(bw, bh), new T.MeshLambertMaterial({ map: tex, emissive: '#ffffff', emissiveMap: tex, emissiveIntensity: 0.35 }));
+      board.position.set(L.door.x * S, Math.min(wallH - bh / 2 - 0.15, 2.35 + bh / 2), z);
+      if (!front) board.rotation.y = Math.PI;
+      board.name = 'sign';
+      return board;
     },
   };
 
