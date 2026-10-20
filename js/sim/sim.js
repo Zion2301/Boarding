@@ -275,7 +275,9 @@
       const present = BH.Activities.present(s);
       let obj = null;
       const ob = BH.Onboarding && BH.Onboarding.objective(s);
-      if (ob && ob.map) {
+      if (ob && ob.unmarked) {
+        // box → hostel → bunk: no marker, the player finds the hostel and picks any bunk themselves
+      } else if (ob && ob.map) {
         // resumption-day story objective (register → hostel → bunk → dinner → bed)
         if (ob.map !== Sim.mapId) obj = Sim.route(ob.map, ob.key);
         else if (ob.obj) { const o = Sim.cm.objects.find((x) => ob.obj.includes(x.kind) && (!['bunk', 'myBed'].includes(x.kind) || !s.world.myBunk || BH.Interaction.mine(s, x))); if (o) obj = { x: o.x, y: o.y, h: 1.5 }; }

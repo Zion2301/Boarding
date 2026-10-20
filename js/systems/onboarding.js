@@ -12,8 +12,8 @@
   const STEPS = {
     cutscene: { text: 'Arriving at school…' },
     register: { text: 'Register at the Admin Block', hint: 'Walk there (WASD / joystick / tap the ground). Follow the gold arrow.', key: 'admin', map: 'admin', obj: ['officeDesk', 'principalDesk'] },
-    box: { text: 'Carry your chop box to your hostel', hint: 'Hold Shift (or push the stick all the way) to run.', hostel: true },
-    bunk: { text: 'Choose your bunk', hint: 'Walk up to any free bunk and press Space (or tap the button).', hostel: true, obj: ['bunk', 'myBed'] },
+    box: { text: 'Carry your chop box to your hostel', hint: 'Hold Shift (or push the stick all the way) to run. Look for your hostel\'s name board.', hostel: true, unmarked: true },
+    bunk: { text: 'Choose your bunk', hint: 'Walk up to any free bunk and press Space (or tap the button).', hostel: true, obj: ['bunk', 'myBed'], unmarked: true },
     mate: { text: 'Meet your bunkmate', hint: 'Say hi! Press C (or 💬) to talk, or wave with an emote.' },
     senior: { text: 'Uh-oh… a senior is coming' },
     free: { text: 'Free time until dinner — explore, or play Last Card with your bunkmate (🎲)' },
@@ -49,7 +49,7 @@
       if (!st) return null;
       const hostel = BH.Schedule.myHostel(s);
       const map = st.hostel ? hostel : st.map || null;
-      return { text: st.text, map, key: st.hostel ? hostel : st.key, obj: st.obj || null };
+      return { text: st.text, map, key: st.hostel ? hostel : st.key, obj: st.obj || null, unmarked: !!st.unmarked };
     },
 
     /* ---------- the cutscene ends → the parent's goodbye, then go register ---------- */
