@@ -88,7 +88,9 @@
           const p = makePerson(gender, used);
           const arch = i < extra.length ? extra[i] : 'regular';
           const persona = U.pick(D.PERSONAS).key;
-          s.npcs.classmates.push(Object.assign(p, { id: 'c' + i, type: 'classmate', arch, persona, arm, rel: U.randInt(30, 50), ability: NPC.baseAbility(arch, persona) }));
+          const c = Object.assign(p, { id: 'c' + i, type: 'classmate', arch, persona, arm, rel: U.randInt(30, 50), ability: NPC.baseAbility(arch, persona) });
+          if (BH.Traits) c.rel = BH.Traits.startRel(c, c.rel); // not everybody likes the new student
+          s.npcs.classmates.push(c);
           i++; have++;
         }
       });
@@ -259,7 +261,7 @@
 
     rel(s, n, delta) {
       if (!n) return;
-      if (delta > 0) delta *= BH.Stats.mod(s, 'rel');
+      if (delta > 0) delta *= BH.Stats.mod(s, 'rel') * (BH.Traits ? BH.Traits.relMult(n) : 1); // cold/hostile people warm up slowly
       const before = n.rel;
       n.rel = U.clamp(n.rel + delta);
       if (n.crowd) { s.npcs.crowdRel = s.npcs.crowdRel || {}; s.npcs.crowdRel[n.id] = n.rel; }
@@ -280,6 +282,8 @@
       NPC.rel(s, n, U.randInt(4, 7));
       BH.Stats.change(s, { morale: 4 });
       if (n.arch === 'gossip') text += ` Then ${n.first} whisper: "${NPC.gossipLine(s)}"`;
+      const att = BH.Traits ? BH.Traits.attitudeKey(n) : 'neutral';
+      if (n.arch !== 'bully' && n.rel < 40 && (att === 'hostile' ? U.chance(0.5) : att === 'cold' && U.chance(0.25))) { text = `${n.first}: "${U.pick(['I no get time for gist abeg.', 'Hmm. Okay. Bye.', 'Why you dey talk to me?'])}" They walk off. 🙄`; NPC.rel(s, n, -2); }
       if (n.arch === 'bully' && n.rel < 35) { text = `${n.first}: "Who you be wey dey greet me anyhow? Comot!" Hmm.`; NPC.rel(s, n, -3); }
       BH.bus.emit('npc:interact', { id: n.id, kind: 'gist' });
       return text;

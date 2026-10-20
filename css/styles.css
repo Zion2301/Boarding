@@ -810,3 +810,10 @@ body.compact .obj-strip.ok { border-left-color: #7ee2a8; }
 body.compact .obj-strip.mission { border-left-color: #2ec4ff; }
 body.compact .obj-strip.free { border-left-color: #9fb3c8; }
 @keyframes stripPulse { 50% { box-shadow: 0 0 0 3px rgba(255, 45, 45, .45); } }
+
+/* ---------- NPC traits on the profile card (js/systems/traits.js) ---------- */
+.traits { display: grid; gap: 4px; margin: 10px 0 6px; padding: 8px 10px; background: var(--cream); border-radius: 12px; }
+.tr-row { display: flex; gap: 10px; align-items: baseline; font-size: .86rem; }
+.tr-k { flex: 0 0 92px; color: #6b5a48; font-weight: 700; font-size: .78rem; }
+.tr-v { flex: 1; }
+.tr-v small { display: block; color: #7a6a58; font-size: .74rem; }

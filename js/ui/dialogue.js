@@ -142,7 +142,7 @@
       if (n.type === 'staff' && n.role === 'houseMaster') return Dialogue.tree(n, 'start', 'houseMaster');
       const lines = BH.Content.get('dialogue').greet;
       const greetKey = n.type === 'senior' && s.time.year >= 4 ? 'seniorAsSenior' : n.type;
-      const greet = U.fill(U.seedPick(lines[greetKey] || ['"Hello."'], n.id + s.time.block), { me: s.player.name.split(' ')[0] });
+      const greet = (BH.Traits && BH.Traits.greet(s, n)) || U.fill(U.seedPick(lines[greetKey] || ['"Hello."'], n.id + s.time.block), { me: s.player.name.split(' ')[0] });
       const can = N.canTalk(s, n);
       const why = 'You don yarn with am today';
       const act = (fn) => () => Dialogue.act(() => fn(s, n), () => Dialogue.npc(id));

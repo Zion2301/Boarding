@@ -70,6 +70,7 @@
       <p>${U.esc(desc)}</p>
       <div class="rel-row"><span>Relationship</span>${UI().relBar(n.rel, 'wide')}<b>${Math.round(n.rel)}</b></div>
       <div class="muted">${N().relLabel(n)}</div>
+      ${BH.Traits ? BH.Traits.profileHtml(s, n) : ''}
       ${msg ? `<div class="note">${UI().md(msg)}</div>` : ''}
       <p class="muted tiny">📍 Right now: <b>${U.esc(BH.Schedule.placeLabel(s, n))}</b>. To talk, find them and walk up (E / tap). You fit follow them from the radial menu.</p>
     </div>`;

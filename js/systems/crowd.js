@@ -40,6 +40,7 @@
             };
             if (k > 0) Object.assign(n, { type: 'senior', role: 'regular', level: D.LEVELS[lvl - 1] });
             else Object.assign(n, { type: 'junior', level: lvl });
+            if (BH.Traits && !(s.npcs.crowdRel && s.npcs.crowdRel[id])) n.rel = BH.Traits.startRel(n, n.rel);
             list.push(n); byId.set(id, n);
           }
         });
