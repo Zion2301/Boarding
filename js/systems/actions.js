@@ -257,7 +257,7 @@
 
   /* ---------- dining ---------- */
   H.collectFood = (s) => Act().collectFood(s);
-  H.eatPlate = (s, c) => Act().eatPlate(s, c.args);
+  H.eatPlate = (s, c) => Act().eatPlate(s, c.args, c.obj);
   H.begFood = (s) => {
     if (s.today.flags.begged) return { text: 'Mama Iyabo: "You again? Comot!"', cancel: true };
     s.today.flags.begged = true;

@@ -244,7 +244,7 @@
         if (showBubble) bubbles++;
         const c = Actors3D.chars.get(a.id);
         if (!c) return;
-        const p = E().toScreen(c.x, c.y, (c.ch.P.leg + c.ch.P.torso + c.ch.P.headR * 2.4) * (a.anim === 'sit' ? 0.7 : 1) + 0.25);
+        const p = E().toScreen(c.x, c.y, (c.ch.P.leg + c.ch.P.torso + c.ch.P.headR * 2.4) * (['sit', 'eat', 'sleep_sit'].includes(a.anim) ? 0.7 : 1) + 0.25);
         if (!p) return;
         used.add(a.id);
         let el = Actors3D.tags.get(a.id);

@@ -201,7 +201,7 @@
       const map = s.world.map || 'campus';
       Activities.stand(s, true);
       const snap = obj && obj.seats && obj.seats[0] ? Activities.nearestSeat(s, obj) : null;
-      if (snap && BH.World.snap) BH.World.snap(snap);
+      if (snap && BH.World.snap) BH.World.snap(Object.assign({ h: -Math.PI / 2 }, snap)); // on the bench, facing the desk/table
       if (b.kind === 'class' && map === (Activities.expected(s) || {}).map) {
         const code = A().periodSubject(s, b.period);
         const ownerId = obj && obj.kind === 'desk' && !BH.School.isMyDesk(s, obj) ? BH.School.deskOwner(s, obj) : null;
@@ -323,9 +323,12 @@
       const late = s.today.flags.lateFor === b.meal;
       return { text: `The cook slap **${m.name}** on your plate${late ? ' — small, because you came late' : ''}. Go sit at your house table and eat. 🍛`, good: true };
     },
-    eatPlate(s, args = {}) {
+    eatPlate(s, args = {}, obj) {
       const p = s.today.flags.plate;
       if (!p) return { text: 'You no get food on your plate. Collect from the counter first.', cancel: true };
+      // sit down on the bench at this table and eat (then stay seated until you walk off)
+      const seat = obj && obj.seats && obj.seats.length ? Activities.nearestSeat(s, obj) : null;
+      if (seat) { Activities.stand(s, true); BH.World.snap && BH.World.snap(Object.assign({ h: -Math.PI / 2 }, seat)); }
       const m = Activities.meal(s, p.ctx, p.meal);
       let mult = args.mult || 1;
       const junior = s.time.year <= 3;
@@ -339,7 +342,10 @@
       s.today.flags.plate = null;
       if (!s.today.meals[p.meal]) { s.today.meals[p.meal] = true; s.stats_history.meals++; BH.bus.emit('meal', { meal: p.meal }); }
       const lines = m.q <= 1 ? ['You chop am with closed eyes. Survival mode activated.', 'The food taste like punishment, but belle no get eye.'] : m.q >= 4 ? ['E sweet die! You lick the plate finish. 😋', 'Correct food! Today the cooks get anointing.'] : ['E no bad. E fill belle.', 'You chop am finish, drink water, belch small.'];
-      return { text: U.pick(lines) + note, good: true, mins: 15 };
+      if (!seat) return { text: U.pick(lines) + note, good: true, mins: 15 };
+      const map = s.world.map || 'campus';
+      Activities.busy(s, 15, '🍽️ Eating…', { pose: 'eat', seat: true, after: { type: 'seat', obj: obj.id, map } });
+      return { text: U.pick(lines) + note, good: true };
     },
 
     /* ---------- assembly inspection ---------- */
@@ -400,7 +406,7 @@
     },
     waitEnded(s, reason, why) {
       if (reason === 'sleep' || reason === 'nap') Activities.wake(s, why);
-      if (reason === 'busy' && s.act && s.act.type === 'busy') s.act = null;
+      if (reason === 'busy' && s.act && s.act.type === 'busy') s.act = s.act.after || null;
     },
     passOut(s) {
       if (s.act && s.act.type === 'sleep') return;
@@ -415,10 +421,11 @@
       if (obj && BH.World.snap) BH.World.snap({ x: obj.x, y: obj.y + (obj.solid ? 20 : 0) });
       return { text: '🫥 You hide. Nobody fit see you here. Move to come out.', noTime: true };
     },
-    busy(s, mins, label) {
+    /* extra: { pose, seat, after } — e.g. eating seated at a table, then staying seated (after) when the time is up */
+    busy(s, mins, label, extra) {
       if (!mins) return;
       const keep = s.act && ['lesson', 'prep'].includes(s.act.type) ? s.act : null;
-      if (!keep) s.act = { type: 'busy', label };
+      if (!keep) s.act = Object.assign({ type: 'busy', label }, extra || {});
       BH.Clock.wait(s, mins, { reason: keep ? 'wait' : 'busy', rate: 30, label });
     },
   };

@@ -581,12 +581,7 @@
     "id": "sit",
     "label": "Sit down",
     "emoji": "🪑",
-    "do": "say",
-    "args": {
-     "text": [
-      "You sit down. The bench shake like say e wan break. 🪑"
-     ]
-    },
+    "do": "sit",
     "prio": 4
    }
   ]

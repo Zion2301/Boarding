@@ -52,7 +52,7 @@
         case 'stop': a.path = []; a.move = null; break;
         case 'face': a.faceTo = { x: it.x, y: it.y }; break;
         case 'emote': a.emote = { anim: it.anim, until: performance.now() + (it.secs || 2) * 1000 }; break;
-        case 'teleport': Object.assign(a, { x: it.x, y: it.y, vx: 0, vy: 0, speed: 0, path: [], move: null }); if (it.map) a.map = it.map; break;
+        case 'teleport': Object.assign(a, { x: it.x, y: it.y, vx: 0, vy: 0, speed: 0, path: [], move: null }); if (it.map) a.map = it.map; if (it.h !== undefined) { a.h = it.h; a.faceTo = null; } break;
         default:
           if (String(it.type).startsWith('lesson:') && BH.Lessons) BH.Lessons.intent(it);
       }
@@ -207,15 +207,15 @@
       if (s.world.ff) BH.Clock.stopWait(s, 'moved');
       if (s.act && ['lesson', 'prep', 'seat', 'hide', 'sleep', 'busy'].includes(s.act.type)) BH.Activities.stand(s, true);
     },
-    snap(pt) { const pl = Actors.player(); if (pl) Intents.apply({ actor: 'player', type: 'teleport', x: pt.x, y: pt.y }); },
+    snap(pt) { const pl = Actors.player(); if (pl) Intents.apply({ actor: 'player', type: 'teleport', x: pt.x, y: pt.y, h: pt.h }); },
 
     /* activity → body pose for the renderer (sit/sleep/kneel/carry…) */
     poses(pl) {
       const s = BH.Game.s;
       const a = s.act;
-      pl.seat = !!(a && ['lesson', 'prep', 'seat'].includes(a.type));
+      pl.seat = !!(a && (['lesson', 'prep', 'seat'].includes(a.type) || (a.type === 'busy' && a.seat)));
       pl.hidden = false;
-      pl.pose = !a ? null : a.type === 'sleep' ? 'sleep' : ['lesson', 'prep', 'seat'].includes(a.type) ? (a.mode === 'doze' ? 'sleep_sit' : 'sit') : a.type === 'busy' ? 'busy' : a.type === 'hide' ? 'crouch' : null;
+      pl.pose = !a ? null : a.type === 'sleep' ? 'sleep' : ['lesson', 'prep', 'seat'].includes(a.type) ? (a.mode === 'doze' ? 'sleep_sit' : 'sit') : a.type === 'busy' ? (a.pose || 'busy') : a.type === 'hide' ? 'crouch' : null;
       pl.carry = s.flags.carryBox ? 'box' : BH.Inv.has(s, 'water') ? 'bucket' : null;
       pl.ghost = BH.Rules.hidden(s);
     },
